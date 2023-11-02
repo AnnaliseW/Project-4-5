@@ -64,7 +64,10 @@ public class Product {
     public String toString() {
         return String.format("Product Statistics:\nProduct Name: %s\nStore Name: %s\nDescription: %s\nQuantity Available: %d\nPrice: %.2f", this.productName
         , this.storeName, this.descriptionOfProduct, this.quantityAvailable, this.price);
+    }
 
+     public String listingPagetoString() {
+        return String.format("Product Statistics:\nProduct Name: %s\nStore Name: %s\nPrice: %.2f", this.productName, this.storeName, this.price);
     }
 
 }
