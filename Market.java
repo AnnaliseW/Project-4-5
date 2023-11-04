@@ -3,14 +3,13 @@ import java.util.Scanner;
 //MOST METHODS AND OBJECT CALLS HAVE NOT BE CREATED
 
 public class Market {
-    
+
     public static void main(String[] args) {
 
-        //accoubt creation and login
+        //account creation and login
         if (account.isSeller()) {
 
         } else {
-
 
         }
 
@@ -20,7 +19,7 @@ public class Market {
 
         for (int i = 0; i < productsArrayList.length(); i++) {
             int j = i+1;
-            System.out.println(j + productsArrayList.get(i).listingPage());
+            System.out.println(j + productsArrayList.get(i).listingPagetoString());
             System.out.println("-------------------");
 
         }
@@ -33,7 +32,7 @@ public class Market {
 
             Scanner scan = new Scanner(System.in);
             int selection = scan.nextInt();
-            product selectedProduct =  productsArrayList.get(selection - 1);
+            Product selectedProduct =  productsArrayList.get(selection - 1);
 
             System.out.println(selectedProduct.toString());
 
@@ -42,8 +41,6 @@ public class Market {
 
 
         }
-
-
 
     }
 
