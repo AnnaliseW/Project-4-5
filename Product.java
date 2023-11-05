@@ -58,7 +58,7 @@ public class Product {
         this.quantityAvailable = quantityAvailable;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
