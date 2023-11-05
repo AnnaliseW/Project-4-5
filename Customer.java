@@ -19,6 +19,9 @@ public class Customer extends Product {
         return searchedProducts;
     }
 
+       // implement more so it contains a toString for customer viewing
+    // being able to click on the product back in main market
+
     public void purchaseProduct(Product product, int quantityPurchased) {
         for (int i = 0; i < getProductsArrayList().size(); i++) {
             if (getProductsArrayList().get(i).equals(product)) {
