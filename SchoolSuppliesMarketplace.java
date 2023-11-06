@@ -7,34 +7,48 @@ public class SchoolSuppliesMarketplace {
 
     private static final String USERS_FILE = "users.txt";
     private static Map<String, User> users = new HashMap<>();
+    private static User currentUser = null;
 
     public static void main(String[] args) {
         loadUsersData();
 
         Scanner scan = new Scanner(System.in);
 
+
         while (true) {
-            System.out.println("Welcome to the School Supplies Marketplace");
-            System.out.println("1. Create Account");
-            System.out.println("2. Sign In");
-            System.out.println("3. Exit");
+            if (currentUser == null) {
+                System.out.println("Welcome to the School Supplies Marketplace");
+                System.out.println("1. Create Account");
+                System.out.println("2. Sign In");
+                System.out.println("3. Exit");
 
-            int choice = scan.nextInt();
-            scan.nextLine();
+                int choice = scan.nextInt();
+                scan.nextLine();
 
-            switch (choice) {
-                case 1:
-                    createAccount(scan);
-                    break;
-                case 2:
-                    signIn(scan);
-                    break;
-                case 3:
-                    saveUsersData();
-                    System.out.println("Goodbye!");
-                    System.exit(0);
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                switch (choice) {
+                    case 1:
+                        createAccount(scan);
+                        break;
+                    case 2:
+                        signIn(scan);
+                        break;
+                    case 3:
+                        saveUsersData();
+                        System.out.println("Goodbye!");
+                        System.exit(0);
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } else {
+                System.out.println("Welcome, " + currentUser.getName() + "!");
+                System.out.println("You are currently signed in as a " + (currentUser.isSeller() ? "Seller" : "Customer"));
+                System.out.println("4. Sign Out");
+                int choice = scan.nextInt();
+                scan.nextLine();
+                if (choice == 4) {
+                    currentUser = null;
+                    System.out.println("You have been signed out.");
+                }
             }
         }
     }
@@ -67,6 +81,7 @@ public class SchoolSuppliesMarketplace {
 
         User newUser = new User(name, email, password, isSeller);
         users.put(email, newUser);
+        currentUser = newUser;
         saveUsersData();
         System.out.println("Account created successfully!");
     }
@@ -81,7 +96,7 @@ public class SchoolSuppliesMarketplace {
         User user = users.get(email);
 
         if (user != null && user.getPassword().equals(password)) {
-            System.out.println("Welcome, " + user.getName() + "!");
+            currentUser = user;
         } else {
             System.out.println("Invalid email or password. Please try again.");
         }
