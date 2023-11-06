@@ -7,10 +7,13 @@ public class Market extends Product {
     public static boolean started = true;
     public static boolean marketPlace = true;
 
+    public static ArrayList<Product> productsOnMarket;
+
+
     public Market(String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price) {
         super(productName, storeName, descriptionOfProduct, quantityAvailable, price);
     }
-    
+
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
 
@@ -83,6 +86,7 @@ public class Market extends Product {
                     Product newProductAdded = new Product(productName, storeName, description, quantity, price);
                     Seller.addProduct(newProductAdded);
                     Seller.getItemsSellingBySeller().add(newProductAdded);
+                    productsOnMarket.add(newProductAdded);
 
 
                 } else if (sellerChoice == 2) {
@@ -109,6 +113,17 @@ public class Market extends Product {
                     s.nextLine();
                     Seller.modifyProduct(Seller.getItemsSellingBySeller().get(indexOfChange), newName, newStoreName, newDescription, newQuantity, newPrice);
 
+
+                    //Find that product on the market and modify it
+                    Product oneToModify = productsOnMarket.get(productsOnMarket.indexOf(Seller.getItemsSellingBySeller().get(indexOfChange)));
+                    oneToModify.setProductName(newName);
+                    oneToModify.setStoreName(newStoreName);
+                    oneToModify.setDescriptionOfProduct(newDescription);
+                    oneToModify.setQuantityAvailable(newQuantity);
+                    oneToModify.setPrice(newPrice);
+                    productsOnMarket.set(productsOnMarket.indexOf(Seller.getItemsSellingBySeller().get(indexOfChange)), oneToModify);
+
+
                     //still need to code for array list of selling... occurs when added
                     /// display items being sold from user and take it
                     // implementing and reading from list
@@ -120,7 +135,11 @@ public class Market extends Product {
                     System.out.println("Choose product index you want to remove");
                     int indexOfChange = s.nextInt();
                     s.nextLine();
+
+                    Product removedProduct = Seller.getItemsSellingBySeller().get(indexOfChange)
                     Seller.removeProduct(Seller.getItemsSellingBySeller().get(indexOfChange));
+
+                    productsOnMarket.remove(removedProduct);
 
                 } else if (sellerChoice == 4) {
                     /// dependent on figuring out isolating accounts for user and seller...
@@ -131,7 +150,6 @@ public class Market extends Product {
             }
 
         }
-
 
 
         //account creation and login
