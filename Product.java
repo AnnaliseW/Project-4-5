@@ -1,74 +1,88 @@
+import java.util.ArrayList;
+
 public class Product {
-    private String productName;
-    private String storeName;
-    private String descriptionOfProduct;
-    private int quantityAvailable;
-    private double price;
-    private int quantitySold;
+    public static ArrayList<Product> productsArrayList;
+    public static String productName;
+    public static String storeName;
+    public static String descriptionOfProduct;
+    public static int quantityAvailable;
+    public static double price;
+    public static int quantitySold;
+
 
     public Product(String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price) {
-        this.productName = productName;
-        this.storeName = storeName;
-        this.descriptionOfProduct = descriptionOfProduct;
-        this.quantityAvailable = quantityAvailable;
-        this.price = price;
+        Product.productName = productName;
+        Product.storeName = storeName;
+        Product.descriptionOfProduct = descriptionOfProduct;
+        Product.quantityAvailable = quantityAvailable;
+        Product.price = price;
     }
 
-    public Product() {
-        this.productName = "";
-        this.storeName = "";
-        this.descriptionOfProduct = "";
-        this.quantityAvailable = 0;
-        this.price = 0;
+    public static ArrayList<Product> getProductsArrayList() {
+        return productsArrayList;
     }
 
-    public String getProductName() {
+    public static void setQuantitySold(int quantitySold) {
+        Product.quantitySold = quantitySold;
+    }
+
+    public static int getQuantitySold() {
+        return quantitySold;
+    }
+
+    public static void setProductsArrayList(ArrayList<Product> productsArrayList) {
+        Product.productsArrayList = productsArrayList;
+    }
+
+
+
+    public static String getProductName() {
         return productName;
     }
 
-    public String getStoreName() {
+    public static String getStoreName() {
         return storeName;
     }
 
-    public String getDescriptionOfProduct() {
+    public static String getDescriptionOfProduct() {
         return descriptionOfProduct;
     }
 
-    public int getQuantityAvailable() {
+    public static int getQuantityAvailable() {
         return quantityAvailable;
     }
 
-    public double getPrice() {
+    public static double getPrice() {
         return price;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public static void setProductName(String productName) {
+        Product.productName = productName;
     }
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
+    public static void setStoreName(String storeName) {
+        Product.storeName = storeName;
     }
 
-    public void setDescriptionOfProduct(String descriptionOfProduct) {
-        this.descriptionOfProduct = descriptionOfProduct;
+    public static void setDescriptionOfProduct(String descriptionOfProduct) {
+        Product.descriptionOfProduct = descriptionOfProduct;
     }
 
-    public void setQuantityAvailable(int quantityAvailable) {
-        this.quantityAvailable = quantityAvailable;
+    public static void setQuantityAvailable(int quantityAvailable) {
+        Product.quantityAvailable = quantityAvailable;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public static void setPrice(double price) {
+        Product.price = price;
     }
 
-    public String toString() {
-        return String.format("Product Statistics:\nProduct Name: %s\nStore Name: %s\nDescription: %s\nQuantity Available: %d\nPrice: %.2f", this.productName
-        , this.storeName, this.descriptionOfProduct, this.quantityAvailable, this.price);
+    public static String statisticsToString() {
+        return String.format("Product Statistics:\nProduct Name: %s\nStore Name: %s\nDescription: %s\nQuantity Available: %d\nPrice: %.2f", productName
+                , storeName, descriptionOfProduct, quantityAvailable, price);
     }
 
-     public String listingPagetoString() {
-        return String.format("Product Statistics:\nProduct Name: %s\nStore Name: %s\nPrice: %.2f", this.productName, this.storeName, this.price);
+    public static String listingPagetoString() {
+        return String.format("Product Statistics:\nProduct Name: %s\nStore Name: %s\nPrice: %.2f", productName, storeName, price);
     }
 
 }
