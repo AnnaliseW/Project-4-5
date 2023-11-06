@@ -11,7 +11,6 @@ public class Seller extends User {
     // sales could include... products sold, customer name(occurs when bought added), revenue added
 
 
-
     public Seller(String productName, String storeName, String descriptionOfProduct,
                   int quantityAvailable, double price, double revenue,
                   ArrayList<String> sales){
@@ -53,19 +52,40 @@ public class Seller extends User {
     }
 
     public static void addProduct(Product addedProduct) {
-        Product.getProductsArrayList().add(addedProduct);
+        itemsSellingBySeller.add(addedProduct);
+        //Product.getProductsArrayList().add(addedProduct);
     }
 
     public static void removeProduct(Product product) {
+
+        for (int i = 0; i < itemsSellingBySeller.size(); i++) {
+            if (itemsSellingBySeller.get(i).equals(product)) {
+                itemsSellingBySeller.remove(i);
+            }
+        }
+
+        /*
         for (int i = 0; i < Product.getProductsArrayList().size(); i++) {
             if (Product.getProductsArrayList().get(i).equals(product)) {
                 Product.getProductsArrayList().remove(i);
             }
         }
+         */
     }
 
     public static void modifyProduct(Product product, String newProductName, String newStoreName,
-                              String newDescriptionOfProduct, int newQuantityAvailable, double newPrice) {
+                                     String newDescriptionOfProduct, int newQuantityAvailable, double newPrice) {
+        for (int i = 0; i < itemsSellingBySeller.size(); i++) {
+            if (itemsSellingBySeller.get(i).equals(product)) {
+                itemsSellingBySeller.get(i).setProductName(newProductName);
+                itemsSellingBySeller.get(i).setStoreName(newStoreName);
+                itemsSellingBySeller.get(i).setDescriptionOfProduct(newDescriptionOfProduct);
+                itemsSellingBySeller.get(i).setQuantityAvailable(newQuantityAvailable);
+                itemsSellingBySeller.get(i).setPrice(newPrice);
+            }
+        }
+
+        /*
         for (int i = 0; i < Product.getProductsArrayList().size(); i++) {
             if (Product.getProductsArrayList().get(i).equals(product)) {
                 Product.getProductsArrayList().get(i).setProductName(newProductName);
@@ -75,6 +95,7 @@ public class Seller extends User {
                 Product.getProductsArrayList().get(i).setPrice(newPrice);
             }
         }
+         */
     }
 
     public static double calculateRevenue(int quantitySold, double price) {
@@ -83,14 +104,5 @@ public class Seller extends User {
     }
 
     /// create page to see sales + customer information and revenues from the sale.
-
-
-
-
-
-
-
-
-
 
 }
