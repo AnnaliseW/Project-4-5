@@ -1,31 +1,38 @@
 import java.util.ArrayList;
-public class Customer extends Product {
+public class Customer extends User {
 
-    public ArrayList<Product> searchForProduct(String nameOfProduct, String nameOfStore, String description) {
+    public Customer(String name, String password, String username) {
+        super(name, password, username);
+    }
+
+    public static ArrayList<Product> searchForProduct(String nameOfProduct, String nameOfStore, String description) {
         ArrayList<Product> searchedProducts = new ArrayList<>();
-        Product similarProduct = new Product();
-        for (int i = 0; i < getProductsArrayList().size(); i++) {
-            if (getProductsArrayList().get(i).getProductName().toLowerCase().contains(nameOfProduct.toLowerCase())) {
-                similarProduct = getProductsArrayList().get(i);
+        Product similarProduct;
+        for (int i = 0; i < Product.getProductsArrayList().size(); i++) {
+            if (Product.getProductsArrayList().get(i).getProductName().toLowerCase().contains(nameOfProduct.toLowerCase())) {
+                similarProduct = Product.getProductsArrayList().get(i);
                 searchedProducts.add(similarProduct);
-            } else if (getProductsArrayList().get(i).getStoreName().toLowerCase().contains(nameOfStore.toLowerCase())) {
-                similarProduct = getProductsArrayList().get(i);
+            } else if (Product.getProductsArrayList().get(i).getStoreName().toLowerCase().contains(nameOfStore.toLowerCase())) {
+                similarProduct = Product.getProductsArrayList().get(i);
                 searchedProducts.add(similarProduct);
-            } else if (getProductsArrayList().get(i).getDescriptionOfProduct().toLowerCase().contains(description.toLowerCase())) {
-                similarProduct = getProductsArrayList().get(i);
+            } else if (Product.getProductsArrayList().get(i).getDescriptionOfProduct().toLowerCase().contains(description.toLowerCase())) {
+                similarProduct = Product.getProductsArrayList().get(i);
                 searchedProducts.add(similarProduct);
             }
         }
         return searchedProducts;
     }
-
-       // implement more so it contains a toString for customer viewing
+    // implement more so it contains a toString for customer viewing
     // being able to click on the product back in main market
 
-    public void purchaseProduct(Product product, int quantityPurchased) {
-        for (int i = 0; i < getProductsArrayList().size(); i++) {
-            if (getProductsArrayList().get(i).equals(product)) {
-                getProductsArrayList().get(i).setQuantityAvailable(getQuantityAvailable() - quantityPurchased);
+    public static void purchaseProduct(Product product, int quantityPurchased) {
+        for (int i = 0; i < Product.getProductsArrayList().size(); i++) {
+            if (Product.getProductsArrayList().get(i).equals(product)) {
+                Product.getProductsArrayList().get(i).setQuantityAvailable(Product.getQuantityAvailable() - quantityPurchased);
+                Product.getProductsArrayList().get(i).setQuantitySold(quantityPurchased);
+                Seller.getItemsSold().add(product);
+                // add to sales in seller
+
 
             }
         }
