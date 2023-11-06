@@ -1,10 +1,5 @@
-
 import java.util.ArrayList;
 public class Customer extends User {
-
-    private static String name;
-    private static String password;
-    private static String username;
 
     public Customer(String name, String password, String username) {
         super(name, password, username);
@@ -35,9 +30,10 @@ public class Customer extends User {
             if (Product.getProductsArrayList().get(i).equals(product)) {
                 Product.getProductsArrayList().get(i).setQuantityAvailable(Product.getQuantityAvailable() - quantityPurchased);
                 Product.getProductsArrayList().get(i).setQuantitySold(quantityPurchased);
-                Seller.getItemsSold().add(new SoldProduct(product.getProductName(), product.getStoreName(), product.getDescriptionOfProduct()
-                , product.getQuantityAvailable(), product.getPrice(), new Customer(name, password, username)));
+                Seller.getItemsSold().add(product);
                 // add to sales in seller
+
+
             }
         }
     }
