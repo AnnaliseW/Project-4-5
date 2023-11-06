@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-//MOST METHODS AND OBJECT CALLS HAVE NOT BEEN CREATED
+//TODO: MOST METHODS AND OBJECT CALLS HAVE NOT BEEN CREATED
 
 public class Market extends Product {
     public static boolean started = true;
     public static boolean marketPlace = true;
 
-    public static ArrayList<Product> productsOnMarket;
+        public static ArrayList<Product> productsOnMarket;
 
 
     public Market(String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price) {
@@ -50,12 +50,12 @@ public class Market extends Product {
         int sellerOrBuyer = s.nextInt();
         s.nextLine();
 
-        if (sellerOrBuyer == 1) {
-            // Seller seller = new Seller(); ?
+        if (sellerOrBuyer == 1) {       //seller view
+            //TODO: Seller seller = new Seller(); ?
             // seller view
             //have to implement many methods
 
-            // will eventually have to loop through the program?
+            //TODO: will eventually have to loop through the program?
             // But for now, allows the seller to make multiple changes
             //  until they choose to exit
             boolean keepGoing = true;
@@ -124,7 +124,7 @@ public class Market extends Product {
                     productsOnMarket.set(productsOnMarket.indexOf(Seller.getItemsSellingBySeller().get(indexOfChange)), oneToModify);
 
 
-                    //still need to code for array list of selling... occurs when added
+                    //TODO:still need to code for array list of selling... occurs when added
                     /// display items being sold from user and take it
                     // implementing and reading from list
                 } else if (sellerChoice == 3) {
@@ -136,12 +136,13 @@ public class Market extends Product {
                     int indexOfChange = s.nextInt();
                     s.nextLine();
 
-                    Product removedProduct = Seller.getItemsSellingBySeller().get(indexOfChange)
+                    Product removedProduct = Seller.getItemsSellingBySeller().get(indexOfChange);
                     Seller.removeProduct(Seller.getItemsSellingBySeller().get(indexOfChange));
 
                     productsOnMarket.remove(removedProduct);
 
                 } else if (sellerChoice == 4) {
+                    //TODO:
                     /// dependent on figuring out isolating accounts for user and seller...
                     // statistics when buying
                 } else if (sellerChoice == 5) {
@@ -151,22 +152,18 @@ public class Market extends Product {
 
         }
 
-
-        //account creation and login
-
-        else if (sellerOrBuyer == 2) {
-            // buyer view
+        else if (sellerOrBuyer == 2) {             // buyer view
             while (marketPlace) {
                 System.out.println("Welcome to the Marketplace!");
                 System.out.println("Available products");
                 System.out.println("-------------------");
 
-                if (productsArrayList == null) {
+                if (productsOnMarket == null) {
                     System.out.println("No products currently being sold!");
                 } else {
 
-                    for (int i = 1; i <= productsArrayList.size(); i++) {
-                        System.out.println(i + " " + productsArrayList.get(i).listingPagetoString());
+                    for (int i = 1; i <= productsOnMarket.size(); i++) {
+                        System.out.println(i + " " + productsOnMarket.get(i).listingPagetoString());
                         System.out.println("-------------------");
                     }
 
@@ -175,7 +172,7 @@ public class Market extends Product {
                     int productNumber = s.nextInt();
                     s.nextLine();
 
-                    productsArrayList.get(productNumber - 1).statisticsToString();
+                    productsOnMarket.get(productNumber - 1).statisticsToString();
                     System.out.println("Would you like to purchase this item? [1] yes, [2] no");
                     int purchaseResponse = s.nextInt();
                     s.nextLine();
@@ -183,13 +180,12 @@ public class Market extends Product {
                         System.out.println("How many items would you like to purchase");
                         int amountPurchasing = s.nextInt();
                         s.nextLine();
-                        Customer.purchaseProduct(productsArrayList.get(productNumber - 1), amountPurchasing);
+                        Customer.purchaseProduct(productsOnMarket.get(productNumber - 1), amountPurchasing);
+                        //TODO: need to modify productsOnMarket
 
                         // later have to change when implementing shopping cart...
 
-
                         //String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price
-
 
                     } else if (purchaseResponse == 2) {
                         System.out.println("Feel free to keep looking! Press [1] to exit");
@@ -200,16 +196,11 @@ public class Market extends Product {
                         }
                     }
 
-
                 }
             }
 
         }
 
-
-
-
     }
-
 
 }
