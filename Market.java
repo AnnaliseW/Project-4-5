@@ -10,8 +10,7 @@ public class Market extends Product {
     public Market(String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price) {
         super(productName, storeName, descriptionOfProduct, quantityAvailable, price);
     }
-
-
+    
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
 
@@ -53,75 +52,83 @@ public class Market extends Product {
             // seller view
             //have to implement many methods
 
-            System.out.println("[1] Add product to sell\n[2] Edit product\n[3] Delete Product\n[4] View Sales For Store");
-            int sellerChoice = s.nextInt();
-            s.nextLine();
-            if (sellerChoice == 1) {
-                //String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price
-                System.out.println("Enter name of Product");
-                String productName = s.nextLine();
-
-                System.out.println("Enter Store Name");
-                String storeName = s.nextLine();
-
-                System.out.println("Enter description for Product");
-                String description = s.nextLine();
-
-                System.out.println("Enter quantity selling");
-                int quantity = s.nextInt();
+            // will eventually have to loop through the program?
+            // But for now, allows the seller to make multiple changes
+            //  until they choose to exit
+            boolean keepGoing = true;
+            while (keepGoing) {
+                System.out.println("[1] Add product to sell\n[2] Edit product\n");
+                System.out.println("[3] Delete Product\n[4] View Sales For Store\n[5] Quit");
+                int sellerChoice = s.nextInt();
                 s.nextLine();
+                if (sellerChoice == 1) {
+                    //String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price
+                    System.out.println("Enter name of Product");
+                    String productName = s.nextLine();
 
-                System.out.println("Enter price of product");
-                double price = s.nextDouble();
-                s.nextLine();
+                    System.out.println("Enter Store Name");
+                    String storeName = s.nextLine();
 
-                Product newProductAdded = new Product(productName, storeName, description, quantity, price);
-                Seller.addProduct(newProductAdded);
-                Seller.getItemsSellingBySeller().add(newProductAdded);
+                    System.out.println("Enter description for Product");
+                    String description = s.nextLine();
+
+                    System.out.println("Enter quantity selling");
+                    int quantity = s.nextInt();
+                    s.nextLine();
+
+                    System.out.println("Enter price of product");
+                    double price = s.nextDouble();
+                    s.nextLine();
+
+                    Product newProductAdded = new Product(productName, storeName, description, quantity, price);
+                    Seller.addProduct(newProductAdded);
+                    Seller.getItemsSellingBySeller().add(newProductAdded);
 
 
-            } else if (sellerChoice == 2) {
-                // array list of items that are selling of specific user
+                } else if (sellerChoice == 2) {
+                    // array list of items that are selling of specific user
 
-                for (int i =1; i <= Seller.getItemsSellingBySeller().size(); i++) {
-                    System.out.println(i + " " + Seller.getItemsSellingBySeller().get(i).listingPagetoString());
+                    for (int i = 1; i <= Seller.getItemsSellingBySeller().size(); i++) {
+                        System.out.println(i + " " + Seller.getItemsSellingBySeller().get(i).listingPagetoString());
+                    }
+                    System.out.println("Choose product index you want to edit");
+                    int indexOfChange = s.nextInt();
+                    s.nextLine();
+
+                    System.out.println("What is the new name?");
+                    String newName = s.nextLine();
+                    System.out.println("What is the new store name?");
+                    String newStoreName = s.nextLine();
+                    System.out.println("What is the new description");
+                    String newDescription = s.nextLine();
+                    System.out.println("What is the new quantity?");
+                    int newQuantity = s.nextInt();
+                    s.nextLine();
+                    System.out.println("What is the new price?");
+                    double newPrice = s.nextDouble();
+                    s.nextLine();
+                    Seller.modifyProduct(Seller.getItemsSellingBySeller().get(indexOfChange), newName, newStoreName, newDescription, newQuantity, newPrice);
+
+                    //still need to code for array list of selling... occurs when added
+                    /// display items being sold from user and take it
+                    // implementing and reading from list
+                } else if (sellerChoice == 3) {
+
+                    for (int i = 1; i <= Seller.getItemsSellingBySeller().size(); i++) {
+                        System.out.println(i + " " + Seller.getItemsSellingBySeller().get(i).listingPagetoString());
+                    }
+                    System.out.println("Choose product index you want to remove");
+                    int indexOfChange = s.nextInt();
+                    s.nextLine();
+                    Seller.removeProduct(Seller.getItemsSellingBySeller().get(indexOfChange));
+
+                } else if (sellerChoice == 4) {
+                    /// dependent on figuring out isolating accounts for user and seller...
+                    // statistics when buying
+                } else if (sellerChoice == 5) {
+                    break;
                 }
-                System.out.println("Choose product index you want to edit");
-                int indexOfChange = s.nextInt();
-                s.nextLine();
-
-                System.out.println("What is the new name?");
-                String newName = s.nextLine();
-                System.out.println("What is the new store name?");
-                String newStoreName = s.nextLine();
-                System.out.println("What is the new description");
-                String newDescription = s.nextLine();
-                System.out.println("What is the new quantity?");
-                int newQuantity = s.nextInt();
-                s.nextLine();
-                System.out.println("What is the new price?");
-                double newPrice = s.nextDouble();
-                s.nextLine();
-                Seller.modifyProduct(Seller.getItemsSellingBySeller().get(indexOfChange), newName, newStoreName, newDescription, newQuantity, newPrice);
-
-                //still need to code for array list of selling... occurs when added
-                /// display items being sold from user and take it
-                // implementing and reading from list
-            } else if (sellerChoice == 3) {
-
-                for (int i =1; i <= Seller.getItemsSellingBySeller().size(); i++) {
-                    System.out.println(i + " " + Seller.getItemsSellingBySeller().get(i).listingPagetoString());
-                }
-                System.out.println("Choose product index you want to remove");
-                int indexOfChange = s.nextInt();
-                s.nextLine();
-                Seller.removeProduct(Seller.getItemsSellingBySeller().get(indexOfChange));
-
-            } else if (sellerChoice == 4) {
-                /// dependent on figuring out isolating accounts for user and seller...
-                // statistics when buying
             }
-
 
         }
 
@@ -180,6 +187,10 @@ public class Market extends Product {
             }
 
         }
+
+
+
+
     }
 
 
