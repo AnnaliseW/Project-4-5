@@ -1,0 +1,3 @@
+Justin,jtimb123@purdue.edu,1234,false
+Aviana,franco28@purdue.edu,123aviana,true
+Jake,jake@gmail.com,12345,false
