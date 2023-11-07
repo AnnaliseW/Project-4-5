@@ -9,58 +9,58 @@ public class User {
 
     public Customer customer;
 
-    public ArrayList<Product> itemsBought;
+      private ArrayList<Product> itemsSoldBySeller = new ArrayList<>();
+
+    private ArrayList<Product> shoppingCart = new ArrayList<>();
 
 
 
-    public User(String name, String password, String username) {
+  public User(String name, String email, String password, boolean seller,
+                ArrayList<Product> itemsSoldBySeller, ArrayList<Product> shoppingCart) {
         this.name = name;
+        this.email = email;
         this.password = password;
-        this.username = username;
-
+        this.seller = seller;
+        this.itemsSoldBySeller = itemsSoldBySeller;
+        this.shoppingCart = shoppingCart;
     }
-
-    public User(String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price) {
+    // Constructor without itemsSoldBySeller (used for loading users from file)
+    public User(String name, String email, String password, boolean seller) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.seller = seller;
+        // itemsSoldBySeller is not initialized here; it will be populated when needed
     }
 
     public String getName() {
         return name;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public String getPassword() {
         return password;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public Seller getSeller() {
+    public boolean isSeller() {
         return seller;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public ArrayList<Product> getItemsSoldBySeller() {
+        return itemsSoldBySeller;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void addItemsSoldBySeller(Product product) {
+        itemsSoldBySeller.add(product);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+
+    public ArrayList<Product> getShoppingCart() {
+        return shoppingCart;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 
 }
