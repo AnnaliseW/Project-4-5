@@ -1,37 +1,17 @@
-import java.util.ArrayList;
-
 public class User {
     private String name;
+    private String email;
     private String password;
-    private String username;
+    private boolean seller;
 
-    public Seller seller;
-
-    public Customer customer;
-
-      private ArrayList<Product> itemsSoldBySeller = new ArrayList<>();
-
-    private ArrayList<Product> shoppingCart = new ArrayList<>();
-
-
-
-  public User(String name, String email, String password, boolean seller,
-                ArrayList<Product> itemsSoldBySeller, ArrayList<Product> shoppingCart) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.seller = seller;
-        this.itemsSoldBySeller = itemsSoldBySeller;
-        this.shoppingCart = shoppingCart;
-    }
-    // Constructor without itemsSoldBySeller (used for loading users from file)
     public User(String name, String email, String password, boolean seller) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.seller = seller;
-        // itemsSoldBySeller is not initialized here; it will be populated when needed
     }
+    // Constructor without itemsSoldBySeller (used for loading users from file)
+
 
     public String getName() {
         return name;
@@ -49,18 +29,19 @@ public class User {
         return seller;
     }
 
-    public ArrayList<Product> getItemsSoldBySeller() {
-        return itemsSoldBySeller;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void addItemsSoldBySeller(Product product) {
-        itemsSoldBySeller.add(product);
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-
-    public ArrayList<Product> getShoppingCart() {
-        return shoppingCart;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-
+    public void setSeller(boolean seller) {
+        this.seller = seller;
+    }
 }
