@@ -30,10 +30,9 @@ public class Customer extends User {
             if (Product.getProductsArrayList().get(i).equals(product)) {
                 Product.getProductsArrayList().get(i).setQuantityAvailable(Product.getQuantityAvailable() - quantityPurchased);
                 Product.getProductsArrayList().get(i).setQuantitySold(quantityPurchased);
-                Seller.getItemsSold().add(product);
+                Seller.getItemsSold().add(new SoldProduct(product.getProductName(), product.getStoreName(), product.getDescriptionOfProduct()
+                , product.getQuantityAvailable(), product.getPrice(), new Customer(name, password, username)));
                 // add to sales in seller
-
-
             }
         }
     }
