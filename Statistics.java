@@ -95,7 +95,7 @@ public class Statistics {
             //  int countItems = 0
             //  loop through all items
             //      if from that store, countItems++;
-                purchased[i] = new String[countItems];
+            purchased[i] = new String[countItems];
             //  go back through all items
             //      if from store, add it to purchased[i]
 
