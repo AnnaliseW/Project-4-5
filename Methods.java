@@ -2,6 +2,24 @@ import java.util.ArrayList;
 
 public class Methods {
 
+
+
+    public static ArrayList<Product> productsOnMarket;
+
+    public static ArrayList<Product> getProductsOnMarket() {
+        return productsOnMarket;
+    }
+
+    public static void addProductsOnMarket(Product product) {
+        productsOnMarket.add(product);
+    }
+
+    public static void setProductsOnMarket(ArrayList<Product> productsOnMarket) {
+        Methods.productsOnMarket = productsOnMarket;
+    }
+
+    
+
     // this method searches for a product by what they input
 
     public ArrayList<Product> searchForProduct(String nameOfProduct, String nameOfStore, String description) {
