@@ -1,0 +1,7 @@
+userName,email,password,true(seller);seller list(productName1, storeName1, description1, quantityavailable1, price1, quantitySold1;productName2, storeName2, description2, quantityavailable2, price2, quantitySold2)
+userName,email,password,false(customer);shopping cart(productName1, storeName1, description1, quantityavailable1, price1, quantitySold1;productName2, storeName2, description2, quantityavailable2, price2, quantitySold2)
+
+
+Alice,AliceEmail@gmail.com,false;shopping cart(apple, Applestore, yummy apple, 3, 5, 6; bannana, banastore, good banan, 7, 2, 3)
+Bob,BobEmail@gmail.com,false;shopping cart()
+Charlie,charlieEmail@gmail.com,true;seller list(corn, cornStore, good corn, 2, 1, 1; dragonfruit, fruitStore, exotic fruit, 24, 2, 7)
