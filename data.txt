@@ -1,0 +1,5 @@
+wang,wang1234,1234,true;
+ji,jo1234,1234,false;
+taylor,taylor1234,1234,true;productName,storeName,description,50,1.00
+swamy,swamy1234,1234,true;
+aviana,aviana1234,1234,false;
