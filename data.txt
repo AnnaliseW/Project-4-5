@@ -1,4 +1,4 @@
-wang,wang1234,1234,true;
+wang,wang1234,1234,true;eraser,purdue,it is eraser,50,2.0@@pencil,purdue,it is pencil,53,2.44@@pen,purdue,it is pen,53,4.34@@
 ji,jo1234,1234,false;
 taylor,taylor1234,1234,true;productName,storeName,description,50,1.00
 swamy,swamy1234,1234,true;
