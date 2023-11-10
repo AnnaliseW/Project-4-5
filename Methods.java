@@ -1,4 +1,6 @@
+import java.io.*;
 import java.util.ArrayList;
+
 
 public class Methods {
 
@@ -10,11 +12,9 @@ public class Methods {
     }
 
 
-
     public void setProductsOnMarket(ArrayList<Product> productsOnMarket) {
         this.productsOnMarket = productsOnMarket;
     }
-
 
 
     // this method searches for a product by what they input
@@ -51,4 +51,59 @@ public class Methods {
             }
         }
     }
+
+    
+    ///method to print and re-update product arrray lists (for sales or shopping cart)
+
+    public void saveArrayListToFile(ArrayList<Product> arrayList, User user) {
+        File dataFile = new File("data.txt");
+        //array list to reprint the file
+        ArrayList<String> updatedContent = new ArrayList<>();
+        String firstPart = user.getName() + "," + user.getEmail() + "," + user.getPassword() + "," +
+                user.isSeller() + ";";
+
+        ArrayList<String> allProducts = new ArrayList<>();
+
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            String products;
+            for (int i = 0; i < arrayList.size(); i++) {
+                products = arrayList.get(i).getProductName() + "," + arrayList.get(i).getStoreName() + "," +
+                        arrayList.get(i).getDescriptionOfProduct() + "," + arrayList.get(i).getQuantityAvailable() + "," +
+                        arrayList.get(i).getPrice() + "@@";
+                allProducts.add(products);
+            }
+
+            while ((line = bfr.readLine()) != null) {
+                if (!line.contains(user.getEmail())) {
+                    updatedContent.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        // Update the line with new information
+
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile)));
+            pw.print(firstPart);
+            for (int i = 0; i < allProducts.size(); i++) {
+                pw.print(allProducts.get(i));
+            }
+            pw.println();
+            // Append the modified lines (including the updated line)
+            for (int i = 0; i < updatedContent.size(); i++) {
+                pw.println(updatedContent.get(i));
+            }
+            pw.flush();
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
