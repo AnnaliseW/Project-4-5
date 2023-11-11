@@ -5,36 +5,38 @@ import java.util.ArrayList;
 public class Methods {
 
 
-    public ArrayList<Product> productsOnMarket = new ArrayList<>();
+    public static ArrayList<Product> productsOnMarket = new ArrayList<>();
 
-    public ArrayList<Product> getProductsOnMarket() {
+    public static ArrayList<Product> getProductsOnMarket() {
         return productsOnMarket;
     }
 
 
-    public void setProductsOnMarket(ArrayList<Product> productsOnMarket) {
-        this.productsOnMarket = productsOnMarket;
+    public static void setProductsOnMarket(ArrayList<Product> productsOnMarket) {
+        Methods.productsOnMarket = productsOnMarket;
     }
 
 
     // this method searches for a product by what they input
 
-    public ArrayList<Product> searchForProduct(String nameOfProduct, String nameOfStore, String description) {
+    public ArrayList<Product> searchForProduct(String searchWord) {
         ArrayList<Product> searchedProducts = new ArrayList<>();
         Product similarProduct;
         // checking if it matches anything from the product name
         for (int i = 0; i < productsOnMarket.size(); i++) {
-            if (productsOnMarket.get(i).getProductName().toLowerCase().contains(nameOfProduct.toLowerCase())) {
+            if (productsOnMarket.get(i).getProductName().toLowerCase().contains(searchWord.toLowerCase())) {
                 similarProduct = productsOnMarket.get(i);
                 searchedProducts.add(similarProduct);
 
                 // checking if it matches anything from the store name
-            } else if (productsOnMarket.get(i).getStoreName().toLowerCase().contains(nameOfStore.toLowerCase())) {
+            }
+            else if (productsOnMarket.get(i).getStoreName().toLowerCase().contains(searchWord.toLowerCase())) {
                 similarProduct = productsOnMarket.get(i);
                 searchedProducts.add(similarProduct);
 
                 // checking if it matches anything from the description
-            } else if (productsOnMarket.get(i).getDescriptionOfProduct().toLowerCase().contains(description.toLowerCase())) {
+            }
+            else if (productsOnMarket.get(i).getDescriptionOfProduct().toLowerCase().contains(searchWord.toLowerCase())) {
                 similarProduct = productsOnMarket.get(i);
                 searchedProducts.add(similarProduct);
             }
@@ -52,7 +54,7 @@ public class Methods {
         }
     }
 
-    
+
     ///method to print and re-update product arrray lists (for sales or shopping cart)
 
     public void saveArrayListToFile(ArrayList<Product> arrayList, User user) {
@@ -98,6 +100,38 @@ public class Methods {
             for (int i = 0; i < updatedContent.size(); i++) {
                 pw.println(updatedContent.get(i));
             }
+            pw.flush();
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void saveProductArrayList(ArrayList<Product> arrayList) {
+        File dataFile = new File("productArrayList.txt");
+        //array list to reprint the file
+
+        ArrayList<String> allProducts = new ArrayList<>();
+        String products;
+
+
+            for (int i = 0; i < arrayList.size(); i++) {
+                products = arrayList.get(i).getProductName() + "," + arrayList.get(i).getStoreName() + "," +
+                        arrayList.get(i).getDescriptionOfProduct() + "," + arrayList.get(i).getQuantityAvailable() + "," +
+                        arrayList.get(i).getPrice() + "@@";
+                allProducts.add(products);
+            }
+
+
+        // Update the line with new information
+
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile)));
+            for (int i = 0; i < allProducts.size(); i++) {
+                pw.print(allProducts.get(i));
+            }
+
             pw.flush();
             pw.close();
         } catch (IOException e) {
