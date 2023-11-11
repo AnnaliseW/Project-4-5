@@ -8,6 +8,7 @@ public class Statistics {
     public static ArrayList<Product> productsPurchased;
     User user;
 
+    //NEED TO CREATE A STATISTICS OBJECT FIRST
     public Statistics(ArrayList<Product> productsPurchased, User user) {
         this.productsPurchased = productsPurchased;
         this.user = user;
