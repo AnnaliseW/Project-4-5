@@ -613,6 +613,25 @@ public class EditedMarket {
                                     } else if (productNumber == -1) { // EXITING HERE, ADD IMPLEMENTS
                                         System.out.println("Logging out...");
                                         exitMarketPlace = true;
+                                        PrintWriter pw = null;
+                                    try {
+                                        pw = new PrintWriter("data.txt");
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    }
+                                    pw.write("shopping cart(");
+                                    if(shoppingCart != null) {
+                                        for (int i = 0; i < shoppingCart.size(); i++) {
+                                            pw.write(shoppingCart.get(i).getProductName() + ", " + shoppingCart.get(i).getStoreName()
+                                                    + ", " + shoppingCart.get(i).getDescriptionOfProduct() + ", " + shoppingCart.get(i).getQuantityAvailable()
+                                                    + ", " + shoppingCart.get(i).getPrice() + ", " + shoppingCart.get(i).getQuantitySold());
+                                            if(i != shoppingCart.size() - 1){
+                                                pw.write(";");
+                                            }
+                                        }
+                                    }
+                                    pw.write(")");
+                                    pw.close();
                                     } else {
 
                                         method.productsOnMarket.get(productNumber - 1).statisticsToString();
