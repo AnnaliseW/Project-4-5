@@ -626,7 +626,7 @@ public class EditedMarket {
                                                     + ", " + shoppingCart.get(i).getDescriptionOfProduct() + ", " + shoppingCart.get(i).getQuantityAvailable()
                                                     + ", " + shoppingCart.get(i).getPrice() + ", " + shoppingCart.get(i).getQuantitySold());
                                             if(i != shoppingCart.size() - 1){
-                                                pw.write(";");
+                                                pw.write("@@");
                                             }
                                         }
                                     }
