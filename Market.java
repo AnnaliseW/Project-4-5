@@ -10,7 +10,50 @@ public class Market {
     // check for open buffers and print writers?
     // MUST IMPLEMENT BEING ABLE TO EXIT WHENEVER
     //MUST CHECK: products are NOT BEING SAVED CURRENTLY when user logs out
+    
+// Checks if the user entered a valid double value
+    private static double getValidDoubleInput(Scanner scanner, String prompt) {
+        double inputValue = 0;
+        boolean validInput = false;
 
+        while (!validInput) {
+            try {
+                System.out.print(prompt);
+                inputValue = scanner.nextDouble();
+                scanner.nextLine();
+                validInput = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Clear the invalid input from the buffer
+            }
+        }
+
+        return inputValue;
+    }
+
+    // Checks if the user entered a valid int value
+    private static int getValidIntInput(Scanner scanner, String prompt) {
+        int inputValue = 0;
+        boolean validInput = false;
+
+        while (!validInput) {
+            try {
+                System.out.print(prompt);
+                inputValue = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+                if (inputValue >= 0) {
+                    validInput = true;
+                } else {
+                    System.out.println("Please enter a non-negative integer.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.nextLine(); // Clear the invalid input from the buffer
+            }
+        }
+
+        return inputValue;
+    }
 
     public static void main(String[] args) {
 
@@ -457,11 +500,11 @@ public class Market {
                                 String description = s.nextLine();
 
                                 System.out.println("Enter quantity selling");
-                                int quantity = s.nextInt();
+                                int quantity = getValidIntInput(s, "Enter quantity selling: "); // Checks for int value
                                 s.nextLine();
 
                                 System.out.println("Enter price of product");
-                                double price = s.nextDouble();
+                                double price = getValidDoubleInput(s, "Enter price of product: "); // Checks for double value
                                 s.nextLine();
 
                                 Product newProductAdded = new Product(productName, storeName, description, quantity, price);
