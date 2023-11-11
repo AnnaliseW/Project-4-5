@@ -9,6 +9,7 @@ public class Files {
     public boolean seller;
     public boolean buyer;
 
+    //NEED TO CREATE A FILE OBJECT FIRST
     public Files(String infoFileName, boolean seller, boolean buyer) {
         this.infoFileName = infoFileName;
         this.seller = seller;
