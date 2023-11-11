@@ -73,7 +73,7 @@ public class EditedMarket {
 
             while (mainPage) {
                 //inputting welcome log in
-                System.out.println("Welcome to the School Supplies Marketplace");
+                System.out.println("Welcome to Triple S: School Supplies Store!"); // Changed the name of the store
                 System.out.println("1. Create Account");
                 System.out.println("2. Sign In");
                 System.out.println("3. Exit");
@@ -555,7 +555,7 @@ public class EditedMarket {
                             while (!exitMarketPlace) {
 
 
-                                System.out.println("Welcome to the Marketplace!");
+                                System.out.println("Welcome to the School Supplies Store!"); // Changed the name of the store
                                 System.out.println("Available products");
                                 System.out.println("-------------------\n");
 
@@ -563,7 +563,7 @@ public class EditedMarket {
                                 boolean pressOne = false;
 
                                 if (method.productsOnMarket.isEmpty()) {
-                                    System.out.println("No products are currently being sold on the market!");
+                                    System.out.println("No products are currently being sold at this store!"); // Changed wording
                                     while (pressOne == false) {
                                         System.out.println("Enter [1] to go back to main page!");
                                         int exitToMain = s.nextInt();
@@ -701,7 +701,7 @@ public class EditedMarket {
 
                     // EXITING HERE, ADD IMPLEMENTS
                 } else if (selectionToSignIn == 3) {
-                    System.out.println("Thank you for visiting School Supplies Marketplace!");
+                    System.out.println("Thank you for visiting Triple S: School Supplies Store!"); // Changed the name of the store
                     mainPage = false;
                     
                 } else {
