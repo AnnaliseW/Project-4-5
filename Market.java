@@ -11,49 +11,7 @@ public class Market {
     // MUST IMPLEMENT BEING ABLE TO EXIT WHENEVER
     //MUST CHECK: products are NOT BEING SAVED CURRENTLY when user logs out
 
-private static double getValidDoubleInput(Scanner scanner, String prompt) {
-        double inputValue = 0;
-        boolean validInput = false;
 
-        while (!validInput) {
-            try {
-                System.out.print(prompt);
-                inputValue = scanner.nextDouble();
-                scanner.nextLine();
-                validInput = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine(); // Clear the invalid input from the buffer
-            }
-        }
-
-        return inputValue;
-    }
-
-    // Checks if the user entered a valid int value
-    private static int getValidIntInput(Scanner scanner, String prompt) {
-        int inputValue = 0;
-        boolean validInput = false;
-
-        while (!validInput) {
-            try {
-                System.out.print(prompt);
-                inputValue = scanner.nextInt();
-                scanner.nextLine(); // Consume the newline character
-                if (inputValue >= 0) {
-                    validInput = true;
-                } else {
-                    System.out.println("Please enter a non-negative integer.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid integer.");
-                scanner.nextLine(); // Clear the invalid input from the buffer
-            }
-        }
-
-        return inputValue;
-    }
-    
     public static void main(String[] args) {
 
 
@@ -458,16 +416,16 @@ private static double getValidDoubleInput(Scanner scanner, String prompt) {
                                 String description = s.nextLine();
 
                                 System.out.println("Enter quantity selling");
-                                int quantity = getValidIntInput(s, "Enter quantity selling: ");
+                                int quantity = s.nextInt();
                                 s.nextLine();
 
                                 System.out.println("Enter price of product");
-                                double price = getValidDoubleInput(s, "Enter price of product: ");
+                                double price = s.nextDouble();
                                 s.nextLine();
 
                                 Product newProductAdded = new Product(productName, storeName, description, quantity, price);
                                 itemsSoldBySeller.add(newProductAdded);
-                                
+
                                 //pull product on market array
 
                                 //adds to product market array list
@@ -694,11 +652,17 @@ private static double getValidDoubleInput(Scanner scanner, String prompt) {
                                     System.out.println("-------------------\n");
                                 }
 
-                                System.out.println("Type in number for chosen product insights\n-------------------\nEnter [0] to search for products\nEnter [-1] to exit");
-                                ///WILL STILL HAVE TO "sort the marketplace on price or quantity available."
-                                int productNumber = s.nextInt();
-                                s.nextLine();
-
+                                int productNumber;
+                                do {
+                                    System.out.println("Type in number for chosen product insights\n-------------------\nEnter [0] to search for products" +
+                                            "\nEnter [-1] to exit");
+                                    ///WILL STILL HAVE TO "sort the marketplace on price or quantity available."
+                                    productNumber = s.nextInt();
+                                    s.nextLine();
+                                    if (productNumber - 1 > Methods.productsOnMarket.size()) {
+                                        System.out.println("Invalid input, try again");
+                                    }
+                                }while(productNumber -1 > Methods.productsOnMarket.size());
                                 if (productNumber == 0) {
                                     System.out.println("What word would you like to input to search?");
                                     String wordSearch = s.nextLine();
@@ -735,7 +699,7 @@ private static double getValidDoubleInput(Scanner scanner, String prompt) {
                                             System.out.println(searchedProducts.get(itemFromSearchChosen - 1).statisticsToString() + "\n");
                                             //asking if they would like to purchase the item asked for statistics
                                             System.out.println("Would you like to purchase this item?\n[1] yes\n[2] no\n[3] If you would like to add the item" +
-                                                    " to your shopping cart!\n[4] exit");
+                                                    " to your shopping cart!\n[4] to check shopping cart\n[5] exit");
                                             int purchaseResponse = s.nextInt();
                                             s.nextLine();
 
@@ -744,6 +708,17 @@ private static double getValidDoubleInput(Scanner scanner, String prompt) {
                                                 int amountPurchasing = s.nextInt();
                                                 s.nextLine();
 
+
+                                                if(Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable() < amountPurchasing){
+                                                    System.out.println("Could only purchase " + Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable()
+                                                            + " products");
+                                                    method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1),
+                                                            Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable());
+                                                }
+                                                else {
+                                                    method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1), amountPurchasing);
+                                                    System.out.println(Methods.productsOnMarket.get(productNumber - 1).getProductName() + " purchased! Thank you!");
+                                                }
                                                 // calls method to purchase
                                                 // in method... sets quantity sold and sets quantity available
                                                 //still has to add other statistics for following sales and receipts for customer
@@ -776,6 +751,36 @@ private static double getValidDoubleInput(Scanner scanner, String prompt) {
                                                 shoppingCart.add(searchedProducts.get(itemFromSearchChosen - 1));
                                                 System.out.println(searchedProducts.get(itemFromSearchChosen - 1).getProductName() + " added to your shopping cart!");
                                             } else if (purchaseResponse == 4) {
+                                                System.out.println("Shopping cart");
+                                                for (int i = 0; i < shoppingCart.size(); i++) {
+                                                    System.out.println("[" + (i + 1) + "] " + shoppingCart.get(i).getProductName() + ", " + shoppingCart.get(i).getStoreName()
+                                                            + ", " + shoppingCart.get(i).getDescriptionOfProduct() + ", " + shoppingCart.get(i).getPrice());
+                                                }
+                                                do {
+                                                    System.out.println("\nWould you like to remove a product? Yes[1] Exit[0]");
+                                                    removeFromCart = s.nextInt();
+                                                    s.nextLine();
+                                                    if (removeFromCart == 1) {
+                                                        do {
+                                                            System.out.println("Which product would you want to remove? [0] to cancel");
+                                                            chooseRemoval = s.nextInt();
+                                                            s.nextLine();
+                                                            if (chooseRemoval > shoppingCart.size() + 1 || chooseRemoval < 1) {
+                                                                System.out.println("Invalid input, try again");
+                                                            } else if (chooseRemoval == 0) {
+                                                                System.out.println("Exiting shopping cart");
+                                                            } else {
+                                                                System.out.println("Removed the product");
+                                                                shoppingCart.remove(chooseRemoval - 1);
+                                                            }
+                                                        } while (chooseRemoval != 0);
+                                                    } else if (removeFromCart == 0) {
+                                                    } else {
+                                                        System.out.println("Incorrect Input");
+                                                    }
+                                                } while (!(removeFromCart == 1 || removeFromCart == 0));
+
+                                            }else if (purchaseResponse == 5) {
                                                 //exits back to main page
                                                 System.out.println("Back to main page!");
                                                 //IMPLEMENT SAVING METHOD
@@ -814,6 +819,17 @@ private static double getValidDoubleInput(Scanner scanner, String prompt) {
                                         int amountPurchasing = s.nextInt();
                                         s.nextLine();
 
+                                        if(Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable() < amountPurchasing){
+                                            System.out.println("Could only purchase " + Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable()
+                                                    + " products");
+                                            method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1),
+                                                    Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable());
+                                        }
+                                        else {
+                                            method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1), amountPurchasing);
+                                            System.out.println(Methods.productsOnMarket.get(productNumber - 1).getProductName() + " purchased! Thank you!");
+                                        }
+
                                         // calls method to purchase
                                         // in method... sets quantity sold and sets quantity available
                                         //still has to add other statistics for following sales and receipts for customer
@@ -849,6 +865,37 @@ private static double getValidDoubleInput(Scanner scanner, String prompt) {
                                         //needs to save/update this when logout
 
                                     } else if (purchaseResponse == 4) {
+                                        System.out.println("Shopping cart");
+                                        for (int i = 0; i < shoppingCart.size(); i++) {
+                                            System.out.println("[" + (i + 1) + "] " + shoppingCart.get(i).getProductName() + ", " + shoppingCart.get(i).getStoreName()
+                                                    + ", " + shoppingCart.get(i).getDescriptionOfProduct() + ", " + shoppingCart.get(i).getPrice());
+                                        }
+                                        do {
+                                            System.out.println("\nWould you like to remove a product? Yes[1] Exit[0]");
+                                            removeFromCart = s.nextInt();
+                                            s.nextLine();
+                                            if (removeFromCart == 1) {
+                                                do {
+                                                    System.out.println("Which product would you want to remove? [0] to cancel");
+                                                    chooseRemoval = s.nextInt();
+                                                    s.nextLine();
+                                                    if (chooseRemoval > shoppingCart.size() + 1 || chooseRemoval < 1) {
+                                                        System.out.println("Invalid input, try again");
+                                                    } else if (chooseRemoval == 0) {
+                                                        System.out.println("Exiting shopping cart");
+                                                    } else {
+                                                        System.out.println("Removed the product");
+                                                        shoppingCart.remove(chooseRemoval - 1);
+                                                    }
+                                                } while (chooseRemoval != 0);
+                                            } else if (removeFromCart == 0) {
+                                            } else {
+                                                System.out.println("Incorrect Input");
+                                            }
+                                        } while (!(removeFromCart == 1 || removeFromCart == 0));
+
+                                    }else if (purchaseResponse == 5) {
+                                        //exits back to main page
                                         System.out.println("Back to main page!");
                                         //IMPLEMENT SAVING METHOD
 
@@ -857,6 +904,7 @@ private static double getValidDoubleInput(Scanner scanner, String prompt) {
 
                                         //save product array list
                                         method.saveProductArrayList(Methods.productsOnMarket);
+
                                     }
 
 
