@@ -81,7 +81,7 @@ public class Files {
 
     //TODO: will need to remove products from the seller's inventory after this is called
     public boolean exportProducts(ArrayList<Product> exportedProducts) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("ExportedProducts"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("ExportedProducts.txt"))) {
             for (Product product : exportedProducts) {
                 writer.write(product.toString());
                 writer.newLine();
