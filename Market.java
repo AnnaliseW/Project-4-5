@@ -245,6 +245,9 @@ public class Market {
 
                     if (sellerView) {
 
+
+                        ArrayList<Product> itemsSoldBySeller = new ArrayList<>();
+
                         //seller view for seller
 
                         // choosing options 1 -4
@@ -252,49 +255,62 @@ public class Market {
                         //boolean to check loop if not choosing 1-4
                         boolean sellerChooseCorrectInput = false;
                         //array list of PRODUCTS BEING SOLD BY SELLER
-                        ArrayList<Product> itemsSoldBySeller = new ArrayList<>();
 
 
-                        while (!sellerChooseCorrectInput) {
-
-                            System.out.println("[1] Add product to sell\n[2] Edit product\n[3] Delete Product\n[4] View Sales For Store\n[5] Exit");
-                            int sellerChoice = s.nextInt();
-                            s.nextLine();
 
 
-                            ///reproducing the array list of sales
+                        ///reproducing the array list of sales
 
-                            //boolean to check if user previously has products stored in sales
-                            boolean emptySalesArrayList = false;
-                            try {
-                                BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
-                                String line = "";
-                                ArrayList<String> allUserData = new ArrayList<>();
+                        //boolean to check if user previously has products stored in sales
+                        boolean emptySalesArrayList = false;
+                        try {
+                            BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
+                            String line = "";
+                            ArrayList<String> allUserData = new ArrayList<>();
 
 
-                                while ((line = bfr.readLine()) != null) {
-                                    allUserData.add(line);
-                                }
+                            while ((line = bfr.readLine()) != null) {
+                                allUserData.add(line);
+                            }
 
-                                itemsSoldBySeller.clear();
+                            itemsSoldBySeller.clear();
 
-                                for (int i = 0; i < allUserData.size(); i++) {
-                                    String[] oneUserData = allUserData.get(i).split(",");
-                                    //checking for email
-                                    if (oneUserData[1].equals(email)) {
-                                        //splitting sales array
-                                        String[] separatingForSalesArray = allUserData.get(i).split(";");
-                                        if (separatingForSalesArray.length == 1) {
-                                            emptySalesArrayList = true;
-                                            break;
+                            for (int i = 0; i < allUserData.size(); i++) {
+                                String[] oneUserData = allUserData.get(i).split(",");
+                                //checking for email
+                                if (oneUserData[1].equals(email)) {
+                                    //splitting sales array
+                                    String[] separatingForSalesArray = allUserData.get(i).split(";");
+                                    if (separatingForSalesArray.length == 1) {
+                                        emptySalesArrayList = true;
+                                        break;
 
-                                            // if we need to populate the array list with previous sales data
+                                        // if we need to populate the array list with previous sales data
+                                    } else {
+
+                                        if (!separatingForSalesArray[1].contains("@@")) {
+                                            //only one product in array
+
+                                            String[] separateParameters = separatingForSalesArray[1].split(",");
+                                            //order of text file: productName, storeName, description, quantityAvailable, price
+                                            String productName = separateParameters[0];
+                                            String storeName = separateParameters[1];
+                                            String description = separateParameters[2];
+                                            int quantityAvailable = Integer.parseInt(separateParameters[3]);
+                                            double price = Double.parseDouble(separateParameters[4]);
+                                            //recreate product that is currently selling
+                                            Product eachProduct = new Product(productName, storeName, description, quantityAvailable, price);
+
+                                            //adding to the items that seller currently has from data file
+                                            itemsSoldBySeller.add(eachProduct);
+
+
                                         } else {
-
-                                            if (!separatingForSalesArray[1].contains("@@")) {
-                                                //only one product in array
-
-                                                String[] separateParameters = separatingForSalesArray[1].split(",");
+                                            //splitting by PRODUCT
+                                            String[] arrayListSalesProducts = separatingForSalesArray[1].split("@@");
+                                            // separating the string text to get parameters for each product
+                                            for (int j = 0; j < arrayListSalesProducts.length; j++) {
+                                                String[] separateParameters = arrayListSalesProducts[j].split(",");
                                                 //order of text file: productName, storeName, description, quantityAvailable, price
                                                 String productName = separateParameters[0];
                                                 String storeName = separateParameters[1];
@@ -306,46 +322,96 @@ public class Market {
 
                                                 //adding to the items that seller currently has from data file
                                                 itemsSoldBySeller.add(eachProduct);
-
-
-                                            } else {
-                                                //splitting by PRODUCT
-                                                String[] arrayListSalesProducts = separatingForSalesArray[1].split("@@");
-                                                // separating the string text to get parameters for each product
-                                                for (int j = 0; j < arrayListSalesProducts.length; j++) {
-                                                    String[] separateParameters = arrayListSalesProducts[j].split(",");
-                                                    //order of text file: productName, storeName, description, quantityAvailable, price
-                                                    String productName = separateParameters[0];
-                                                    String storeName = separateParameters[1];
-                                                    String description = separateParameters[2];
-                                                    int quantityAvailable = Integer.parseInt(separateParameters[3]);
-                                                    double price = Double.parseDouble(separateParameters[4]);
-                                                    //recreate product that is currently selling
-                                                    Product eachProduct = new Product(productName, storeName, description, quantityAvailable, price);
-
-                                                    //adding to the items that seller currently has from data file
-                                                    itemsSoldBySeller.add(eachProduct);
-                                                }
                                             }
                                         }
                                     }
                                 }
-
-
-                                bfr.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
                             }
+
+
+                            bfr.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                        while (!sellerChooseCorrectInput) {
+
+
+                            System.out.println("[1] Add product to sell\n[2] Edit product\n[3] Delete Product\n[4] View Sales For Store\n[5] Exit");
+                            int sellerChoice = s.nextInt();
+                            s.nextLine();
 
 
                             //if choosing to add product
                             if (sellerChoice == 1) {
+                                //boolean for loop for question 2
+                                boolean askForStoreName = false;
+
+
                                 System.out.println("Enter name of Product");
                                 String productName = s.nextLine();
+                                String storeName = null;
+                                while (!askForStoreName) {
+                                    System.out.println("Enter Store Name");
+                                    storeName = s.nextLine();
+                                    //checking to see if store name already exists
+                                    //reads data file for every store name with user
 
-                                System.out.println("Enter Store Name");
-                                String storeName = s.nextLine();
+                                    boolean existingStoreName = false;
 
+
+                                    try {
+                                        BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
+                                        String line = "";
+                                        ArrayList<String> allUserData = new ArrayList<>();
+
+
+                                        while ((line = bfr.readLine()) != null) {
+                                            allUserData.add(line);
+                                        }
+
+                                        for (int i = 0; i < allUserData.size(); i++) {
+                                            //checking to see if they are seller
+                                            String[] checkIfSeller = allUserData.get(i).split(",");
+                                            //seller identified
+                                            if (checkIfSeller[3].startsWith("true")) {
+                                                String[] oneUserDataEachProduct = allUserData.get(i).split(";");
+
+                                                if (oneUserDataEachProduct.length == 1) {
+                                                    String[] eachFieldForProduct = oneUserDataEachProduct[0].split(",");
+                                                    if (storeName.equals(eachFieldForProduct[1])) {
+                                                        //if seller only has one product and it is the same store name
+                                                        existingStoreName = true;
+                                                        break;
+                                                    }
+                                                } else {
+                                                    for (int j = 0; j < oneUserDataEachProduct.length; j++) {
+                                                        //separating the individual products
+                                                        String[] eachProduct = oneUserDataEachProduct[j].split("@@");
+                                                        for (int k = 0; k < eachProduct.length; k++) {
+                                                            String[] eachFieldForProduct = eachProduct[k].split(",");
+                                                            if (eachFieldForProduct[1].equals(storeName)) {
+                                                                existingStoreName = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        bfr.close();
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (existingStoreName) {
+                                        System.out.println("Store name already exists! Please input different store name\n");
+                                    } else {
+                                        askForStoreName = true;
+                                    }
+                                }
                                 System.out.println("Enter description for Product");
                                 String description = s.nextLine();
 
@@ -359,10 +425,13 @@ public class Market {
 
                                 Product newProductAdded = new Product(productName, storeName, description, quantity, price);
                                 itemsSoldBySeller.add(newProductAdded);
+                                
                                 //pull product on market array
 
                                 //adds to product market array list
                                 Methods.productsOnMarket.add(newProductAdded);
+
+
 
                                 //exit out of while loop
                                 System.out.println(newProductAdded.getProductName() + " added to the market!");
@@ -452,10 +521,8 @@ public class Market {
 
 
                             } else if (sellerChoice == 4) {
-                                
-                                
-                                
-                                
+
+
                                 // implements sales method TBD
 
 
@@ -680,6 +747,17 @@ public class Market {
                                             }
                                         }
                                     }
+                                } else if (productNumber == -1) {
+                                    System.out.println("Back to main page!");
+                                    exitMarketPlace = true;
+                                    //IMPLEMENT SAVING METHOD
+
+                                    //save shopping cart
+                                    method.saveArrayListToFile(shoppingCart, userAccount);
+
+                                    //save product array list
+                                    method.saveProductArrayList(Methods.productsOnMarket);
+
                                 } else {
 
                                     System.out.println(Methods.productsOnMarket.get(productNumber - 1).statisticsToString());
@@ -741,11 +819,9 @@ public class Market {
 
 
                                 }
-
-                                ///will still have to check if inputting value that is not available (index 11 but only 8 indexes items)
-
-
                             }
+
+                            ///will still have to check if inputting value that is not available (index 11 but only 8 indexes items)
 
 
                         }
