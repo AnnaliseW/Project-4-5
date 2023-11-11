@@ -1,4 +1,7 @@
 import java.io.*;
+import java.util.ArrayList;
+
+//TODO: In market, need to prompt to enter file path
 
 public class Files {
 
@@ -15,8 +18,6 @@ public class Files {
     public String getInfoFileName() {
         return this.infoFileName;
     }
-
-    //files from main program will be loaded at beggining, updated at end, so dont need to read it again
 
     public boolean exportPurchaseHistory() throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(infoFileName));
@@ -50,15 +51,45 @@ public class Files {
         }
     }
 
-    public boolean importProducts() throws IOException {
-        //file wwill have all product details included, with one row per product
-
+    //Takes in file with each line being a product in this format:
+    //pencil,purdue,it is pencil,53,2.44
+    //String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price
+    public ArrayList<Product> importProducts(String fileName) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
+        ArrayList<Product> imports = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (String productString : lines) {
+            String[] parts = productString.split(", ");
+            String productName = parts[0];
+            String storeName = parts[1];
+            String descriptionOfProduct = parts[2];
+            int quantityAvailable = Integer.parseInt(parts[3]);
+            double price = Double.parseDouble(parts[4]);
+            Product product = new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price);
+            imports.add(product);
+        }
+        return imports;
     }
 
-    public boolean exportProducts() throws IOException {
-        //file wwill have all product details included, with one row per product
-
+    //TODO: will need to remove products from the seller's inventory after this is called
+    public boolean exportProducts(ArrayList<Product> exportedProducts) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("ExportedProducts"))) {
+            for (Product product : exportedProducts) {
+                writer.write(product.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
-
 
 }
