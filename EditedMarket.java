@@ -656,6 +656,8 @@ public class EditedMarket {
                                             shoppingCart.add(method.productsOnMarket.get(productNumber - 1));
                                             //needs to save/update this when logout
 
+                                        } else {
+                                            System.out.println("Please input 1, 2, or 3!");
                                         }
 
 
@@ -682,6 +684,9 @@ public class EditedMarket {
                 } else if (selectionToSignIn == 3) {
                     System.out.println("Thank you for visiting School Supplies Marketplace!");
                     mainPage = false;
+                    
+                } else {
+                    System.out.println("Please input 1 or 2!");
                 }
 
 
