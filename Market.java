@@ -245,7 +245,48 @@ public class Market {
 
                     if (sellerView) {
 
+                        //START OF ADDED CODE
+                        //Reads salesbystore
+                        //Creates an arraylist of SalesByStore objects that are under the logged in email
 
+                        ArrayList<SalesByStore> salesByStoresList = new ArrayList<>();
+
+                        try (BufferedReader bfr = new BufferedReader(new FileReader("salesbystore.txt"))) {
+                            String line;
+
+                            while ((line = bfr.readLine()) != null) {
+                                String[] parts = line.substring(line.indexOf('[') + 1, line.length() - 1).split(", ");
+                                String buyerName = parts[0].split("=")[1];
+                                String buyerEmail = parts[1].split("=")[1];
+                                String storeName = parts[2].split("=")[1];
+                                String productName = parts[3].split("=")[1];
+                                String sellerEmail = parts[4].split("=")[1];
+                                double productPrice = Double.parseDouble(parts[5].split("=")[1]);
+                                int quantityBought = Integer.parseInt(parts[6].split("=")[1]);
+
+                                if (sellerEmail.equals(userAccount.getEmail())) {
+                                    boolean storeFound = false;
+                                    for (SalesByStore salesByStore : salesByStoresList) {
+                                        if (salesByStore.getStoreName().equals(storeName)) {
+                                            salesByStore.addItemBought(new ItemBought(buyerName, buyerEmail, sellerEmail, storeName, productName, productPrice, quantityBought));
+                                            storeFound = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!storeFound) {
+                                        SalesByStore newSalesByStore = new SalesByStore(storeName);
+                                        newSalesByStore.addItemBought(new ItemBought(buyerName, buyerEmail, sellerEmail, storeName, productName, productPrice, quantityBought));
+                                        salesByStoresList.add(newSalesByStore);
+                                    }
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        //END OF ADDED CODE
+
+                        
                         ArrayList<Product> itemsSoldBySeller = new ArrayList<>();
 
                         //seller view for seller
@@ -729,7 +770,44 @@ public class Market {
 
                                                 // later have to change when implementing shopping cart...
 
+                                                //START OF ADDED CODE
+                                                 String buyerName = userAccount.getName();
+                                                String buyerEmail = userAccount.getEmail();
+                                                String storeName = searchedProducts.get(itemFromSearchChosen - 1).getStoreName();
+                                                String productName = searchedProducts.get(itemFromSearchChosen - 1).getProductName();
+                                                double productPrice = searchedProducts.get(itemFromSearchChosen - 1).getPrice();
+                                                int quantityBought = amountPurchasing;
 
+                                                Product product = searchedProducts.get(itemFromSearchChosen - 1);
+
+                                                String line;
+                                                String[] userData;
+
+                                                String sellerEmail = "";
+                                                try (BufferedReader bfr = new BufferedReader(new FileReader("data.txt"))) {
+                                                    while ((line = bfr.readLine()) != null) {
+                                                        userData = line.split(";");
+                                                        String[] storeInfo = userData[0].split(",");
+
+                                                        // Assuming the storeName is the second element in the storeInfo array
+                                                        if (storeInfo.length > 1 && storeInfo[1].equals(storeName)) {
+                                                            sellerEmail = storeInfo[0]; // Return the username
+                                                        }
+                                                    }
+                                                } catch (IOException e) {
+                                                    e.printStackTrace(); // Handle the exception according to your needs
+                                                }
+
+                                                ItemBought item = new ItemBought(buyerName, buyerEmail, sellerEmail, storeName, productName, productPrice, quantityBought);
+                                                try (BufferedWriter writer = new BufferedWriter(new FileWriter("salesbystore.txt"))) {
+                                                    writer.write(item.toString());
+                                                    writer.newLine();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                //END OF ADDED CODE
+
+                                                
                                                 //String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price
                                             } else if (purchaseResponse == 2) {
                                                 boolean noExit = false;
@@ -838,6 +916,47 @@ public class Market {
                                         ///IMPLEMENT: take into consideration if quantity available turns to 0 or will no longer be available
                                         //EX: 5 quantity left.. buyer wants to
 
+                                        //START OF ADDED CODE
+                                        String buyerName = userAccount.getName();
+                                        String buyerEmail = userAccount.getEmail();
+                                        String storeName = Methods.productsOnMarket.get(productNumber - 1).getStoreName();
+                                        String productName = Methods.productsOnMarket.get(productNumber - 1).getProductName();
+                                        double productPrice = Methods.productsOnMarket.get(productNumber - 1).getPrice();
+                                        int quantityBought = amountPurchasing;
+
+
+                                        Product product = Methods.productsOnMarket.get(productNumber - 1);
+
+                                        String line;
+                                        String[] userData;
+
+                                        String sellerEmail = "";
+                                        try (BufferedReader bfr = new BufferedReader(new FileReader("data.txt"))) {
+                                            while ((line = bfr.readLine()) != null) {
+                                                userData = line.split(";");
+                                                String[] storeInfo = userData[0].split(",");
+
+                                                // Assuming the storeName is the second element in the storeInfo array
+                                                if (storeInfo.length > 1 && storeInfo[1].equals(storeName)) {
+                                                    sellerEmail = storeInfo[0]; // Return the username
+                                                }
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace(); // Handle the exception according to your needs
+                                        }
+
+                                        ItemBought item = new ItemBought(buyerName, buyerEmail, sellerEmail, storeName, productName, productPrice, quantityBought);
+                                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("salesbystore.txt"))) {
+                                            writer.write(item.toString());
+                                            writer.newLine();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        
+                                        //END OF ADDED CODE
+
+
+                                        
                                         // later have to change when implementing shopping cart...
 
 
