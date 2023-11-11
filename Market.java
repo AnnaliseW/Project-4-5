@@ -452,6 +452,10 @@ public class Market {
 
 
                             } else if (sellerChoice == 4) {
+                                
+                                
+                                
+                                
                                 // implements sales method TBD
 
 
@@ -595,8 +599,8 @@ public class Market {
                                         searchedProducts = method.searchForProduct(wordSearch);
                                     }
 
-                                    if (searchedProducts == null) {
-                                        System.out.println("Sorry! No products matched your search!");
+                                    if (searchedProducts.isEmpty()) {
+                                        System.out.println("Sorry! No products matched your search!\n-------------------\n");
                                     } else {
                                         //searching for product and listing out their products
 
@@ -605,70 +609,83 @@ public class Market {
                                             System.out.println((i + 1) + " " + searchedProducts.get(i).listingPagetoString());
                                             System.out.println("-------------------\n");
                                         }
-                                    }
-                                    //MUST MUST MUST FIX THISSS
-                                    System.out.println("View item statistic! Choose item statistic type in index number:\nEnter [-1] to exit");
 
-                                    int itemFromSearchChosen = s.nextInt();
-                                    s.nextLine();
+                                        //MUST MUST MUST FIX THISSS
+                                        System.out.println("View item statistic!\nType in index number of product:\nEnter [-1] to exit");
 
-
-                                    assert searchedProducts != null;
-                                    System.out.println(searchedProducts.get(itemFromSearchChosen - 1).statisticsToString());
-                                    //asking if they would like to purchase the item asked for statistics
-                                    System.out.println("Would you like to purchase this item?\n[1] yes\n[2] no\n[3] If you would like to add the item" +
-                                            " to your shopping cart!");
-                                    int purchaseResponse = s.nextInt();
-                                    s.nextLine();
-
-                                    if (purchaseResponse == 1) {
-                                        System.out.println("How many items would you like to purchase");
-                                        int amountPurchasing = s.nextInt();
+                                        int itemFromSearchChosen = s.nextInt();
                                         s.nextLine();
 
-                                        // calls method to purchase
-                                        // in method... sets quantity sold and sets quantity available
-                                        //still has to add other statistics for following sales and receipts for customer
-                                        method.purchaseProduct(searchedProducts.get(productNumber - 1), amountPurchasing);
-                                        ///IMPLEMENT: take into consideration if quantity available turns to 0 or will no longer be available
-                                        //EX: 5 quantity left.. buyer wants to
-
-                                        // later have to change when implementing shopping cart...
+                                        if (itemFromSearchChosen == -1) {
+                                            //leaving to go back to main page
+                                            System.out.println("Back to Market Place Listing Page!\n-------------------\n");
 
 
-                                        //String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price
-                                    } else if (purchaseResponse == 2) {
-                                        boolean noExit = false;
-                                        //possible change: this is if do not want to purchase product SHOULD take you back to main page (test it)
-                                        while (!noExit) {
-                                            System.out.println("Feel free to keep looking! Press [1] to exit");
-                                            int leave = s.nextInt();
+                                        } else {
+
+                                            System.out.println(searchedProducts.get(itemFromSearchChosen - 1).statisticsToString() + "\n");
+                                            //asking if they would like to purchase the item asked for statistics
+                                            System.out.println("Would you like to purchase this item?\n[1] yes\n[2] no\n[3] If you would like to add the item" +
+                                                    " to your shopping cart!\n[4] exit");
+                                            int purchaseResponse = s.nextInt();
                                             s.nextLine();
-                                            if (leave == 1) {
-                                                //IMPLEMENTS EXIT
+
+                                            if (purchaseResponse == 1) {
+                                                System.out.println("How many items would you like to purchase");
+                                                int amountPurchasing = s.nextInt();
+                                                s.nextLine();
+
+                                                // calls method to purchase
+                                                // in method... sets quantity sold and sets quantity available
+                                                //still has to add other statistics for following sales and receipts for customer
+                                                method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1), amountPurchasing);
+                                                System.out.println(searchedProducts.get(itemFromSearchChosen - 1).getProductName() + " purchased! Thank you!");
+                                                ///IMPLEMENT: take into consideration if quantity available turns to 0 or will no longer be available
+                                                //EX: 5 quantity left.. buyer wants to
+
+                                                // later have to change when implementing shopping cart...
+
+
+                                                //String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price
+                                            } else if (purchaseResponse == 2) {
+                                                boolean noExit = false;
+                                                //possible change: this is if do not want to purchase product SHOULD take you back to main page (test it)
+                                                while (!noExit) {
+                                                    System.out.println("Feel free to keep looking! Press [1] to exit back to Market Place Listing Page");
+                                                    int leave = s.nextInt();
+                                                    s.nextLine();
+                                                    if (leave == 1) {
+                                                        //IMPLEMENTS EXIT
+                                                        method.saveArrayListToFile(shoppingCart, userAccount);
+                                                        method.saveProductArrayList(Methods.productsOnMarket);
+                                                        noExit = true;
+                                                    }
+                                                }
+                                            } else if (purchaseResponse == 3) {
+                                                //adding seached item to shopping cart
+
+                                                shoppingCart.add(searchedProducts.get(itemFromSearchChosen - 1));
+                                                System.out.println(searchedProducts.get(itemFromSearchChosen - 1).getProductName() + " added to your shopping cart!");
+                                            } else if (purchaseResponse == 4) {
+                                                //exits back to main page
+                                                System.out.println("Back to main page!");
+                                                //IMPLEMENT SAVING METHOD
+
+                                                //save shopping cart
                                                 method.saveArrayListToFile(shoppingCart, userAccount);
+
+                                                //save product array list
                                                 method.saveProductArrayList(Methods.productsOnMarket);
-                                                return;
+
                                             }
                                         }
                                     }
-                                } else if (productNumber == -1) {
-                                    //exits back to main page
-                                    System.out.println("Back to main page!");
-                                    //IMPLEMENT SAVING METHOD
-
-                                    //save shopping cart
-                                    method.saveArrayListToFile(shoppingCart, userAccount);
-
-                                    //save product array list
-                                    method.saveProductArrayList(Methods.productsOnMarket);
-
                                 } else {
 
                                     System.out.println(Methods.productsOnMarket.get(productNumber - 1).statisticsToString());
                                     //asking if they would like to purchase the item asked for statistics
-                                    System.out.println("Would you like to purchase this item? [1] yes\n[2] no\n[3] If you would like to add the item" +
-                                            " to your shopping cart!");
+                                    System.out.println("Would you like to purchase this item?\n[1] yes\n[2] no\n[3] If you would like to add the item" +
+                                            " to your shopping cart!\n[4] exit");
                                     int purchaseResponse = s.nextInt();
                                     s.nextLine();
 
@@ -681,6 +698,7 @@ public class Market {
                                         // in method... sets quantity sold and sets quantity available
                                         //still has to add other statistics for following sales and receipts for customer
                                         method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1), amountPurchasing);
+                                        System.out.println(Methods.productsOnMarket.get(productNumber - 1).getProductName() + " purchased! Thank you!");
                                         ///IMPLEMENT: take into consideration if quantity available turns to 0 or will no longer be available
                                         //EX: 5 quantity left.. buyer wants to
 
@@ -692,22 +710,33 @@ public class Market {
                                         boolean noExit = false;
                                         //possible change: this is if do not want to purchase product SHOULD take you back to main page (test it)
                                         while (!noExit) {
-                                            System.out.println("Feel free to keep looking! Press [1] to exit");
+                                            System.out.println("Feel free to keep looking! Press [1] to exit back to Market Place Listing Page");
                                             int leave = s.nextInt();
                                             s.nextLine();
                                             if (leave == 1) {
                                                 //IMPLEMENTS EXIT
                                                 method.saveArrayListToFile(shoppingCart, userAccount);
                                                 method.saveProductArrayList(Methods.productsOnMarket);
-                                                return;
+                                                noExit = true;
                                             }
                                         }
 
                                     } else if (purchaseResponse == 3) {
                                         //adds the product from market into the shopping cart of customer
                                         shoppingCart.add(Methods.productsOnMarket.get(productNumber - 1));
+                                        System.out.println(Methods.productsOnMarket.get(productNumber - 1).getProductName() + " added to your shopping cart!");
+                                        break;
                                         //needs to save/update this when logout
 
+                                    } else if (purchaseResponse == 4) {
+                                        System.out.println("Back to main page!");
+                                        //IMPLEMENT SAVING METHOD
+
+                                        //save shopping cart
+                                        method.saveArrayListToFile(shoppingCart, userAccount);
+
+                                        //save product array list
+                                        method.saveProductArrayList(Methods.productsOnMarket);
                                     }
 
 
