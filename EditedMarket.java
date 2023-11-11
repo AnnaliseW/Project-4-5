@@ -96,7 +96,7 @@ public class EditedMarket {
                     boolean correctInputSeller = false;
                     //determining if buyer or seller
                     while (!correctInputSeller) {
-                        System.out.println("Would you like to be a [1] seller or [2] buyer?");
+                        System.out.println("Would you like to be a [1] seller or [2] customer?"); // Changed wording
                         int sellerOrBuyer = s.nextInt();
                         s.nextLine();
 
@@ -651,7 +651,7 @@ public class EditedMarket {
                                             //still has to add other statistics for following sales and receipts for customer
                                             method.purchaseProduct(method.productsOnMarket.get(productNumber - 1), amountPurchasing);
                                             ///IMPLEMENT: take into consideration if quantity available turns to 0 or will no longer be available
-                                            //EX: 5 quantity left.. buyer wants to
+                                            //EX: 5 quantity left.. customer wants to
 
                                             // later have to change when implementing shopping cart...
 
