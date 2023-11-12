@@ -622,6 +622,70 @@ public class Market {
                                 break;
 
 
+                                //CALLS FILES CLASS (NOT TESTED)
+                            } else if (sellerChoice == 6) {
+                                Files filesObject = new Files("data.txt", true, false);
+                                while (true) {
+
+                                    System.out.println("Choose what you want to do: 1. Import Products, 2. Export products, 3. Quit");
+                                    int indexOfChoice = s.nextInt();
+                                    s.nextLine();
+
+                                    if (indexOfChoice == 1) {
+                                        System.out.println("What is the name of the import file?");
+                                        String fileName = s.nextLine();
+                                        ArrayList<Product> importedProducts = new ArrayList<Product>();
+                                        try {
+                                            importedProducts = filesObject.importProducts(fileName);
+                                            System.out.println("Imported Successfully");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        for (Product product : importedProducts) {
+                                            itemsSoldBySeller.add(product);
+                                            Methods.productsOnMarket.add(product);
+                                        }
+                                    } else if (indexOfChoice == 2) {
+                                        ArrayList<Product> exportedProducts = new ArrayList<Product>();
+                                        int indexOfDeletion;
+                                        while (true) {
+                                            for (int i = 0; i < itemsSoldBySeller.size(); i++) {
+                                                System.out.println("[" + (i + 1) + "] " + itemsSoldBySeller.get(i).listingPagetoString() + "\n");
+                                            }
+                                            System.out.println("Choose product index you want to remove (Enter -1 to stop):");
+                                            indexOfDeletion = s.nextInt();
+                                            s.nextLine();
+                                            if (indexOfDeletion == -1) {
+                                                break;
+                                            }
+                                            if (indexOfDeletion > 0 && indexOfDeletion <= itemsSoldBySeller.size()) {
+                                                Methods method = new Methods();
+                                                exportedProducts.add(itemsSoldBySeller.get(indexOfDeletion - 1));
+                                                for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                    if (Methods.productsOnMarket.get(i) == itemsSoldBySeller.get(indexOfDeletion - 1)) {
+                                                        Methods.productsOnMarket.remove(i);
+                                                        break;
+                                                    }
+                                                }
+                                                itemsSoldBySeller.remove(indexOfDeletion - 1);
+                                            } else {
+                                                System.out.println("Invalid index. Please enter a valid index.");
+                                            }
+                                        }
+
+                                        try {
+                                            if (filesObject.exportProducts(exportedProducts)) {
+                                                System.out.println("Exported Successfully.");
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else if (indexOfChoice == 3) {
+                                        break;
+                                    } else {
+                                        System.out.println("Invalid Choice");
+                                    }
+                                }
                             } else {
                                 System.out.println("Please enter choices: 1-5");
                             }
