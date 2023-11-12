@@ -9,6 +9,10 @@ public class SalesByStore {
         this.salesList = new ArrayList<>();
     }
 
+    public String getStoreName() {
+        return this.storeName;
+    }
+
     public void addItemBought(ItemBought itemBought) {
         salesList.add(itemBought);
     }
