@@ -1,5 +1,3 @@
-package Proj4;
-
 import java.io.*;
 import java.util.ArrayList;
 
@@ -50,6 +48,7 @@ public class Methods {
     public void purchaseProduct(Product product, int quantityPurchased) {
         for (int i = 0; i < productsOnMarket.size(); i++) {
             if (productsOnMarket.get(i).equals(product)) {
+                //added by Taylor
                 if(productsOnMarket.get(i).getQuantityAvailable() == 0){
                     System.out.println("This item is sold out!");
                 }
@@ -121,12 +120,12 @@ public class Methods {
         String products;
 
 
-        for (int i = 0; i < arrayList.size(); i++) {
-            products = arrayList.get(i).getProductName() + "," + arrayList.get(i).getStoreName() + "," +
-                    arrayList.get(i).getDescriptionOfProduct() + "," + arrayList.get(i).getQuantityAvailable() + "," +
-                    arrayList.get(i).getPrice() + "@@";
-            allProducts.add(products);
-        }
+            for (int i = 0; i < arrayList.size(); i++) {
+                products = arrayList.get(i).getProductName() + "," + arrayList.get(i).getStoreName() + "," +
+                        arrayList.get(i).getDescriptionOfProduct() + "," + arrayList.get(i).getQuantityAvailable() + "," +
+                        arrayList.get(i).getPrice() + "@@";
+                allProducts.add(products);
+            }
 
 
         // Update the line with new information
