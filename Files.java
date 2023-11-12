@@ -9,7 +9,7 @@ public class Files {
     public boolean seller;
     public boolean buyer;
 
-    //NEED TO CREATE A FILES OBJECT FIRST
+    //NEED TO CREATE A FILE OBJECT FIRST
     public Files(String infoFileName, boolean seller, boolean buyer) {
         this.infoFileName = infoFileName;
         this.seller = seller;
@@ -22,20 +22,23 @@ public class Files {
 
     public boolean exportPurchaseHistory() throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(infoFileName));
-             BufferedWriter writer = new BufferedWriter(new FileWriter("purchaseHistory.txt"))) {
-
+             BufferedWriter writer = new BufferedWriter(new FileWriter("exportHistory.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(",");
+                String breakLine = line;
+                breakLine = breakLine.substring(breakLine.indexOf(",") + 1, breakLine.indexOf(";"));
+                breakLine = breakLine.substring(breakLine.indexOf(",") + 1, breakLine.length());
+                breakLine = breakLine.substring(breakLine.indexOf(",") + 1, breakLine.length());
+                Boolean isSeller = Boolean.parseBoolean(breakLine);
 
-                Boolean isSeller = Boolean.parseBoolean(fields[3]);
-
-                if (seller == isSeller) {
+                if (seller == isSeller) { //seller
                     return false;
-                } else {
-                    String productsInfo = line.substring(line.indexOf(";") + 1);
-                    String[] products = productsInfo.split("@@");
-                    for (int i = 0; i < products.length; i++) {
+                } else { //buyer
+                    String productsInfo = line;
+                    productsInfo = productsInfo.substring(productsInfo.indexOf("cart"), productsInfo.length() - 1);
+                    String[] products = productsInfo.split(";");
+
+                    for (int i = 0; i < products.length - 1; i++) {
                         int index = i + 1;
                         writer.write("Purchase " + index + ": " + products[i]);
                         writer.newLine();
@@ -47,7 +50,6 @@ public class Files {
             e.printStackTrace();
             return false;
         }
-
     }
 
     //Takes in file with each line being a product in this format:
@@ -61,10 +63,7 @@ public class Files {
             while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
-        } catch (FileNotFoundException f) {
-            System.out.println("No File Found");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         for (String productString : lines) {
@@ -84,7 +83,7 @@ public class Files {
     public boolean exportProducts(ArrayList<Product> exportedProducts) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("ExportedProducts.txt"))) {
             for (Product product : exportedProducts) {
-                writer.write(product.statisticsToString());
+                writer.write(product.toString());
                 writer.newLine();
             }
         } catch (IOException e) {
