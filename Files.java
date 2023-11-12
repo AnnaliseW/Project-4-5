@@ -61,7 +61,10 @@ public class Files {
             while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
-        } catch (IOException e) {
+        } catch (FileNotFoundException f) {
+            System.out.println("No File Found");
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         for (String productString : lines) {
@@ -90,5 +93,5 @@ public class Files {
         }
         return true;
     }
-    
+
 }
