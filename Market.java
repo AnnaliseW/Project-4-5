@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -64,8 +65,13 @@ public class Market {
             System.out.println("1. Create Account");
             System.out.println("2. Sign In");
             System.out.println("3. Exit");
-            int selectionToSignIn = s.nextInt();
-            s.nextLine();
+            int selectionToSignIn = 0;
+            try {
+                selectionToSignIn = s.nextInt();
+                s.nextLine();
+            } catch (InputMismatchException e) {
+                s.nextLine();
+            }
 
             ///creating account 1 option
             if (selectionToSignIn == 1) {
@@ -84,8 +90,13 @@ public class Market {
                 //determining if buyer or seller
                 while (!correctInputSeller) {
                     System.out.println("Would you like to be a [1] seller or [2] buyer?");
-                    int sellerOrBuyer = s.nextInt();
-                    s.nextLine();
+                    int sellerOrBuyer = 0;
+                    try {
+                        sellerOrBuyer = s.nextInt();
+                        s.nextLine();
+                    } catch (InputMismatchException e) {
+                        s.nextLine();
+                    }
 
                     if (sellerOrBuyer == 1) {
                         seller = true;
@@ -376,9 +387,15 @@ public class Market {
                         while (!sellerChooseCorrectInput) {
 
 
-                            System.out.println("[1] Add product to sell\n[2] Edit product\n[3] Delete Product\n[4]Choose to import or export products file\n[5] Exit");
-                            int sellerChoice = s.nextInt();
-                            s.nextLine();
+                            System.out.println("[1] Add product to sell\n[2] Edit product\n[3] Delete Product\n[4] Choose to import or export products file\n[5] Exit");
+                            int sellerChoice = 0;
+                            try {
+                                sellerChoice = s.nextInt();
+                                s.nextLine();
+                                //check for not integer
+                            } catch (InputMismatchException e) {
+                                s.nextLine();
+                            }
 
 
                             //if choosing to add product
@@ -472,88 +489,207 @@ public class Market {
                                 //exit out of while loop
                                 System.out.println(newProductAdded.getProductName() + " added to the market!");
                             } else if (sellerChoice == 2) {
+                                boolean askForStoreName = false;
+
 
                                 if (itemsSoldBySeller.isEmpty()) {
-                                    System.out.println("There are no products for you to edit!");
-                                    break;
+                                    System.out.println("There are no products for you to edit!\n\n");
+
                                 } else {
 
                                     //prints out every product they are selling from array sale list
                                     for (int i = 0; i < itemsSoldBySeller.size(); i++) {
                                         System.out.println(("[" + (i + 1) + "]") + " " + itemsSoldBySeller.get(i).statisticsToString() + "\n");
                                     }
+                                    int indexOfChange = 0;
+                                    ///check if valid input
+                                    boolean invalidInput = false;
 
-                                    System.out.println("Choose product index you want to edit");
-                                    int indexOfChange = s.nextInt();
-                                    s.nextLine();
+                                    do {
+                                        System.out.println("Choose product index you want to edit\n[-1] to exit");
+                                        try {
+                                            indexOfChange = s.nextInt();
+                                            s.nextLine();
+                                            if (indexOfChange == -1) {
+                                                invalidInput = true;
+                                            }
+                                            //adding check if index is valid
+                                            //adding -1 to exit
+                                            else if (indexOfChange > itemsSoldBySeller.size() || indexOfChange < 0) {
+                                                System.out.println("Invalid input, try again\n");
+                                            } else {
+                                                invalidInput = true;
+                                            }
+                                        } catch (InputMismatchException e) {
+                                            System.out.println("Please input integer\n");
+                                            s.nextLine();
+                                        }
 
-                                    System.out.println("What is the new name?");
-                                    String newName = s.nextLine();
-                                    System.out.println("What is the new store name?");
-                                    String newStoreName = s.nextLine();
-                                    System.out.println("What is the new description");
-                                    String newDescription = s.nextLine();
-                                    System.out.println("What is the new quantity?");
-                                    int newQuantity = s.nextInt();
-                                    s.nextLine();
-                                    System.out.println("What is the new price?");
-                                    double newPrice = s.nextDouble();
-                                    s.nextLine();
 
-                                    //takes variables in and modifies the product in seller list
+                                    } while (!invalidInput);
 
-                                    Product modifyingSeller = itemsSoldBySeller.get(indexOfChange - 1);
-                                    modifyingSeller.setProductName(newName);
-                                    modifyingSeller.setStoreName(newStoreName);
-                                    modifyingSeller.setDescriptionOfProduct(newDescription);
-                                    modifyingSeller.setQuantityAvailable(newQuantity);
-                                    modifyingSeller.setPrice(newPrice);
+                                    if (indexOfChange == -1) {
 
-                                    System.out.println(modifyingSeller.getProductName() + " updated in the market!");
+                                    } else {
 
-                                    //modifies product in product market array list
-                                    Methods method = new Methods();
-                                    for (int i = 0; i < Methods.getProductsOnMarket().size(); i++) {
-                                        if (Methods.getProductsOnMarket().get(i).equals(modifyingSeller)) {
-                                            Methods.getProductsOnMarket().get(i).setProductName(newName);
-                                            Methods.getProductsOnMarket().get(i).setStoreName(newStoreName);
-                                            Methods.getProductsOnMarket().get(i).setDescriptionOfProduct(newDescription);
-                                            Methods.getProductsOnMarket().get(i).setQuantityAvailable(newQuantity);
-                                            Methods.getProductsOnMarket().get(i).setPrice(newPrice);
+                                        System.out.println("What is the new name?");
+                                        String newName = s.nextLine();
+
+                                        String newStoreName = null;
+                                        while (!askForStoreName) {
+                                            System.out.println("What is the new store Name");
+                                            newStoreName = s.nextLine();
+                                            //checking to see if store name already exists
+                                            //reads data file for every store name with user
+
+                                            boolean existingStoreName = false;
+
+
+                                            try {
+                                                BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
+                                                String line = "";
+                                                ArrayList<String> allUserData = new ArrayList<>();
+
+
+                                                while ((line = bfr.readLine()) != null) {
+                                                    allUserData.add(line);
+                                                }
+
+                                                for (int i = 0; i < allUserData.size(); i++) {
+                                                    //checking to see if they are seller
+                                                    String[] checkIfSeller = allUserData.get(i).split(",");
+                                                    //seller identified
+                                                    if (checkIfSeller[3].startsWith("true")) {
+                                                        String[] oneUserDataEachProduct = allUserData.get(i).split(";");
+
+                                                        if (oneUserDataEachProduct.length == 1) {
+                                                            String[] eachFieldForProduct = oneUserDataEachProduct[0].split(",");
+                                                            if (newStoreName.equals(eachFieldForProduct[1])) {
+                                                                //if seller only has one product and it is the same store name
+                                                                existingStoreName = true;
+                                                                break;
+                                                            }
+                                                        } else {
+                                                            for (int j = 0; j < oneUserDataEachProduct.length; j++) {
+                                                                //separating the individual products
+                                                                String[] eachProduct = oneUserDataEachProduct[j].split("@@");
+                                                                for (int k = 0; k < eachProduct.length; k++) {
+                                                                    String[] eachFieldForProduct = eachProduct[k].split(",");
+                                                                    if (eachFieldForProduct[1].equals(newStoreName)) {
+                                                                        existingStoreName = true;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                bfr.close();
+
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            if (existingStoreName) {
+                                                System.out.println("Store name already exists! Please input different store name\n");
+                                            } else {
+                                                askForStoreName = true;
+                                            }
+                                        }
+                                        //end of check if store name exists for new updated store name
+
+
+                                        System.out.println("What is the new description");
+                                        String newDescription = s.nextLine();
+                                        System.out.println("What is the new quantity?");
+                                        int newQuantity = s.nextInt();
+                                        s.nextLine();
+                                        System.out.println("What is the new price?");
+                                        double newPrice = s.nextDouble();
+                                        s.nextLine();
+
+                                        //takes variables in and modifies the product in seller list
+
+                                        Product modifyingSeller = itemsSoldBySeller.get(indexOfChange - 1);
+                                        modifyingSeller.setProductName(newName);
+                                        modifyingSeller.setStoreName(newStoreName);
+                                        modifyingSeller.setDescriptionOfProduct(newDescription);
+                                        modifyingSeller.setQuantityAvailable(newQuantity);
+                                        modifyingSeller.setPrice(newPrice);
+
+                                        System.out.println(modifyingSeller.getProductName() + " updated in the market!");
+
+                                        //modifies product in product market array list
+                                        Methods method = new Methods();
+                                        for (int i = 0; i < Methods.getProductsOnMarket().size(); i++) {
+                                            if (Methods.getProductsOnMarket().get(i).equals(modifyingSeller)) {
+                                                Methods.getProductsOnMarket().get(i).setProductName(newName);
+                                                Methods.getProductsOnMarket().get(i).setStoreName(newStoreName);
+                                                Methods.getProductsOnMarket().get(i).setDescriptionOfProduct(newDescription);
+                                                Methods.getProductsOnMarket().get(i).setQuantityAvailable(newQuantity);
+                                                Methods.getProductsOnMarket().get(i).setPrice(newPrice);
+                                            }
                                         }
                                     }
+
+                                    //exit out of while loop
+
                                 }
-
-                                //exit out of while loop
-
-
                                 //to delete an item seller is listing\
                             } else if (sellerChoice == 3) {
-
 
                                 //lists all products selling
                                 for (int i = 0; i < itemsSoldBySeller.size(); i++) {
                                     System.out.println(("[" + (i + 1) + "]") + " " + itemsSoldBySeller.get(i).listingPagetoString() + "\n");
                                 }
 
-                                System.out.println("Choose product index you want to remove");
-                                int indexOfDeletion = s.nextInt();
-                                s.nextLine();
+                                boolean invalidInput = false;
+                                int indexOfDeletion = 0;
 
-                                Methods method = new Methods();
+                                do {
+                                    System.out.println("Choose product index you want to remove\n[-1] to exit");
 
-                                System.out.println(itemsSoldBySeller.get(indexOfDeletion - 1).getProductName() + " removed from market!\n");
-                                //removing item fromm product market array list
-                                for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
-                                    if (Methods.productsOnMarket.get(i) == itemsSoldBySeller.get(indexOfDeletion - 1)) {
-                                        Methods.productsOnMarket.remove(i);
+                                    try {
+                                        indexOfDeletion = s.nextInt();
+                                        s.nextLine();
+                                        //if want to exit
+                                        if (indexOfDeletion == -1) {
+                                            invalidInput = true;
+                                        }
+                                        //adding check if index is valid
+                                        //adding -1 to exit
+                                        else if (indexOfDeletion > itemsSoldBySeller.size() || indexOfDeletion < 0) {
+                                            System.out.println("Invalid input, try again\n");
+                                        } else {
+                                            invalidInput = true;
+                                        }
+                                        // if not integer
+                                    } catch (InputMismatchException e) {
+                                        System.out.println("Please input integer\n");
+                                        s.nextLine();
                                     }
+
+
+                                } while (!invalidInput);
+
+                                if (indexOfDeletion == -1) {
+                                    //logs out
+                                } else {
+                                    //deletes product
+                                    Methods method = new Methods();
+
+                                    System.out.println(itemsSoldBySeller.get(indexOfDeletion - 1).getProductName() + " removed from market!\n");
+                                    //removing item fromm product market array list
+                                    for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                        if (Methods.productsOnMarket.get(i) == itemsSoldBySeller.get(indexOfDeletion - 1)) {
+                                            Methods.productsOnMarket.remove(i);
+                                        }
+                                    }
+                                    //removes from sales list
+                                    itemsSoldBySeller.remove(indexOfDeletion - 1);
+
+
+                                    //exit out of while loop
                                 }
-                                //removes from sales list
-                                itemsSoldBySeller.remove(indexOfDeletion - 1);
-
-
-                                //exit out of while loop
 
 
                             } else if (sellerChoice == 5) {
@@ -568,13 +704,21 @@ public class Market {
 
 
                             } else if (sellerChoice == 4) {
-                                //implemented by joseph
+
+                                //checks file
+                                //make sure to check file not found exception
+
                                 Files filesObject = new Files("data.txt", true, false);
                                 while (true) {
 
-                                    System.out.println("Choose what you want to do: 1. Import Products, 2. Export products, 3. Quit");
-                                    int indexOfChoice = s.nextInt();
-                                    s.nextLine();
+                                    System.out.println("Choose what you want to do:\n[1] Import Products\n[2] Export products\n[3] Quit");
+                                    int indexOfChoice = 0;
+                                    try {
+                                        indexOfChoice = s.nextInt();
+                                        s.nextLine();
+                                    } catch (InputMismatchException e) {
+                                        s.nextLine();
+                                    }
 
                                     if (indexOfChoice == 1) {
                                         System.out.println("What is the name of the import file?");
@@ -597,7 +741,7 @@ public class Market {
                                             for (int i = 0; i < itemsSoldBySeller.size(); i++) {
                                                 System.out.println("[" + (i + 1) + "] " + itemsSoldBySeller.get(i).listingPagetoString() + "\n");
                                             }
-                                            System.out.println("Choose product index you want to remove (Enter -1 to stop):");
+                                            System.out.println("Choose product index you want to remove\nEnter [-1] to stop");
                                             indexOfDeletion = s.nextInt();
                                             s.nextLine();
                                             if (indexOfDeletion == -1) {
@@ -613,22 +757,22 @@ public class Market {
                                                     }
                                                 }
                                                 itemsSoldBySeller.remove(indexOfDeletion - 1);
+                                                try {
+                                                    if (filesObject.exportProducts(exportedProducts)) {
+                                                        System.out.println("Exported Successfully.");
+                                                    }
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
                                             } else {
                                                 System.out.println("Invalid index. Please enter a valid index.");
                                             }
                                         }
 
-                                        try {
-                                            if (filesObject.exportProducts(exportedProducts)) {
-                                                System.out.println("Exported Successfully.");
-                                            }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
                                     } else if (indexOfChoice == 3) {
                                         break;
                                     } else {
-                                        System.out.println("Invalid Choice");
+                                        System.out.println("Invalid Choice\n");
                                     }
                                 }
                             } else {
@@ -1099,12 +1243,14 @@ public class Market {
             } else if (selectionToSignIn == 3) {
                 System.out.println("Thank you for visiting School Supplies Marketplace!");
                 mainPage = false;
+            } else {
+                System.out.println("Please input options 1-3\n");
             }
 
 
         }
 
 
+        }
     }
-}
 
