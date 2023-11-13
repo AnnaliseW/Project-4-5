@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TestCases extends Methods {
+public class TestCases {
 
     @Test
     public void testGetProductsOnMarket() {
