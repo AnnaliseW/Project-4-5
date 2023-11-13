@@ -1,0 +1,147 @@
+else if (sellerChoice == 6) {
+                                try {
+                                    BufferedReader bfr = new BufferedReader(new FileReader("Data.txt"));
+                                    String line = "";
+                                    ArrayList<String> allUserData = new ArrayList<String>();
+                                    while ((line = bfr.readLine()) != null) {
+                                        allUserData.add(line);
+                                    }
+                                    int userLine = 0;
+                                    for (int i = 0; i < allUserData.size(); i++) {
+                                        if (email.equals(allUserData.get(i).substring(allUserData.get(i).indexOf(','), allUserData.get(i).indexOf(',') + email.length() + 1))) {
+                                            userLine = i;
+                                        }
+                                    }
+                                    String name = allUserData.get(userLine).substring(0, allUserData.get(userLine).indexOf(','));
+                                    int chooseChange;
+                                    s.nextLine();
+
+                                    String newName;
+                                    String newEmail;
+                                    String newPassword;
+                                    boolean takenAccount = false;
+                                    System.out.println("How would you like to modify it? \n[1] Change name\n[2] Change email" +
+                                            "\n[3] Change password\n[4] Remove account");
+                                    chooseChange = s.nextInt();
+                                    s.nextLine();
+                                    if (chooseChange == 1) {
+                                        System.out.println("Choose a new name");
+                                        newName = s.nextLine();
+
+                                        allUserData.set(userLine, newName + allUserData.get(userLine).substring(name.length()));
+                                        System.out.println("Name set!");
+                                    } else if (chooseChange == 2) {
+                                        System.out.println("Choose a new email");
+                                        newEmail = s.nextLine();
+
+                                        for (int x = 0; x < email.length(); x++) {
+                                            if (email.equals(newEmail)) {
+                                                takenAccount = true;
+                                            }
+                                        }
+                                        if (takenAccount) {
+                                            System.out.println("This email is taken!");
+                                        } else {
+                                            allUserData.set(userLine, name + "," + newEmail + allUserData.get(userLine).substring(name.length()
+                                                    + email.length() + 1));
+                                            System.out.println("Email set!");
+                                        }
+                                    } else if (chooseChange == 3) {
+                                        System.out.println("Choose a new password");
+                                        newPassword = s.nextLine();
+
+                                        allUserData.set(userLine, name + "," + email + "," + newPassword + "," + allUserData.get(userLine).substring(name.length()
+                                                + email.length() + password.length() + 3));
+                                        System.out.println("Password set!");
+                                    } else if (chooseChange == 4) {
+                                        allUserData.remove(userLine);
+                                        System.out.println("Removed!");
+                                    } else {
+                                        System.out.println("Invalid input");
+                                    }
+                                    bfr.close();
+
+                                    PrintWriter pw = new PrintWriter("Data.txt");
+                                    for (int i = 0; i < allUserData.size(); i++) {
+                                        pw.write(allUserData.get(i) + "\n");
+                                    }
+                                    pw.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+else if (productNumber == -1) {
+                                    try {
+                                        BufferedReader bfr = new BufferedReader(new FileReader("Data.txt"));
+                                        String line = "";
+                                        ArrayList<String> allUserData = new ArrayList<String>();
+                                        while ((line = bfr.readLine()) != null) {
+                                            allUserData.add(line);
+                                        }
+                                        int userLine = 0;
+                                        for (int i = 0; i < allUserData.size(); i++) {
+                                            if (email.equals(allUserData.get(i).substring(allUserData.get(i).indexOf(','), allUserData.get(i).indexOf(',') + email.length() + 1))) {
+                                                userLine = i;
+                                            }
+                                        }
+                                        String name = allUserData.get(userLine).substring(0, allUserData.get(userLine).indexOf(','));
+                                        int chooseChange;
+                                        s.nextLine();
+
+                                        String newName;
+                                        String newEmail;
+                                        String newPassword;
+                                        boolean takenAccount = false;
+                                        System.out.println("How would you like to modify it? \n[1] Change name\n[2] Change email" +
+                                                "\n[3] Change password\n[4] Remove account");
+                                        chooseChange = s.nextInt();
+                                        s.nextLine();
+                                        if (chooseChange == 1) {
+                                            System.out.println("Choose a new name");
+                                            newName = s.nextLine();
+
+                                            allUserData.set(userLine, newName + allUserData.get(userLine).substring(name.length()));
+                                            System.out.println("Name set!");
+                                        } else if (chooseChange == 2) {
+                                            System.out.println("Choose a new email");
+                                            newEmail = s.nextLine();
+
+                                            for (int x = 0; x < email.length(); x++) {
+                                                if (email.equals(newEmail)) {
+                                                    takenAccount = true;
+                                                }
+                                            }
+                                            if (takenAccount) {
+                                                System.out.println("This email is taken!");
+                                            } else {
+                                                allUserData.set(userLine, name + "," + newEmail + allUserData.get(userLine).substring(name.length()
+                                                        + email.length() + 1));
+                                                System.out.println("Email set!");
+                                            }
+                                        } else if (chooseChange == 3) {
+                                            System.out.println("Choose a new password");
+                                            newPassword = s.nextLine();
+
+                                            allUserData.set(userLine, name + "," + email + "," + newPassword + "," + allUserData.get(userLine).substring(name.length()
+                                                    + email.length() + password.length() + 3));
+                                            System.out.println("Password set!");
+                                        } else if (chooseChange == 4) {
+                                            allUserData.remove(userLine);
+                                            System.out.println("Removed!");
+                                        } else {
+                                            System.out.println("Invalid input");
+                                        }
+                                        bfr.close();
+
+                                        PrintWriter pw = new PrintWriter("Data.txt");
+                                        for (int i = 0; i < allUserData.size(); i++) {
+                                            pw.write(allUserData.get(i) + "\n");
+                                        }
+                                        pw.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
