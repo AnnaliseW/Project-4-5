@@ -1,0 +1,27 @@
+if (indexOfDeletion == -1) {
+                                    Methods method = new Methods();
+                                    method.saveArrayListToFile(itemsSoldBySeller, userAccount);
+                                    method.saveProductArrayList(Methods.productsOnMarket);
+                                    //logs out
+                                } else {
+
+                                    //deletes product
+                                    Methods method = new Methods();
+
+                                    System.out.println(itemsSoldBySeller.get(indexOfDeletion - 1).getProductName() + " removed from market!\n");
+
+                                    Product deletedProduct = itemsSoldBySeller.get(indexOfDeletion - 1);
+
+                                    for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                        if (Methods.productsOnMarket.get(i).equals(deletedProduct)) {
+                                            Methods.productsOnMarket.remove(i);
+                                            ArrayList<Product> update = Methods.getProductsOnMarket();
+                                            Methods.setProductsOnMarket(update);
+                                        }
+                                    }
+
+                                    itemsSoldBySeller.remove(indexOfDeletion - 1);
+                                    method.saveArrayListToFile(itemsSoldBySeller, userAccount);
+                                    method.saveProductArrayList(Methods.productsOnMarket);
+                                    //exit out of while loop
+                                }
