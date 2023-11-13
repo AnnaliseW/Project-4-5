@@ -74,4 +74,18 @@ public class Product {
         return String.format("Product Statistics:\nProduct Name: %s\nStore Name: %s\nPrice: %.2f", getProductName(), getStoreName(), getPrice());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Product) {
+            Product objectO = (Product) o;
+            return objectO.getProductName().equals(this.productName) && objectO.getStoreName().equals(this.storeName)
+                    && objectO.getDescriptionOfProduct().equals(this.descriptionOfProduct) && objectO.getQuantityAvailable() == this.quantityAvailable
+                    && objectO.getPrice() == (this.price);
+
+        } else {
+            return false;
+        }
+    }
+
+
 }
