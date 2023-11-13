@@ -1,0 +1,34 @@
+//START OF ADDED CODE
+                                                    String buyerName = userAccount.getName();
+                                                    String buyerEmail = userAccount.getEmail();
+                                                    String storeName = searchedProducts.get(itemFromSearchChosen - 1).getStoreName();
+                                                    String productName = searchedProducts.get(itemFromSearchChosen - 1).getProductName();
+                                                    double productPrice = searchedProducts.get(itemFromSearchChosen - 1).getPrice();
+                                                    int quantityBought = amountPurchasing;
+
+                                                    Product product = searchedProducts.get(itemFromSearchChosen - 1);
+
+                                                    String line;
+
+                                                    String sellerEmail = "";
+                                                    String storeNameForFinding = product.getStoreName();
+                                                    try (BufferedReader bfr = new BufferedReader(new FileReader("data.txt"))) {
+                                                        while ((line = bfr.readLine()) != null) {
+                                                            if (line.contains(storeNameForFinding)) {
+                                                                String[] values = line.split(",");
+                                                                sellerEmail = values[1];
+                                                                break;
+                                                            }
+                                                        }
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    //implemented by taylor
+                                                    ItemBought item = new ItemBought(buyerName, buyerEmail, sellerEmail, storeName, productName, productPrice, quantityBought);
+                                                    try (BufferedWriter writer = new BufferedWriter(new FileWriter("salesbystore.txt"))) {
+                                                        writer.write(item.toString());
+                                                        writer.newLine();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    //END OF ADDED CODE
