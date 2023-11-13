@@ -166,7 +166,7 @@ public class TestCases extends Methods {
             e.printStackTrace();
             throw new AssertionError("Exception thrown while reading the file", e);
         } finally {
-            // Delee the file created during the test
+            // Delete the file created during the test
             if (dataFile.exists() && !dataFile.delete()) {
                 System.err.println("Failed to delete the file after the test.");
             }
