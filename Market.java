@@ -17,7 +17,7 @@ public class Market {
 
         //used for separating for products
         String[] arrayListOfProducts;
-
+        ArrayList<String> customerHistoryProducts = null;
 
         try {
             //reading products from file into the product array list
@@ -1193,7 +1193,7 @@ public class Market {
                                 int productNumber = 0;
                                 do {
                                     System.out.println("Type in number for chosen product insights OR\n\n[0] Search for products" +
-                                            "\n[-1] Check shopping cart\n[-2] Edit profile\n[-3] to exit");
+                                            "\n[-1] Check shopping cart\n[-2] Edit profile\n[-3] to view purchase history\n[-4] to exit");
                                     try {
                                         ///WILL STILL HAVE TO "sort the marketplace on price or quantity available."
                                         productNumber = s.nextInt();
@@ -1275,15 +1275,18 @@ public class Market {
                                                                 + " products");
                                                         method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1),
                                                                 searchedProducts.get(itemFromSearchChosen - 1).getQuantityAvailable());
+                                                        if (searchedProducts.get(itemFromSearchChosen - 1).getQuantityAvailable() != 0) {
+                                                            customerHistoryProducts.add(searchedProducts.get(itemFromSearchChosen - 1).getProductName());
+                                                        }
                                                     } else {
                                                         method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1), amountPurchasing);
                                                         System.out.println(searchedProducts.get(itemFromSearchChosen - 1).getProductName() + " purchased! Thank you!");
+                                                        customerHistoryProducts.add(searchedProducts.get(itemFromSearchChosen - 1).getProductName());
                                                     }
                                                     // calls method to purchase
                                                     // in method... sets quantity sold and sets quantity available
                                                     //still has to add other statistics for following sales and receipts for customer
-                                                    method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1), amountPurchasing);
-                                                    System.out.println(searchedProducts.get(itemFromSearchChosen - 1).getProductName() + " purchased! Thank you!");
+                                                
                                                     ///IMPLEMENT: take into consideration if quantity available turns to 0 or will no longer be available
                                                     //EX: 5 quantity left.. buyer wants to
 
@@ -1374,10 +1377,30 @@ public class Market {
                                         break;
                                     }
                                 } else if (productNumber == -3) {
+                                    PrintWriter pw = new PrintWriter("customerHistory.txt");
+                                    if(customerHistoryProducts != null) {
+                                        for (int i = 0; i < customerHistoryProducts.size(); i++) {
+                                            pw.write(customerHistoryProducts.get(i));
+                                        }
+                                        BufferedReader bfr = new BufferedReader(new FileReader("customerHistory.txt"));
+                                        String line = "";
+                                        ArrayList<String> lines = new ArrayList<>();
+                                        while ((line = bfr.readLine()) != null) {
+                                            lines.add(line);
+                                        }
+                                        for (int i = 0; i < customerHistoryProducts.size(); i++) {
+                                            System.out.println("Products Purchased: " + customerHistoryProducts.get(i));
+                                        }
+                                    }
+                                
+                                } else if (productNumber == -4) {
                                     System.out.println("Back to main page!");
                                     exitMarketPlace = true;
                                     //IMPLEMENT SAVING METHOD
-
+                                    PrintWriter pw = new PrintWriter("customerHistory.txt");
+                                    for(int i = 0; i < customerHistoryProducts.size(); i++){
+                                        pw.write(customerHistoryProducts.get(i));
+                                    }
                                     //save shopping cart
                                     method.saveArrayListToFile(shoppingCart, userAccount);
 
@@ -1498,9 +1521,11 @@ public class Market {
                                                             } else if (quantityBought > shoppingCart.get(i).getQuantityAvailable()) {
                                                                 System.out.println("Only " + shoppingCart.get(i).getQuantityAvailable() + " quantity available to purchase\n");
                                                                 method.purchaseProduct(shoppingCart.get(i), shoppingCart.get(i).getQuantityAvailable());
+                                                                customerHistoryProducts.add(shoppingCart.get(i).getProductName());
                                                                 //adding amount it can
                                                                 //might implement reciepts
                                                             } else {
+                                                                customerHistoryProducts.add(shoppingCart.get(i).getProductName());
                                                                 method.purchaseProduct(shoppingCart.get(i), quantityBought);
                                                                 System.out.println(shoppingCart.get(i).getProductName() + " " + shoppingCart.get(i).getQuantitySold() + "quantity purchased!\n");
                                                             }
@@ -1622,7 +1647,11 @@ public class Market {
                                             System.out.println("Could only purchase " + Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable()
                                                     + " products");
                                             method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1), productNumber - 1);
+                                            if(Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable() != 0) {
+                                            customerHistoryProducts.add(Methods.productsOnMarket.get(productNumber - 1).getProductName());
+                                        }
                                         } else {
+                                            customerHistoryProducts.add(Methods.productsOnMarket.get(productNumber - 1).getProductName());
                                             method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1), amountPurchasing);
                                         }
 
