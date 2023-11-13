@@ -172,4 +172,50 @@ public class TestCases {
             }
         }
     }
+
+    @Test
+    public void testExportPurchaseHistory() throws IOException{
+        Files f = new Files("exampleExport.txt", true, false);
+        f.exportPurchaseHistory();
+        BufferedReader bfr = new BufferedReader(new FileReader("exportHistory.txt"));
+        String line = "";
+        ArrayList<String> lines = new ArrayList<>();
+        while ((line = bfr.readLine()) != null) {
+            lines.add(line);
+        }
+
+        assertEquals("Purchase 1: item1", lines.get(0));
+        assertEquals("Purchase 2: item2", lines.get(1));
+    }
+
+    @Test
+    public void testExportProducts() throws IOException{
+            Product product = new Product("ProductName", "StoreName", "Description", 5, 4.5);
+            ArrayList<Product> products = new ArrayList<>();
+            products.add(product);
+
+            Files f = new Files("ExportedProducts.txt", true, false);
+            f.exportProducts(products);
+            BufferedReader bfr = new BufferedReader(new FileReader("ExportedProducts.txt"));
+            ArrayList<String> readFile = new ArrayList<>();
+            String line = null;
+            while ((line = bfr.readLine()) != null) {
+                readFile.add(line);
+            }
+
+            assertEquals("Product Statistics:", readFile.get(0));
+            assertEquals("Product Name: ProductName", readFile.get(1));
+            assertEquals("Store Name: StoreName", readFile.get(2));
+            assertEquals("Description: Description", readFile.get(3));
+            assertEquals("Quantity Available: 5", readFile.get(4));
+            assertEquals("Price: 4.50", readFile.get(5));
+        }
+
+    @Test
+    public void testImportProducts() throws IOException{
+        Product product = new Product("ProductName", "StoreName","Description", 10, 5.00);
+        Files f = new Files("ImportFile.txt", true, false);
+        ArrayList<Product> products = f.importProducts("ImportFile.txt");
+        assertEquals(products.get(0).statisticsToString(), product.statisticsToString());
+    }
 }
