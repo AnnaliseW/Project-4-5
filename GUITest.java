@@ -36,6 +36,9 @@ public class GUITest extends JFrame {
                 signIn();
             }
         });
+
+        //TO:DO continue
+
     }
 
     private void signIn() {
@@ -45,19 +48,17 @@ public class GUITest extends JFrame {
 
         System.out.println("Username: " + username);
         System.out.println("Password: " + password);
-
-
+        
         passwordField.setText("");
     }
 
+    public static void run() {
+        JOptionPane.showMessageDialog(null, "Welcome to the marketplace", "Welcome", JOptionPane.INFORMATION_MESSAGE);
+        new GUITest().setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JOptionPane.showMessageDialog(null, "Welcome to the marketplace", "Welcome", JOptionPane.INFORMATION_MESSAGE);
-                new GUITest().setVisible(true);
-            }
-        });
+        run();
     }
 
 }
