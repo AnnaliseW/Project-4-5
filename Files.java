@@ -1,7 +1,9 @@
 import java.io.*;
 import java.util.ArrayList;
 
+//TODO: Need to create a Files object first
 //TODO: In market, need to prompt to enter file path
+//TODO: Make sure code in market handles all errors
 
 public class Files {
 
@@ -9,7 +11,6 @@ public class Files {
     public boolean seller;
     public boolean buyer;
 
-    //NEED TO CREATE A FILES OBJECT FIRST
     public Files(String infoFileName, boolean seller, boolean buyer) {
         this.infoFileName = infoFileName;
         this.seller = seller;
@@ -20,15 +21,23 @@ public class Files {
         return this.infoFileName;
     }
 
-    public boolean exportPurchaseHistory() throws IOException {
+    public boolean getSeller() {
+        return seller;
+    }
+
+    public boolean getBuyer() {
+        return buyer;
+    }
+
+    public boolean exportPurchaseHistory() throws IOException { //returns true if successful
         try (BufferedReader reader = new BufferedReader(new FileReader(infoFileName));
-             BufferedWriter writer = new BufferedWriter(new FileWriter("purchaseHistory.txt"))) {
+             BufferedWriter writer = new BufferedWriter(new FileWriter("purchaseHistory.txt", false))) {
 
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
 
-                Boolean isSeller = Boolean.parseBoolean(fields[3]);
+                boolean isSeller = Boolean.parseBoolean(fields[3]);
 
                 if (seller == isSeller) {
                     return false;
@@ -53,7 +62,7 @@ public class Files {
     //Takes in file with each line being a product in this format:
     //pencil,purdue,it is pencil,53,2.44
     //String productName, String storeName, String descriptionOfProduct, int quantityAvailable, double price
-    public ArrayList<Product> importProducts(String fileName) throws IOException {
+    public ArrayList<Product> importProducts(String fileName) throws IOException { //returns true if successful
         ArrayList<String> lines = new ArrayList<>();
         ArrayList<Product> imports = new ArrayList<>();
         File file1 = new File(fileName);
@@ -69,20 +78,24 @@ public class Files {
             e.printStackTrace();
         }
         for (String productString : lines) {
-            String[] parts = productString.split(", ");
-            String productName = parts[0];
-            String storeName = parts[1];
-            String descriptionOfProduct = parts[2];
-            int quantityAvailable = Integer.parseInt(parts[3]);
-            double price = Double.parseDouble(parts[4]);
-            Product product = new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price);
-            imports.add(product);
+            try {
+                String[] parts = productString.split(",");
+                String productName = parts[0];
+                String storeName = parts[1];
+                String descriptionOfProduct = parts[2];
+                int quantityAvailable = Integer.parseInt(parts[3]);
+                double price = Double.parseDouble(parts[4]);
+                Product product = new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price);
+                imports.add(product);
+            } catch (NumberFormatException e) {
+                System.out.println("Error with number values. Please check File");
+            }
         }
         return imports;
     }
 
     //TODO: will need to remove products from the seller's inventory after this is called
-    public boolean exportProducts(ArrayList<Product> exportedProducts) throws IOException {
+    public boolean exportProducts(ArrayList<Product> exportedProducts) throws IOException { //returns true if successful
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("ExportedProducts.txt"))) {
             for (Product product : exportedProducts) {
                 writer.write(product.statisticsToString());
