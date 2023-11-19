@@ -2,9 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class GUITest extends JFrame {
@@ -24,15 +22,84 @@ public class GUITest extends JFrame {
         passwordField = new JPasswordField(15);
 
         JButton signInButton = createSignInButton();
+        JButton createAccountButton = new JButton("Create Account");
 
         setLayout(new GridLayout(3, 2));
 
         add(emailLabel);
         add(emailField);
+
         add(passwordLabel);
         add(passwordField);
-        add(new JLabel());
+
         add(signInButton);
+        add(createAccountButton);
+
+        createAccountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCreateAccountDialog();
+            }
+        });
+
+    }
+
+    private void showCreateAccountDialog() {
+        JPanel panel = new JPanel(new GridLayout(6, 2));
+
+        panel.add(new JLabel("Name:"));
+        JTextField nameField = new JTextField();
+        panel.add(nameField);
+
+        panel.add(new JLabel("Email:"));
+        JTextField emailField = new JTextField();
+        panel.add(emailField);
+
+        panel.add(new JLabel("Password:"));
+        JPasswordField passwordField = new JPasswordField();
+        panel.add(passwordField);
+
+        //Only allows one to be selected
+        //More info here: https://codehs.com/tutorial/david/java-swing-buttons-layout
+        JRadioButton sellerRadioButton = new JRadioButton("Seller");
+        JRadioButton buyerRadioButton = new JRadioButton("Buyer");
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(sellerRadioButton);
+        group.add(buyerRadioButton);
+
+        panel.add(sellerRadioButton);
+        panel.add(buyerRadioButton);
+
+        int result = JOptionPane.showConfirmDialog(null, panel, "Create Account",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String name = nameField.getText();
+            String email = emailField.getText();
+            char[] passwordChars = passwordField.getPassword();
+            String password = new String(passwordChars);
+
+            boolean isSeller = sellerRadioButton.isSelected();
+
+            if (!name.isEmpty() && !email.isEmpty() && password.length() > 0) {
+                saveNewAccount(name, email, password, isSeller);
+                JOptionPane.showMessageDialog(null, "Account created successfully!", "Account Created",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please fill in all fields.", "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void saveNewAccount(String name, String email, String password, boolean isSeller) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data.txt", true))) {
+            writer.write(String.format("%s,%s,%s,%b;", name, email, password, isSeller));
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private JButton createSignInButton() {
