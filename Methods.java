@@ -59,35 +59,35 @@ public class Methods {
             }
             String sellerEmail = user.getEmail();
 
-                for (int i = 0; i < allUserData.size(); i++) {
-                    String[] findUserEmail = allUserData.get(i).split(",");
-                    if (findUserEmail[1].equals(sellerEmail)) {
-                        //finding line of user
-                        String[] findProducts = allUserData.get(i).split(";");
-                        if (findProducts.length == 1) {
-                            // no products selling
-                        } else {
-                            String[] eachProduct = findProducts[1].split("@@");
-                            String findingIfStoreNameAlreadyExists = "";
-                            String oneStoreName = null;
-                            for (int k = 0; k < eachProduct.length; k++) {
-                                //iterating through every product
-                                String[] findingStoreName = eachProduct[k].split(",");
-                                oneStoreName = "";
-                                if (!findingIfStoreNameAlreadyExists.contains(findingStoreName[1])) {
-                                    oneStoreName = findingStoreName[1];
-                                    findingIfStoreNameAlreadyExists += findingStoreName[1];
-                                    //not already in list
-                                    allStoreNames += oneStoreName + ",";
-                                }
-
+            for (int i = 0; i < allUserData.size(); i++) {
+                String[] findUserEmail = allUserData.get(i).split(",");
+                if (findUserEmail[1].equals(sellerEmail)) {
+                    //finding line of user
+                    String[] findProducts = allUserData.get(i).split(";");
+                    if (findProducts.length == 1) {
+                        // no products selling
+                    } else {
+                        String[] eachProduct = findProducts[1].split("@@");
+                        String findingIfStoreNameAlreadyExists = "";
+                        String oneStoreName = null;
+                        for (int k = 0; k < eachProduct.length; k++) {
+                            //iterating through every product
+                            String[] findingStoreName = eachProduct[k].split(",");
+                            oneStoreName = "";
+                            if (!findingIfStoreNameAlreadyExists.contains(findingStoreName[1])) {
+                                oneStoreName = findingStoreName[1];
+                                findingIfStoreNameAlreadyExists += findingStoreName[1];
+                                //not already in list
+                                allStoreNames += oneStoreName + ",";
                             }
 
                         }
 
-                    } else {
-                        // not the user
                     }
+
+                } else {
+                    // not the user
+                }
 
             }
 
@@ -117,64 +117,63 @@ public class Methods {
         } catch (IOException e) {
             e.printStackTrace();
         }
-            for (int i = 0; i < allUserData.size(); i++) {
-                //splitting to find which ones are shopping carts
-                String[] customerUsers = allUserData.get(i).split(",");
-                if (customerUsers[3].startsWith("false")) {
-                    String[] shoppingCart = allUserData.get(i).split(";");
-                    if (shoppingCart.length == 1) {
-                        //no shopping cart for customer
-                    } else {
+        for (int i = 0; i < allUserData.size(); i++) {
+            //splitting to find which ones are shopping carts
+            String[] customerUsers = allUserData.get(i).split(",");
+            if (customerUsers[3].startsWith("false")) {
+                String[] shoppingCart = allUserData.get(i).split(";");
+                if (shoppingCart.length == 1) {
+                    //no shopping cart for customer
+                } else {
 
-                            //more than one item in shopping cart
+                    //more than one item in shopping cart
 
-                            String[] productsInCart = shoppingCart[1].split("@@");
-                            if (productsInCart.length > 1) {
-                            customerCount++;
-                            for (int k = 0; k < productsInCart.length; k++) {
-                                String[] eachProduct = productsInCart[k].split(",");
-                                if (storeNames.contains(eachProduct[1])) {
+                    String[] productsInCart = shoppingCart[1].split("@@");
+                    if (productsInCart.length > 1) {
+                        customerCount++;
+                        for (int k = 0; k < productsInCart.length; k++) {
+                            String[] eachProduct = productsInCart[k].split(",");
+                            if (storeNames.contains(eachProduct[1])) {
 
-                                    System.out.printf("\nCustomer " + customerCount + "\nProduct Name: " + eachProduct[0] + "\nStore Name: "
-                                            + eachProduct[1] + "\nDescription: " + eachProduct[2] + "\nQuantity Available: "
-                                            + eachProduct[3] + "\nPrice : $%.2f" + "\nQuantity Buying in Cart: " + eachProduct[5].replace("@@", "")
-                                            + "\n", Double.parseDouble(eachProduct[4]));
+                                System.out.printf("\nCustomer " + customerCount + "\nProduct Name: " + eachProduct[0] + "\nStore Name: "
+                                        + eachProduct[1] + "\nDescription: " + eachProduct[2] + "\nQuantity Available: "
+                                        + eachProduct[3] + "\nPrice : $%.2f" + "\nQuantity Buying in Cart: " + eachProduct[5].replace("@@", "")
+                                        + "\n", Double.parseDouble(eachProduct[4]));
 
 
-                                }
                             }
+                        }
 
 
-                        } else {
-                            customerCount++;
-                            String[] eachProduct = shoppingCart[1].split(",");
-                                if (storeNames.contains(eachProduct[1])) {
-                                    totalMessage += String.format("\nCustomer " + customerCount + "\nProduct Name: " + eachProduct[0] + "\nStore Name: "
-                                            + eachProduct[1] + "\nDescription: " + eachProduct[2] + "\nQuantity Available: "
-                                            + eachProduct[3] + "\nPrice : $%.2f" + "\nQuantity Buying in Cart: " + eachProduct[5].replace("@@", "")
-                                            + "\n", Double.parseDouble(eachProduct[4]));
-
-
-                                }
+                    } else {
+                        customerCount++;
+                        String[] eachProduct = shoppingCart[1].split(",");
+                        if (storeNames.contains(eachProduct[1])) {
+                            totalMessage += String.format("\nCustomer " + customerCount + "\nProduct Name: " + eachProduct[0] + "\nStore Name: "
+                                    + eachProduct[1] + "\nDescription: " + eachProduct[2] + "\nQuantity Available: "
+                                    + eachProduct[3] + "\nPrice : $%.2f" + "\nQuantity Buying in Cart: " + eachProduct[5].replace("@@", "")
+                                    + "\n", Double.parseDouble(eachProduct[4]));
 
 
                         }
 
+
                     }
 
-
-                } else {
-                    // not a customer
                 }
-            }
-            if (totalMessage.isEmpty()) {
-                return "No customers have any items in cart!";
+
+
             } else {
-                return totalMessage;
+                // not a customer
             }
+        }
+        if (totalMessage.isEmpty()) {
+            return "No customers have any items in cart!";
+        } else {
+            return totalMessage;
+        }
 
     }
-
 
 
     public void purchaseProduct(Product product, int quantityPurchased) {
@@ -559,5 +558,99 @@ public class Methods {
         }
     }
 
+
+    public ArrayList<Product> sortByMinPrice(ArrayList<Product> productsArrayList) {
+        ArrayList<Product> copyOfProducts = new ArrayList<>(productsArrayList);
+
+        ArrayList<Product> newProductsArrayList = new ArrayList<>();
+        while (productsArrayList.size() != newProductsArrayList.size()) {
+            double min = Integer.MAX_VALUE;
+            for (int i = 0; i < copyOfProducts.size(); i++) {
+                if (copyOfProducts.get(i).getPrice() < min) {
+                    min = copyOfProducts.get(i).getPrice();
+                }
+            }
+
+            for (int k = 0; k < copyOfProducts.size(); k++) {
+                if (copyOfProducts.get(k).getPrice() == min) {
+                    newProductsArrayList.add(copyOfProducts.get(k));
+                    copyOfProducts.remove(copyOfProducts.get(k));
+                }
+            }
+        }
+
+        return newProductsArrayList;
+    }
+
+    public ArrayList<Product> sortByMaxPrice(ArrayList<Product> productsArrayList) {
+        ArrayList<Product> copyOfProducts = new ArrayList<>(productsArrayList);
+
+        ArrayList<Product> newProductsArrayList = new ArrayList<>();
+        while (productsArrayList.size() != newProductsArrayList.size()) {
+            double max = Integer.MIN_VALUE;
+            for (int i = 0; i < copyOfProducts.size(); i++) {
+                if (copyOfProducts.get(i).getPrice() > max) {
+                    max = copyOfProducts.get(i).getPrice();
+                }
+            }
+
+            for (int k = 0; k < copyOfProducts.size(); k++) {
+                if (copyOfProducts.get(k).getPrice() == max) {
+                    newProductsArrayList.add(copyOfProducts.get(k));
+                    copyOfProducts.remove(copyOfProducts.get(k));
+                }
+            }
+        }
+
+        return newProductsArrayList;
+    }
+
+
+    public ArrayList<Product> sortByMinQuantity(ArrayList<Product> productsArrayList) {
+        ArrayList<Product> copyOfProducts = new ArrayList<>(productsArrayList);
+
+        ArrayList<Product> newProductsArrayList = new ArrayList<>();
+        while (productsArrayList.size() != newProductsArrayList.size()) {
+            int min = Integer.MAX_VALUE;
+            for (int i = 0; i < copyOfProducts.size(); i++) {
+                if (copyOfProducts.get(i).getQuantityAvailable() < min) {
+                    min = copyOfProducts.get(i).getQuantityAvailable();
+                }
+            }
+
+            for (int k = 0; k < copyOfProducts.size(); k++) {
+                if (copyOfProducts.get(k).getQuantityAvailable() == min) {
+                    newProductsArrayList.add(copyOfProducts.get(k));
+                    copyOfProducts.remove(copyOfProducts.get(k));
+                }
+            }
+        }
+
+        return newProductsArrayList;
+    }
+
+
+    public ArrayList<Product> sortByMaxQuantity(ArrayList<Product> productsArrayList) {
+        ArrayList<Product> copyOfProducts = new ArrayList<>(productsArrayList);
+
+        ArrayList<Product> newProductsArrayList = new ArrayList<>();
+        while (productsArrayList.size() != newProductsArrayList.size()) {
+            int max = Integer.MIN_VALUE;
+            for (int i = 0; i < copyOfProducts.size(); i++) {
+                if (copyOfProducts.get(i).getQuantityAvailable() > max) {
+                    max = copyOfProducts.get(i).getQuantityAvailable();
+                }
+            }
+
+            for (int k = 0; k < copyOfProducts.size(); k++) {
+                if (copyOfProducts.get(k).getQuantityAvailable() == max) {
+                    newProductsArrayList.add(copyOfProducts.get(k));
+                    copyOfProducts.remove(copyOfProducts.get(k));
+                }
+            }
+        }
+
+        return newProductsArrayList;
+    }
 
 }
