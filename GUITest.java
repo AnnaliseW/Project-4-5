@@ -157,8 +157,47 @@ public class GUITest extends JFrame {
 
             sellButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    // TODO: Handle sell button action
-                    JOptionPane.showMessageDialog(null, "Sell button clicked!", "Sell", JOptionPane.INFORMATION_MESSAGE);
+                    JPanel panel = new JPanel(new GridLayout(5, 2));
+
+                    panel.add(new JLabel("Product Name:"));
+                    JTextField productNameField = new JTextField();
+                    panel.add(productNameField);
+
+                    panel.add(new JLabel("Store Name:"));
+                    JTextField storeNameField = new JTextField();
+                    panel.add(storeNameField);
+
+                    panel.add(new JLabel("Description:"));
+                    JTextField descriptionField = new JTextField();
+                    panel.add(descriptionField);
+
+                    panel.add(new JLabel("Quantity Selling:"));
+                    JTextField quantityField = new JTextField();
+                    panel.add(quantityField);
+
+                    panel.add(new JLabel("Price:"));
+                    JTextField priceField = new JTextField();
+                    panel.add(priceField);
+
+                    int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                    if (result == JOptionPane.OK_OPTION) {
+                        String productName = productNameField.getText();
+                        String storeName = storeNameField.getText();
+                        String description = descriptionField.getText();
+                        int quantity = Integer.parseInt(quantityField.getText());
+                        double price = Double.parseDouble(priceField.getText());
+
+
+                        Product newProductAdded = new Product(productName, storeName, description, quantity, price);
+
+                        //TODO: Add products to correct arraylists
+
+                        JOptionPane.showMessageDialog(null, newProductAdded.getProductName() + " added to the market!", "Successfully Added", JOptionPane.INFORMATION_MESSAGE);
+
+
+                    }
                 }
             });
 
