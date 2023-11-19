@@ -1090,7 +1090,7 @@ public class Market {
                                     System.out.println("List of Customer's Current Shopping Carts for Stores:\n---------------------\n");
                                     Methods method = new Methods();
                                     String allStoreNames = method.findingStoreNamesForSeller(userAccount);
-                                    
+
 
 
 
@@ -1271,7 +1271,7 @@ public class Market {
                                 do {
                                     System.out.println("Type in number for chosen product insights OR\n" +
                                             "\n[0] Search for products" +
-                                            "\n[-1] Check shopping cart\n[-2] Edit profile\n[-3] view purchase history\n[-4] exit");
+                                            "\n[-1] Check shopping cart\n[-2] Edit profile\n[-3] view purchase history\n[-4] sort market\n[-5] exit");
                                     try {
                                         ///WILL STILL HAVE TO "sort the marketplace on price or quantity available."
                                         productNumber = s.nextInt();
@@ -1340,8 +1340,6 @@ public class Market {
                                             //asking if they would like to purchase the item asked for statistics
 
                                             int purchaseResponse = 0;
-                                            int chooseRemoval;
-                                            int removeFromCart;
                                             boolean continueLooping = false;
                                             while (!continueLooping) {
                                                 boolean stop = false;
@@ -1517,14 +1515,13 @@ public class Market {
                                                     //save product array list
                                                     method.saveProductFile(Methods.productsOnMarket);
                                                     continueLooping = true;
-
                                                 }
                                             }/// while to continue
 
                                         }
                                         break;
                                     }
-                                } else if (productNumber == -4) {
+                                } else if (productNumber == -5) {
                                     System.out.println("Back to main page!");
                                     exitMarketPlace = true;
                                     //IMPLEMENT SAVING METHOD
@@ -1535,7 +1532,67 @@ public class Market {
                                     //save product array list
                                     method.saveProductFile(Methods.productsOnMarket);
 
-                                } else if (productNumber == -3) {
+                                } else if (productNumber == -4) {
+                                    boolean askQuestion = false;
+                                    int sortChoice;
+                                    ArrayList<Product> copy = new ArrayList<>();
+
+                                    // Implementing sorting market
+                                    while (!askQuestion) {
+                                        System.out.println("Sort the market!\n[1] sort lowest to highest price\n[2] sort " +
+                                                "highest to lowest price\n[3] sort lowest to highest quantity available\n[4]" +
+                                                " sort highest to lowest quantity available\n[5] exit");
+
+                                        try {
+                                            sortChoice = s.nextInt();
+                                            s.nextLine();
+
+                                            if (sortChoice == 1) {
+                                                // low to high price
+
+                                                copy = method.sortByMinPrice(Methods.productsOnMarket);
+
+                                                Methods.productsOnMarket.clear();
+                                                Methods.productsOnMarket.addAll(copy);
+                                                System.out.println("Market items sorted low to high by price!\n");
+                                                askQuestion = true;
+                                            } else if (sortChoice == 2) {
+
+                                                copy = method.sortByMaxPrice(Methods.productsOnMarket);
+
+                                                Methods.productsOnMarket.clear();
+                                                Methods.productsOnMarket.addAll(copy);
+                                                System.out.println("Market items sorted high to low by price!\n");
+                                                askQuestion = true;
+                                            } else if (sortChoice == 3) {
+
+                                                copy = method.sortByMinQuantity(Methods.productsOnMarket);
+
+                                                Methods.productsOnMarket.clear();
+                                                Methods.productsOnMarket.addAll(copy);
+                                                System.out.println("Market items sorted low to high by quantity available!\n");
+                                                askQuestion = true;
+                                            } else if (sortChoice == 4) {
+
+                                                copy = method.sortByMaxQuantity(Methods.productsOnMarket);
+
+                                                Methods.productsOnMarket.clear();
+                                                Methods.productsOnMarket.addAll(copy);
+                                                System.out.println("Market items sorted high to low by quantity available!\n");
+                                                askQuestion = true;
+                                            } else if (sortChoice == 5) {
+                                                askQuestion = true;
+                                            } else {
+                                                System.out.println("Invalid choice. Please choose again.");
+                                                // Optionally, you can leave the askQuestion as false to allow another attempt
+                                            }
+                                        } catch (InputMismatchException e) {
+                                            System.out.println("Invalid input. Please enter a number.");
+                                            s.nextLine();
+                                        }
+                                    }
+                                }
+                                else if (productNumber == -3) {
 
                                     PrintWriter pw = new PrintWriter("customerHistory.txt");
                                     for (int i = 0; i < customerHistoryProducts.size(); i++) {
@@ -1949,9 +2006,9 @@ public class Market {
 
                                             //save shopping cart
                                             method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
-
                                             //save product array list
                                             method.saveProductFile(Methods.productsOnMarket);
+                                            break;
                                         }
 
 
@@ -1983,7 +2040,7 @@ public class Market {
                 mainPage = false;
 
             } else {
-                System.out.println("Please input options 1-4\n");
+                System.out.println("Please input options 1-5\n");
             }
 
 
