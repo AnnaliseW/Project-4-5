@@ -9,6 +9,8 @@ public class GUITest extends JFrame {
     private JTextField emailField;
     private JPasswordField passwordField;
 
+    public User userAccount;
+
     public GUITest() {
         setTitle("Sign In");
         setSize(300, 150);
@@ -177,6 +179,44 @@ public class GUITest extends JFrame {
                     System.exit(0);
                 }
             });
+
+            editProfileButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JPanel panel = new JPanel(new GridLayout(6, 2));
+
+                    panel.add(new JLabel("New Name:"));
+                    JTextField newNameField = new JTextField();
+                    panel.add(newNameField);
+
+                    panel.add(new JLabel("New Email:"));
+                    JTextField newEmailField = new JTextField();
+                    panel.add(newEmailField);
+
+                    panel.add(new JLabel("New Password:"));
+                    JPasswordField newPasswordField = new JPasswordField();
+                    panel.add(newPasswordField);
+
+                    int result = JOptionPane.showConfirmDialog(null, panel, "Edit Profile",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                    if (result == JOptionPane.OK_OPTION) {
+                        Methods method = new Methods();
+                        String newName = newNameField.getText();
+                        String newEmail = newEmailField.getText();
+                        char[] newPasswordChars = newPasswordField.getPassword();
+                        String newPassword = new String(newPasswordChars);
+
+                        //TODO: Not sure if anything is actually changed
+                        method.changeUserName(newName, userAccount);
+                        method.changeUserEmail(newEmail, userAccount);
+                        method.changePassword(newPassword, userAccount);
+                        JOptionPane.showMessageDialog(null, "Profile updated successfully!", "Profile Updated",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            });
+
+
         }
 
     }
@@ -274,11 +314,47 @@ public class GUITest extends JFrame {
                 }
             });
 
+            editProfileButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JPanel panel = new JPanel(new GridLayout(6, 2));
+
+                    panel.add(new JLabel("New Name:"));
+                    JTextField newNameField = new JTextField();
+                    panel.add(newNameField);
+
+                    panel.add(new JLabel("New Email:"));
+                    JTextField newEmailField = new JTextField();
+                    panel.add(newEmailField);
+
+                    panel.add(new JLabel("New Password:"));
+                    JPasswordField newPasswordField = new JPasswordField();
+                    panel.add(newPasswordField);
+
+                    int result = JOptionPane.showConfirmDialog(null, panel, "Edit Profile",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                    if (result == JOptionPane.OK_OPTION) {
+                        Methods method = new Methods();
+                        String newName = newNameField.getText();
+                        String newEmail = newEmailField.getText();
+                        char[] newPasswordChars = newPasswordField.getPassword();
+                        String newPassword = new String(newPasswordChars);
+
+                        //TODO: Not sure if anything is actually changed
+                        method.changeUserName(newName, userAccount);
+                        method.changeUserEmail(newEmail, userAccount);
+                        method.changePassword(newPassword, userAccount);
+                        JOptionPane.showMessageDialog(null, "Profile updated successfully!", "Profile Updated",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            });
+
 
         }
     }
 
-    private String[] signIn() {
+    public String[] signIn() {
         boolean signInComplete = false;
         String[] info = new String[2];
         info[0] = "false";
@@ -289,7 +365,7 @@ public class GUITest extends JFrame {
         char[] passwordChars = passwordField.getPassword();
         String password = new String(passwordChars);
 
-        User userAccount = null;
+         userAccount = null;
 
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
