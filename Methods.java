@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -652,5 +651,47 @@ public class Methods {
 
         return newProductsArrayList;
     }
+
+
+    //NEW VERSION
+    //JUST STORES ALL THE ITEMBOUGHT OBJECTS IN LARGE TEXT FILE, NO ORDER
+    //CAN GO THROUGH AND FIND THE ONES THAT ARE UNDER THE SELLER EMAIL
+
+    public void addItemBoughtToFile(ItemBought itemBought) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("salesByStore.txt", true))) {
+            bw.write(itemBought.toString());
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<ItemBought> getItemsBySellerEmail(String sellerEmail) {
+        ArrayList<ItemBought> result = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("salesByStore.txt"))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] values = line.substring(line.indexOf("{") + 1, line.indexOf("}")).split(", ");
+                String buyerName = values[0].split("=")[1];
+                String buyerEmail = values[1].split("=")[1];
+                String currentSellerEmail = values[2].split("=")[1];
+                String storeName = values[3].split("=")[1];
+                String productName = values[4].split("=")[1];
+                double productPrice = Double.parseDouble(values[5].split("=")[1]);
+                int quantityBought = Integer.parseInt(values[6].split("=")[1]);
+
+                if (currentSellerEmail.equals(sellerEmail)) {
+                    ItemBought itemBought = new ItemBought(buyerName, buyerEmail, currentSellerEmail, storeName, productName, productPrice, quantityBought);
+                    result.add(itemBought);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
 }
