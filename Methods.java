@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,6 +189,7 @@ public class Methods {
                 }
             }
         }
+        saveDataFileWhenPurchased(Methods.productsOnMarket, product);
     }
 
 
@@ -443,8 +445,9 @@ public class Methods {
 
         // Update the line with new information
 
+
         try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile)));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
             pw.print(firstPart);
             for (int i = 0; i < allProducts.size(); i++) {
                 pw.print(allProducts.get(i));
@@ -464,20 +467,19 @@ public class Methods {
 
     public void saveDataFileWhenPurchased(ArrayList<Product> arrayList, Product updatedProduct) {
         File dataFile = new File("data.txt");
-        //array list to reprint the file
+        // array list to reprint the file
         ArrayList<String> updatedContent = new ArrayList<>();
         ArrayList<String> allUserData = new ArrayList<>();
         String products;
         ArrayList<String> allProducts = new ArrayList<>();
         String updatedLine;
 
-        int updatedQuantitySold = updatedProduct.getQuantityAvailable();
+
         String storeName = updatedProduct.getStoreName();
         String productName = updatedProduct.getProductName();
         String description = updatedProduct.getDescriptionOfProduct();
         String quantity = String.valueOf(updatedProduct.getQuantityAvailable());
         String price = String.valueOf(updatedProduct.getPrice());
-
 
         try {
             BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
@@ -485,37 +487,101 @@ public class Methods {
             while ((line = bfr.readLine()) != null) {
                 allUserData.add(line);
             }
+            String updated;
 
             for (int i = 0; i < allUserData.size(); i++) {
                 String[] checkIfSeller = allUserData.get(i).split(",");
                 if (checkIfSeller[3].startsWith("true")) {
+                    // if seller there is only this amount of index
                     String[] afterSemiColon = allUserData.get(i).split(";");
                     if (allUserData.get(i).contains("@@")) {
                         String[] separtedByProduct = afterSemiColon[1].split("@@");
                         for (int k = 0; k < separtedByProduct.length; k++) {
                             String[] findStoreName = separtedByProduct[k].split(",");
-                            if (findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
-                                allUserData.set(i, allUserData.get(i).replace(separtedByProduct[k],
-                                        storeName + "," + productName + ","
-                                                + description + "," + quantity + "," + price));
+                            if (findStoreName.length >= 2 && findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
+                                updated = storeName + "," + productName + ","
+                                        + description + "," + quantity + "," + price;
+                                allUserData.set(i, allUserData.get(i).replace(separtedByProduct[k], updated));
                             }
                         }
                     }
                 }
-
             }
-
 
             bfr.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        // Update the line with new information
+
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
+            for (int i = 0; i < allUserData.size(); i++) {
+                pw.println(allUserData.get(i));
+            }
+
+            pw.flush();
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void saveDataFileCart(ShoppingCartProduct updatedProduct) {
+        File dataFile = new File("data.txt");
+        // array list to reprint the file
+        ArrayList<String> updatedContent = new ArrayList<>();
+        ArrayList<String> allUserData = new ArrayList<>();
+        String products;
+        ArrayList<String> allProducts = new ArrayList<>();
+        String updatedLine;
+
+
+        String storeName = updatedProduct.getStoreName();
+        String productName = updatedProduct.getProductName();
+        String description = updatedProduct.getDescriptionOfProduct();
+        String quantity = String.valueOf(updatedProduct.getQuantityAvailable());
+        String price = String.valueOf(updatedProduct.getPrice());
+        String quantityBuying = String.valueOf(updatedProduct.getQuantityBuying());
+
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+            String updated;
+
+            for (int i = 0; i < allUserData.size(); i++) {
+                String[] checkIfSeller = allUserData.get(i).split(",");
+                if (checkIfSeller[3].startsWith("true")) {
+                    // if seller there is only this amount of index
+                    String[] afterSemiColon = allUserData.get(i).split(";");
+                    if (allUserData.get(i).contains("@@")) {
+                        String[] separtedByProduct = afterSemiColon[1].split("@@");
+                        for (int k = 0; k < separtedByProduct.length; k++) {
+                            String[] findStoreName = separtedByProduct[k].split(",");
+                            if (findStoreName.length >= 2 && findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
+                                updated = storeName + "," + productName + ","
+                                        + description + "," + quantity + "," + price + "," + quantityBuying;
+                                allUserData.set(i, allUserData.get(i).replace(separtedByProduct[k], updated));
+                            }
+                        }
+                    }
+                }
+            }
+
+            bfr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Update the line with new information
 
         try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile)));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
             for (int i = 0; i < allUserData.size(); i++) {
                 pw.println(allUserData.get(i));
             }
@@ -543,10 +609,11 @@ public class Methods {
             allProducts.add(products);
         }
 
+
         // Update the line with new information
 
         try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile)));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
             for (int i = 0; i < allProducts.size(); i++) {
                 pw.print(allProducts.get(i));
             }
@@ -651,47 +718,5 @@ public class Methods {
 
         return newProductsArrayList;
     }
-
-
-    //NEW VERSION
-    //JUST STORES ALL THE ITEMBOUGHT OBJECTS IN LARGE TEXT FILE, NO ORDER
-    //CAN GO THROUGH AND FIND THE ONES THAT ARE UNDER THE SELLER EMAIL
-
-    public void addItemBoughtToFile(ItemBought itemBought) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("salesByStore.txt", true))) {
-            bw.write(itemBought.toString());
-            bw.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public ArrayList<ItemBought> getItemsBySellerEmail(String sellerEmail) {
-        ArrayList<ItemBought> result = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader("salesByStore.txt"))) {
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                String[] values = line.substring(line.indexOf("{") + 1, line.indexOf("}")).split(", ");
-                String buyerName = values[0].split("=")[1];
-                String buyerEmail = values[1].split("=")[1];
-                String currentSellerEmail = values[2].split("=")[1];
-                String storeName = values[3].split("=")[1];
-                String productName = values[4].split("=")[1];
-                double productPrice = Double.parseDouble(values[5].split("=")[1]);
-                int quantityBought = Integer.parseInt(values[6].split("=")[1]);
-
-                if (currentSellerEmail.equals(sellerEmail)) {
-                    ItemBought itemBought = new ItemBought(buyerName, buyerEmail, currentSellerEmail, storeName, productName, productPrice, quantityBought);
-                    result.add(itemBought);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
 
 }
