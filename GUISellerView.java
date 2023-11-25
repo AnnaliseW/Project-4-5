@@ -47,6 +47,37 @@ public class GUISellerView {
         return userAccount;
     }
 
+    public void createProductArray() {
+        try {
+            String[] arrayListOfProducts;
+            //reading products from file into the product array list
+            BufferedReader bfr = new BufferedReader(new FileReader("productArrayList.txt"));
+            String line = "";
+
+            while ((line = bfr.readLine()) != null) {
+                //splitting by @@ for each product
+                arrayListOfProducts = line.split("@@");
+                for (int i = 0; i < arrayListOfProducts.length; i++) {
+                    String[] separateParameters = arrayListOfProducts[i].split(",");
+                    String productName = separateParameters[0];
+                    String storeName = separateParameters[1];
+                    String description = separateParameters[2];
+                    int quantityAvailable = Integer.parseInt(separateParameters[3]);
+                    double price = Double.parseDouble(separateParameters[4]);
+                    //recreate product that is currently selling
+                    Product eachProduct = new Product(productName, storeName, description, quantityAvailable, price);
+                    Methods.productsOnMarket.add(eachProduct);
+                }
+            }
+            bfr.close();
+
+        } catch (
+                IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void sellProduct() {
         JPanel panel = new JPanel(new GridLayout(5, 2));
 
@@ -124,86 +155,14 @@ public class GUISellerView {
             double newPrice = Double.parseDouble(priceField.getText());
 
 
-            Product newProductAdded = new Product(productName, storeName, description, quantity, price);
+            Product newProductAdded = new Product(newProductName, newStoreName, newDescription, newQuantity, newPrice);
 
             //TODO: Add products to correct arraylists
 
             JOptionPane.showMessageDialog(null, newProductAdded.getProductName() + " added to the market!", "Successfully Added", JOptionPane.INFORMATION_MESSAGE);
 
-
-
-
-            boolean existingStoreName = false;
-            try {
-                BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
-                String line = "";
-                ArrayList<String> allUserData = new ArrayList<>();
-
-                while ((line = bfr.readLine()) != null) {
-                    allUserData.add(line);
-                }
-
-                for (int i = 0; i < allUserData.size(); i++) {
-                    // checking to see if they are sellers
-                    String[] checkIfSeller = allUserData.get(i).split(",");
-                    // seller identified
-                    if (checkIfSeller[3].startsWith("true")) {
-                        String[] oneUserDataEachProduct = allUserData.get(i).split(";");
-
-                        if (oneUserDataEachProduct.length == 1) {
-                            String[] eachFieldForProduct = oneUserDataEachProduct[0].split(",");
-                            // checking if store name is the same and email is the same
-                            if (newStoreName.equals(eachFieldForProduct[1]) &&
-                                    checkIfSeller[1].equals(userAccount.getEmail())) {
-                                existingStoreName = true;
-                                break;
-                            }
-                        } else {
-                            for (int j = 0; j < oneUserDataEachProduct.length; j++) {
-                                // separating the individual products
-                                String[] eachProduct = oneUserDataEachProduct[j].split("@@");
-                                for (int k = 0; k < eachProduct.length; k++) {
-                                    String[] eachFieldForProduct = eachProduct[k].split(",");
-                                    // checking if store name is the same and email is the same
-                                    if (eachFieldForProduct[1].equals(newStoreName) &&
-                                            oneUserDataEachProduct[1].equals(userAccount.getEmail())) {
-                                        existingStoreName = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                bfr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (existingStoreName) {
-                System.out.println("Store name already exists! Please input a different store name\n");
-            } else {
-                askForStoreName = true;
-            }
-
-
-
-
-
-
-
-
-
-
         }
     }
 
-
-
-
-
-
-
-
+    
 }
