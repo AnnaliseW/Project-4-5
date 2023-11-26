@@ -11,6 +11,7 @@ public class GUITest extends JFrame {
     private JPasswordField passwordField;
 
     public GUICustomerView guiCustomerView;
+    public GUISellerView guiSellerView;
 
     public GUITest() {
         setTitle("Sign In");
@@ -81,9 +82,6 @@ public class GUITest extends JFrame {
         int result = JOptionPane.showConfirmDialog(null, panel, "Create Account",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-
-
-
         if (result == JOptionPane.OK_OPTION) {
             String name = nameField.getText();
             String email = emailField.getText();
@@ -111,9 +109,6 @@ public class GUITest extends JFrame {
             //format ji,jo1234,1234,false;
 
             //parse boolean for creating the user for sign in
-
-
-
 
             boolean isSeller = sellerRadioButton.isSelected();
 
@@ -232,7 +227,6 @@ public class GUITest extends JFrame {
 
                     customerGui.SeeProducts(userAccount, shoppingCart);
 
-
                     //add implementation of seeing products
 
 
@@ -247,10 +241,7 @@ public class GUITest extends JFrame {
                     customerGui.searchProducts(userAccount, shoppingCart);
 
 
-
-
                     //add implementation of seeing products
-
 
                 }
             });
@@ -286,14 +277,16 @@ public class GUITest extends JFrame {
         private JButton exitButton;
 
         public SellerMarketplaceHomePage() {
-            GUISellerView guiSellerView = new GUISellerView();
-            guiSellerView.createProductArray();
+            guiSellerView = new GUISellerView();
 
             String[] signInResult = signIn();
             //creating user
             User userAccount = guiSellerView.returnUserAccount(signInResult[2], signInResult[3]);
             //creates product array list from file
+
             guiSellerView.createProductArray();
+
+            ArrayList<Product> myProducts = guiSellerView.generateMyProducts(userAccount);
 
             setTitle("Marketplace Home Page");
             setSize(600, 300);
@@ -327,7 +320,19 @@ public class GUITest extends JFrame {
             sellButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     GUISellerView sellerGUI = new GUISellerView();
-                    sellerGUI.sellProduct();
+                    ArrayList<Product> newMyProducts = sellerGUI.sellProduct(myProducts);
+                    myProducts.clear();
+                    myProducts.addAll(newMyProducts);
+                }
+            });
+
+            editButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    GUISellerView sellerGUI = new GUISellerView();
+                    sellerGUI.editProducts(myProducts);
+                    ArrayList<Product> newMyProducts = sellerGUI.sellProduct(myProducts);
+                    myProducts.clear();
+                    myProducts.addAll(newMyProducts);
                 }
             });
 
@@ -336,11 +341,6 @@ public class GUITest extends JFrame {
                     System.exit(0);
                 }
             });
-
-
-
-
-
 
 
 
@@ -354,8 +354,6 @@ public class GUITest extends JFrame {
         String[] info = new String[4];
         info[0] = "false";
         info[1] = "seller";
-
-
 
         String email = emailField.getText();
         char[] passwordChars = passwordField.getPassword();
@@ -424,9 +422,6 @@ public class GUITest extends JFrame {
 
         return info;
     }
-
-
-
 
     public static void run() {
         JOptionPane.showMessageDialog(null, "Welcome to the marketplace", "Welcome", JOptionPane.INFORMATION_MESSAGE);
