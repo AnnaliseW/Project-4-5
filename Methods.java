@@ -175,7 +175,7 @@ public class Methods {
     }
 
 
-    public void purchaseProduct(Product product, int quantityPurchased) {
+    public void purchaseProduct(Product product, int quantityPurchased, ArrayList<SoldProduct> list) {
         for (int i = 0; i < productsOnMarket.size(); i++) {
             if (productsOnMarket.get(i).equals(product)) {
                 if (productsOnMarket.get(i).getQuantityAvailable() == 0) {
@@ -189,6 +189,7 @@ public class Methods {
             }
         }
         saveDataFileWhenPurchased(Methods.productsOnMarket, product);
+        saveCustomerHistory(list);
     }
 
     public void sellProduct(Product product) {
@@ -800,6 +801,22 @@ public class Methods {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public void saveCustomerHistory(ArrayList<SoldProduct> customerProducts){
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter("customerHistory.txt");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(customerProducts.size());
+        for (int i = 0; i < customerProducts.size(); i++) {
+            writer.write(customerProducts.get(i).getProductName() + "," + customerProducts.get(i).getStoreName() + "," +
+                    customerProducts.get(i).getDescriptionOfProduct() + "," + customerProducts.get(i).getQuantityAvailable() + "," +
+                    customerProducts.get(i).getPrice() + "," + customerProducts.get(i).getQuantityPurchased() + ";");
+        }
+        writer.close();
     }
 
 
