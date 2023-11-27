@@ -329,21 +329,38 @@ public class GUITest extends JFrame {
             editButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     GUISellerView sellerGUI = new GUISellerView();
-                    sellerGUI.editProducts(myProducts);
-                    ArrayList<Product> newMyProducts = sellerGUI.sellProduct(myProducts);
+                    ArrayList<Product> newMyProducts = sellerGUI.editProducts(myProducts);
                     myProducts.clear();
                     myProducts.addAll(newMyProducts);
                 }
             });
+
+
+            importButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    GUISellerView sellerGUI = new GUISellerView();
+                    try {
+                        ArrayList<Product> newMyProducts = sellerGUI.importProducts(myProducts);
+                        myProducts.clear();
+                        myProducts.addAll(newMyProducts);
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+
+                }
+            });
+
+
+
+
+
+
 
             exitButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     System.exit(0);
                 }
             });
-
-
-
 
         }
     }
