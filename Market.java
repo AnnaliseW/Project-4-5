@@ -1,6 +1,6 @@
 
-
 import java.io.*;
+import java.nio.Buffer;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class Market {
         //used for separating for products
         String[] arrayListOfProducts;
 
-        ArrayList<String> customerHistoryProducts = new ArrayList<>();
+        
 
 
         try {
@@ -605,7 +605,7 @@ public class Market {
                                                     + modifyingSeller.getDescriptionOfProduct() + "," +
                                                     modifyingSeller.getQuantityAvailable() + "," + modifyingSeller.getPrice();
                                             for (int i = 0; i < allUserData.size(); i++) {
-                                                //check if the product is in line 
+                                                //check if the product is in line
                                                 if (allUserData.get(i).contains(dataTextProductFormat)) {
                                                     String[] userEmailFind = allUserData.get(i).split(",");
                                                     userEmail = userEmailFind[1];
@@ -1147,9 +1147,12 @@ public class Market {
                         boolean exitMarketPlace = false;
                         //boolean to check if user previously has products stored shopping cart
                         boolean emptyShoppingCart = false;
-
+                        
                         //shopping cart array list
                         ArrayList<ShoppingCartProduct> shoppingCart = new ArrayList<>();
+                        
+                        //customer purchase history array list
+                        ArrayList<SoldProduct> customerProducts = new ArrayList<>();
                         try {
                             BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
                             String line = "";
@@ -1271,12 +1274,12 @@ public class Market {
                                 do {
                                     System.out.println("Type in number for chosen product insights OR\n" +
                                             "\n[0] Search for products" +
-                                            "\n[-1] Check shopping cart\n[-2] Edit profile\n[-3] view purchase history\n[-4] sort market\n[-5] exit");
+                                            "\n[-1] Check shopping cart\n[-2] Edit profile\n[-3] View purchase history\n[-4] sort market\n[-5] exit");
                                     try {
                                         ///WILL STILL HAVE TO "sort the marketplace on price or quantity available."
                                         productNumber = s.nextInt();
                                         s.nextLine();
-                                        if (productNumber == -3) {
+                                        if (productNumber == -1) {
                                             method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                             method.saveProductFile(Methods.productsOnMarket);
                                             invalidInput = true;
@@ -1372,32 +1375,34 @@ public class Market {
                                                         }
                                                     }
 
-
+                                                    int quantityPurchased = 0;
                                                     if (searchedProducts.get(itemFromSearchChosen - 1).getQuantityAvailable()
                                                             < amountPurchasing) {
                                                         System.out.println("Could only purchase " + searchedProducts.get(itemFromSearchChosen - 1).getQuantityAvailable()
                                                                 + " products");
-                                                        method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1),
-                                                                searchedProducts.get(itemFromSearchChosen - 1).getQuantityAvailable());
+                                                        quantityPurchased = searchedProducts.get(itemFromSearchChosen - 1).getQuantityAvailable();
+                                                        customerProducts.add(new SoldProduct(searchedProducts.get(itemFromSearchChosen - 1), quantityPurchased));
+                                                        method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1), quantityPurchased, customerProducts);
+                                                        
                                                         if (searchedProducts.get(itemFromSearchChosen - 1).getQuantityAvailable() != 0) {
-                                                            customerHistoryProducts.add(searchedProducts.get(itemFromSearchChosen - 1).getProductName());
                                                             method.saveDataFileWhenPurchased(Methods.productsOnMarket, searchedProducts.get(itemFromSearchChosen - 1));
                                                         }
 
 
                                                     } else {
                                                         method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1),
-                                                                amountPurchasing);
+                                                                amountPurchasing, customerProducts);
+                                                        customerProducts.add(new SoldProduct(searchedProducts.get(itemFromSearchChosen - 1), amountPurchasing));
                                                         System.out.println(searchedProducts.get(itemFromSearchChosen - 1).getProductName()
                                                                 + " purchased! Thank you!");
-                                                        customerHistoryProducts.add(searchedProducts.get(itemFromSearchChosen - 1).getProductName());
+                                                        
                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, searchedProducts.get(itemFromSearchChosen
                                                                 - 1));
                                                     }
                                                     // calls method to purchase
                                                     // in method... sets quantity sold and sets quantity available
                                                     //still has to add other statistics for following sales and receipts for customer
-                                                    method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1), amountPurchasing);
+                                                    method.purchaseProduct(searchedProducts.get(itemFromSearchChosen - 1), amountPurchasing, customerProducts);
                                                     System.out.println(searchedProducts.get(itemFromSearchChosen - 1).getProductName() +
                                                             " purchased! Thank you!");
                                                     ///IMPLEMENT: take into consideration if quantity available turns to 0 or will no longer be available
@@ -1593,20 +1598,29 @@ public class Market {
                                     }
                                 }
                                 else if (productNumber == -3) {
-
-                                    PrintWriter pw = new PrintWriter("customerHistory.txt");
-                                    for (int i = 0; i < customerHistoryProducts.size(); i++) {
-                                        pw.write(customerHistoryProducts.get(i));
-                                    }
-                                    BufferedReader bfr = new BufferedReader(new FileReader("customerHistory.txt"));
+                                    ArrayList<String> customerHistoryData = new ArrayList<>();
                                     String line = "";
-                                    ArrayList<String> lines = new ArrayList<>();
-                                    while ((line = bfr.readLine()) != null) {
-                                        lines.add(line);
+
+                                    String customerHistory = " ";
+
+                                    BufferedReader bfr = null;
+                                    try{
+                                        bfr = new BufferedReader(new FileReader("customerHistory.txt"));
+                                    }catch (FileNotFoundException e){
+                                        e.printStackTrace();
                                     }
-                                    for (int i = 0; i < customerHistoryProducts.size(); i++) {
-                                        System.out.println("Products Purchased: " + customerHistoryProducts.get(i));
+                                    while((line = bfr.readLine()) != null){
+                                        customerHistoryData.add(line);
                                     }
+
+                                    for(int i = 0; i < customerHistoryData.size(); i++){
+                                        String[] oneUserData = customerHistoryData.get(i).split(",");
+                                        customerHistory += "\nPurchased: " + oneUserData[0] + "- " + oneUserData[5];
+                                    }
+                                    bfr.close();
+
+                                    System.out.println(customerHistory);
+
                                 } else if (productNumber == -1) {
                                     int shoppingCartExit;
                                     if (shoppingCart.isEmpty()) {
@@ -1673,7 +1687,6 @@ public class Market {
                                                 }
                                             }
                                             if (removeFromCart == 1) {
-
                                                 boolean continueAsking = false;
                                                 while (!continueAsking) {
                                                     try {
@@ -1726,16 +1739,15 @@ public class Market {
                                                                 purchaseInCart = Methods.productsOnMarket.get(k);
                                                             }
                                                         }
-                                                        method.purchaseProduct(purchaseInCart, shoppingCart.get(i).getQuantityAvailable());
+                                                        customerProducts.add(new SoldProduct(purchaseInCart, shoppingCart.get(i).getQuantityAvailable()));
+                                                        method.purchaseProduct(purchaseInCart, shoppingCart.get(i).getQuantityAvailable(), customerProducts);
                                                         ///check this customer history adding
-                                                        customerHistoryProducts.add(shoppingCart.get(i).getProductName());
                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, purchaseInCart);
                                                         //adding amount it can
                                                         //might implement reciepts
                                                     } else {
                                                         //saving to receipt ? check
-                                                        customerHistoryProducts.add(shoppingCart.get(i).getProductName());
-
+                                                        //shopping cart add
                                                         Product purchaseInCart = null;
                                                         for (int k = 0; k < Methods.productsOnMarket.size(); k++) {
                                                             if (Methods.productsOnMarket.get(k).getProductName().equals(shoppingCart.get(i).getProductName())
@@ -1743,10 +1755,10 @@ public class Market {
                                                                 purchaseInCart = Methods.productsOnMarket.get(k);
                                                             }
                                                         }
-
-                                                        method.purchaseProduct(purchaseInCart, shoppingCart.get(i).getQuantityBuying());
+                                                        customerProducts.add(new SoldProduct(purchaseInCart, shoppingCart.get(i).getQuantityBuying()));
+                                                        method.purchaseProduct(purchaseInCart, shoppingCart.get(i).getQuantityBuying(), customerProducts);
                                                         ///check this customer history adding
-                                                        customerHistoryProducts.add(shoppingCart.get(i).getProductName());
+                                                        //shopping cart add
                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, purchaseInCart);
 
 
@@ -1903,22 +1915,21 @@ public class Market {
                                                 s.nextLine();
                                             }
 
-
+                                            
                                             if (Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable() <
                                                     amountPurchasing) {
+                                                customerProducts.add(new SoldProduct(Methods.productsOnMarket.get(productNumber - 1), 
+                                                        Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable()));
                                                 System.out.println("Could only purchase " + Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable()
                                                         + " products");
                                                 method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1),
-                                                        productNumber - 1);
-                                                if (Methods.productsOnMarket.get(productNumber - 1).getQuantityAvailable() != 0) {
-                                                    customerHistoryProducts.add(Methods.productsOnMarket.get(productNumber - 1).getProductName());
-                                                }
+                                                        productNumber - 1, customerProducts);
                                                 method.saveDataFileWhenPurchased(Methods.productsOnMarket,
                                                         Methods.productsOnMarket.get(productNumber - 1));
                                             } else {
+                                                customerProducts.add(new SoldProduct(Methods.productsOnMarket.get(productNumber - 1), amountPurchasing));
                                                 method.purchaseProduct(Methods.productsOnMarket.get(productNumber - 1),
-                                                        amountPurchasing);
-                                                customerHistoryProducts.add(Methods.productsOnMarket.get(productNumber - 1).getProductName());
+                                                        amountPurchasing, customerProducts);
                                                 method.saveDataFileWhenPurchased(Methods.productsOnMarket,
                                                         Methods.productsOnMarket.get(productNumber - 1));
                                             }
@@ -2049,5 +2060,3 @@ public class Market {
 
     }
 }
-
-
