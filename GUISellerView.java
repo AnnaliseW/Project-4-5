@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class GUISellerView {
@@ -13,7 +11,6 @@ public class GUISellerView {
             BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
             String line = "";
             ArrayList<String> allUserData = new ArrayList<>();
-
 
             while ((line = bfr.readLine()) != null) {
                 allUserData.add(line);
@@ -187,87 +184,135 @@ public class GUISellerView {
         if (myProducts.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No products to modify.", "No products", JOptionPane.INFORMATION_MESSAGE);
             return new ArrayList<>();
-        }
+        } else {
 
-        String[] products = new String[myProducts.size()];
-        for (int i = 0; i < myProducts.size(); i++) {
-            products[i] = myProducts.get(i).statisticsToString();
-        }
-        String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Select item to edit",
-                "Edit", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
-
-        Product productToEdit = myProducts.get(0);
-
-        int selection = 0;
-
-        for (int k = 0; k < myProducts.size(); k++) {
-            if (myProducts.get(k).statisticsToString().equals(itemFromSearchChosen)) {
-                productToEdit = myProducts.get(k);
-                selection = k;
-                break;
+            String[] products = new String[myProducts.size()];
+            for (int i = 0; i < myProducts.size(); i++) {
+                products[i] = myProducts.get(i).statisticsToString();
             }
-        }
+            String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Select item to edit",
+                    "Edit", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
 
-        JPanel panel = new JPanel(new GridLayout(5, 2));
+            Product productToEdit = myProducts.get(0);
 
-        panel.add(new JLabel("New Product Name:"));
-        JTextField productNameField = new JTextField();
-        panel.add(productNameField);
+            int selection = 0;
 
-        panel.add(new JLabel("New Store Name:"));
-        JTextField storeNameField = new JTextField();
-        panel.add(storeNameField);
-
-        panel.add(new JLabel("New Description:"));
-        JTextField descriptionField = new JTextField();
-        panel.add(descriptionField);
-
-        panel.add(new JLabel("New Quantity Selling:"));
-        JTextField quantityField = new JTextField();
-        panel.add(quantityField);
-
-        panel.add(new JLabel("New Price:"));
-        JTextField priceField = new JTextField();
-        panel.add(priceField);
-
-        int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-        if (result == JOptionPane.OK_OPTION) {
-            String newProductName = productNameField.getText();
-            String newStoreName = storeNameField.getText();
-            String newDescription = descriptionField.getText();
-            int newQuantity = Integer.parseInt(quantityField.getText());
-            double newPrice = Double.parseDouble(priceField.getText());
-
-            productToEdit.setProductName(newProductName);
-            productToEdit.setStoreName(newStoreName);
-            productToEdit.setDescriptionOfProduct(newDescription);
-            productToEdit.setQuantityAvailable(newQuantity);
-            productToEdit.setPrice(newPrice);
-
-            myProducts.get(selection).setProductName(newProductName);
-            myProducts.get(selection).setStoreName(newStoreName);
-            myProducts.get(selection).setDescriptionOfProduct(newDescription);
-            myProducts.get(selection).setQuantityAvailable(newQuantity);
-            myProducts.get(selection).setPrice(newPrice);
-
-            for (int i = 0; i < Methods.getProductsOnMarket().size(); i++) {
-                if (Methods.getProductsOnMarket().get(i).equals(productToEdit)) {
-                    Methods.getProductsOnMarket().get(i).setProductName(newProductName);
-                    Methods.getProductsOnMarket().get(i).setStoreName(newStoreName);
-                    Methods.getProductsOnMarket().get(i).setDescriptionOfProduct(newDescription);
-                    Methods.getProductsOnMarket().get(i).setQuantityAvailable(newQuantity);
-                    Methods.getProductsOnMarket().get(i).setPrice(newPrice);
+            for (int k = 0; k < myProducts.size(); k++) {
+                if (myProducts.get(k).statisticsToString().equals(itemFromSearchChosen)) {
+                    productToEdit = myProducts.get(k);
+                    selection = k;
+                    break;
                 }
             }
 
+            JPanel panel = new JPanel(new GridLayout(5, 2));
 
-            JOptionPane.showMessageDialog(null, "Succesfully modified chosen product!", "Successfully Modified", JOptionPane.INFORMATION_MESSAGE);
+            panel.add(new JLabel("New Product Name:"));
+            JTextField productNameField = new JTextField();
+            panel.add(productNameField);
 
+            panel.add(new JLabel("New Store Name:"));
+            JTextField storeNameField = new JTextField();
+            panel.add(storeNameField);
+
+            panel.add(new JLabel("New Description:"));
+            JTextField descriptionField = new JTextField();
+            panel.add(descriptionField);
+
+            panel.add(new JLabel("New Quantity Selling:"));
+            JTextField quantityField = new JTextField();
+            panel.add(quantityField);
+
+            panel.add(new JLabel("New Price:"));
+            JTextField priceField = new JTextField();
+            panel.add(priceField);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                String newProductName = productNameField.getText();
+                String newStoreName = storeNameField.getText();
+                String newDescription = descriptionField.getText();
+                int newQuantity = Integer.parseInt(quantityField.getText());
+                double newPrice = Double.parseDouble(priceField.getText());
+
+                productToEdit.setProductName(newProductName);
+                productToEdit.setStoreName(newStoreName);
+                productToEdit.setDescriptionOfProduct(newDescription);
+                productToEdit.setQuantityAvailable(newQuantity);
+                productToEdit.setPrice(newPrice);
+
+                myProducts.get(selection).setProductName(newProductName);
+                myProducts.get(selection).setStoreName(newStoreName);
+                myProducts.get(selection).setDescriptionOfProduct(newDescription);
+                myProducts.get(selection).setQuantityAvailable(newQuantity);
+                myProducts.get(selection).setPrice(newPrice);
+
+                for (int i = 0; i < Methods.getProductsOnMarket().size(); i++) {
+                    if (Methods.getProductsOnMarket().get(i).equals(productToEdit)) {
+                        Methods.getProductsOnMarket().get(i).setProductName(newProductName);
+                        Methods.getProductsOnMarket().get(i).setStoreName(newStoreName);
+                        Methods.getProductsOnMarket().get(i).setDescriptionOfProduct(newDescription);
+                        Methods.getProductsOnMarket().get(i).setQuantityAvailable(newQuantity);
+                        Methods.getProductsOnMarket().get(i).setPrice(newPrice);
+                    }
+                }
+
+
+                JOptionPane.showMessageDialog(null, "Succesfully modified chosen product!", "Successfully Modified", JOptionPane.INFORMATION_MESSAGE);
+
+            }
+            return myProducts;
         }
-        return myProducts;
     }
 
+
+
+    //TODO: Just updates myProducts with new products added. Doesnt update anything else yet
+    public ArrayList<Product> importProducts(ArrayList<Product> myProducts) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(null);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+
+                try (BufferedReader br = new BufferedReader(new FileReader(selectedFile))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        lines.add(line);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Import canceled");
+                return myProducts;
+            }
+        } catch (FileNotFoundException f) {
+            JOptionPane.showMessageDialog(null, "No File Found");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading file");
+            e.printStackTrace();
+        }
+
+        for (String productString : lines) {
+            try {
+                String[] parts = productString.split(",");
+                String productName = parts[0];
+                String storeName = parts[1];
+                String descriptionOfProduct = parts[2];
+                int quantityAvailable = Integer.parseInt(parts[3]);
+                double price = Double.parseDouble(parts[4]);
+                Product product = new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price);
+                myProducts.add(product);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Error with number values. Please check File");
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Products imported successfully");
+        return myProducts;
+    }
 
 }
