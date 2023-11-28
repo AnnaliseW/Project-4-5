@@ -122,12 +122,10 @@ public class GUISellerView {
                     }
                 }
             }
-
             bfr.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return itemsSoldBySeller;
     }
 
@@ -176,7 +174,6 @@ public class GUISellerView {
         return myProducts;
 
     }
-
 
     //TODO: if they just added the product, it will not appear (even though it should)
     public ArrayList<Product> editProducts(ArrayList<Product> myProducts) {
@@ -258,16 +255,13 @@ public class GUISellerView {
                         Methods.getProductsOnMarket().get(i).setPrice(newPrice);
                     }
                 }
-
-
-                JOptionPane.showMessageDialog(null, "Succesfully modified chosen product!", "Successfully Modified", JOptionPane.INFORMATION_MESSAGE);
+                
+                JOptionPane.showMessageDialog(null, "Successfully modified chosen product!", "Successfully Modified", JOptionPane.INFORMATION_MESSAGE);
 
             }
             return myProducts;
         }
     }
-
-
 
     //TODO: Just updates myProducts with new products added. Doesnt update anything else yet
     public ArrayList<Product> importProducts(ArrayList<Product> myProducts) throws IOException {
@@ -313,6 +307,51 @@ public class GUISellerView {
 
         JOptionPane.showMessageDialog(null, "Products imported successfully");
         return myProducts;
+    }
+
+    public User editProfile(User user) {
+        Methods method = new Methods();
+
+        User newUser = new User(user.getName(), user.getEmail(), user.getPassword(), user.isSeller());
+
+        JOptionPane.showMessageDialog(null, "Leave fields empty if you would like to keep anything");
+
+        JPanel panel = new JPanel(new GridLayout(5, 2));
+
+        panel.add(new JLabel("New Name:"));
+        JTextField newNameField = new JTextField();
+        panel.add(newNameField);
+
+        panel.add(new JLabel("New Email:"));
+        JTextField newEmailField = new JTextField();
+        panel.add(newEmailField);
+
+        panel.add(new JLabel("New Password:"));
+        JTextField newPasswordField = new JTextField();
+        panel.add(newPasswordField);
+
+        int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String newUserName = newNameField.getText();
+            String newUserEmail = newEmailField.getText();
+            String newUserPassword = newPasswordField.getText();
+
+            if (newUserName.length() > 0) {
+                method.changeUserName(newUserName, user);
+                newUser.setName(newUserName);
+            }
+            if (newUserEmail.length() > 0) {
+                method.changeUserEmail(newUserEmail, user);
+                newUser.setEmail(newUserEmail);
+            }
+            if (newUserPassword.length() > 0) {
+                method.changePassword(newUserPassword, user);
+                newUser.setPassword(newUserPassword);
+            }
+        }
+        return newUser;
     }
 
 }
