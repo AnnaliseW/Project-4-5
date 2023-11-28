@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -193,6 +192,10 @@ public class Methods {
         saveProductFile(Methods.productsOnMarket);
     }
 
+    public void sellProduct(Product product) {
+        productsOnMarket.add(product);
+        saveDataFileWhenNewProductAdded(productsOnMarket, product);
+    }
 
     public void removeAccount(User user) {
         File dataFile = new File("data.txt");
@@ -522,6 +525,45 @@ public class Methods {
                 pw.println(allUserData.get(i));
             }
 
+            pw.flush();
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveDataFileWhenNewProductAdded(ArrayList<Product> arrayList, Product newProduct) {
+        File dataFile = new File("data.txt");
+        ArrayList<String> allUserData = new ArrayList<>();
+        String products;
+
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+            bfr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String storeName = newProduct.getStoreName();
+        String productName = newProduct.getProductName();
+        String description = newProduct.getDescriptionOfProduct();
+        String quantity = String.valueOf(newProduct.getQuantityAvailable());
+        String price = String.valueOf(newProduct.getPrice());
+
+        String newProductData = storeName + "," + productName + ","
+                + description + "," + quantity + "," + price;
+
+        allUserData.add(newProductData);
+
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
+            for (String userData : allUserData) {
+                pw.println(userData);
+            }
             pw.flush();
             pw.close();
         } catch (IOException e) {
