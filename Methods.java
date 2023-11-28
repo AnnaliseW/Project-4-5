@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -175,7 +176,7 @@ public class Methods {
     }
 
 
-    public void purchaseProduct(Product product, int quantityPurchased, ArrayList<SoldProduct> list) {
+    public void purchaseProduct(Product product, int quantityPurchased) {
         for (int i = 0; i < productsOnMarket.size(); i++) {
             if (productsOnMarket.get(i).equals(product)) {
                 if (productsOnMarket.get(i).getQuantityAvailable() == 0) {
@@ -189,13 +190,9 @@ public class Methods {
             }
         }
         saveDataFileWhenPurchased(Methods.productsOnMarket, product);
-        saveCustomerHistory(list);
+        saveProductFile(Methods.productsOnMarket);
     }
 
-    public void sellProduct(Product product) {
-        productsOnMarket.add(product);
-        saveDataFileWhenNewProductAdded(productsOnMarket, product);
-    }
 
     public void removeAccount(User user) {
         File dataFile = new File("data.txt");
@@ -532,44 +529,6 @@ public class Methods {
         }
     }
 
-    public void saveDataFileWhenNewProductAdded(ArrayList<Product> arrayList, Product newProduct) {
-        File dataFile = new File("data.txt");
-        ArrayList<String> allUserData = new ArrayList<>();
-        String products;
-
-        try {
-            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
-            String line;
-            while ((line = bfr.readLine()) != null) {
-                allUserData.add(line);
-            }
-            bfr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String storeName = newProduct.getStoreName();
-        String productName = newProduct.getProductName();
-        String description = newProduct.getDescriptionOfProduct();
-        String quantity = String.valueOf(newProduct.getQuantityAvailable());
-        String price = String.valueOf(newProduct.getPrice());
-
-        String newProductData = storeName + "," + productName + ","
-                + description + "," + quantity + "," + price;
-
-        allUserData.add(newProductData);
-
-        try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
-            for (String userData : allUserData) {
-                pw.println(userData);
-            }
-            pw.flush();
-            pw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void saveDataFileCart(ShoppingCartProduct updatedProduct) {
         File dataFile = new File("data.txt");
@@ -584,7 +543,7 @@ public class Methods {
         String storeName = updatedProduct.getStoreName();
         String productName = updatedProduct.getProductName();
         String description = updatedProduct.getDescriptionOfProduct();
-        String quantity = String.valueOf(updatedProduct.getQuantityAvailable());
+        String quantityAvailable = String.valueOf(updatedProduct.getQuantityAvailable());
         String price = String.valueOf(updatedProduct.getPrice());
         String quantityBuying = String.valueOf(updatedProduct.getQuantityBuying());
 
@@ -607,7 +566,7 @@ public class Methods {
                             String[] findStoreName = separtedByProduct[k].split(",");
                             if (findStoreName.length >= 2 && findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
                                 updated = storeName + "," + productName + ","
-                                        + description + "," + quantity + "," + price + "," + quantityBuying;
+                                        + description + "," + quantityAvailable + "," + price + "," + quantityBuying;
                                 allUserData.set(i, allUserData.get(i).replace(separtedByProduct[k], updated));
                             }
                         }
@@ -762,7 +721,6 @@ public class Methods {
     }
 
 
-
     //NEW VERSION
     //JUST STORES ALL THE ITEMBOUGHT OBJECTS IN LARGE TEXT FILE, NO ORDER
     //CAN GO THROUGH AND FIND THE ONES THAT ARE UNDER THE SELLER EMAIL
@@ -778,7 +736,6 @@ public class Methods {
 
     public ArrayList<ItemBought> getItemsBySellerEmail(String sellerEmail) {
         ArrayList<ItemBought> result = new ArrayList<>();
-
         try (BufferedReader br = new BufferedReader(new FileReader("salesByStore.txt"))) {
             String line;
 
@@ -801,22 +758,6 @@ public class Methods {
             e.printStackTrace();
         }
         return result;
-    }
-
-    public void saveCustomerHistory(ArrayList<SoldProduct> customerProducts){
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter("customerHistory.txt");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(customerProducts.size());
-        for (int i = 0; i < customerProducts.size(); i++) {
-            writer.write(customerProducts.get(i).getProductName() + "," + customerProducts.get(i).getStoreName() + "," +
-                    customerProducts.get(i).getDescriptionOfProduct() + "," + customerProducts.get(i).getQuantityAvailable() + "," +
-                    customerProducts.get(i).getPrice() + "," + customerProducts.get(i).getQuantityPurchased() + ";");
-        }
-        writer.close();
     }
 
 
