@@ -427,8 +427,8 @@ public class GUICustomerView {
 
                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                         method.saveProductFile(Methods.productsOnMarket);
-                        method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
 
                         //purchasing product
 
@@ -444,7 +444,7 @@ public class GUICustomerView {
                         for (int i = 0; i < shoppingCart.size(); i++) {
                             if (shoppingCart.get(i).getProductName().equals(productBought.getProductName()) &&
                                     shoppingCart.get(i).getStoreName().equals(productBought.getStoreName())) {
-                                shoppingCart.get(i).setQuantityAvailable(amountPurchasing);
+                                shoppingCart.get(i).setQuantityAvailable(productBought.getQuantityAvailable());
                                 method.saveDataFileCart(shoppingCart.get(i));
                             }
                         }
@@ -677,6 +677,7 @@ public class GUICustomerView {
                     shoppingCart.remove(productChosen);
                     //save into file remove from shopping cart
                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+                    //remove shopping cart from data file
 
 
                     JOptionPane.showMessageDialog(null, productChosen.getProductName() + " removed from cart!",
