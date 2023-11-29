@@ -12,7 +12,11 @@ import java.util.StringJoiner;
 import static javax.swing.JOptionPane.*;
 
 public class GUICustomerView {
-
+public ArrayList<SoldProduct> customerHistory = new ArrayList<>();
+    public ArrayList<SoldProduct> getCustomerHistory(){
+        return customerHistory;
+    }
+    
     public User returnUserAccount(String email, String password) {
         User userAccount = null;
         try {
