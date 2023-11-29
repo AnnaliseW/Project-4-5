@@ -1,3 +1,5 @@
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -194,7 +196,6 @@ public class GUITest extends JFrame {
             guiCustomerView.createProductArray();
             ArrayList<ShoppingCartProduct> shoppingCart = guiCustomerView.createShoppingCartArray(userAccount);
 
-
             //creates shopping cart array list from file
             setTitle("Marketplace Home Page");
             setSize(600, 300);
@@ -233,6 +234,14 @@ public class GUITest extends JFrame {
                 }
             });
 
+            viewPurchaseHistoryButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    GUICustomerView customerGUI = new GUICustomerView();
+                    Methods method = new Methods();
+                    customerGUI.customerHistory(userAccount, method.makeCustomerHistory(userAccount));
+                }
+            });
+
             searchProductsButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     // TODO: Handle sell button action
@@ -258,6 +267,9 @@ public class GUITest extends JFrame {
 
             exitButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    Methods method = new Methods();
+                    GUICustomerView customerGUI = new GUICustomerView();
+                    method.saveCustomerHistory(method.makeCustomerHistory(userAccount), userAccount);
                     System.exit(0);
                 }
             });
@@ -349,12 +361,6 @@ public class GUITest extends JFrame {
 
                 }
             });
-
-
-
-
-
-
 
             exitButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
