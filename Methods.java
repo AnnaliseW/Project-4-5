@@ -802,5 +802,86 @@ public class Methods {
         return result;
     }
 
+    public void saveCustomerHistory(ArrayList<SoldProduct> customerHistory, User user){
+        //email:prod1,store1,desc1,available,price,purchased-
+        ArrayList<String> data = new ArrayList<>();
+        BufferedReader bfr = null;
+        try{
+            String line;
+            bfr = new BufferedReader(new FileReader("customerHistory.txt"));
+            while((line = bfr.readLine()) != null){
+                data.add(line);
+            }
+            bfr.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        int index = -1;
+        for(int i = 0; i < data.size(); i++){
+            if(user.getEmail().equals(data.get(i).substring(0, data.get(i).indexOf(':')))){
+                index = i;
+            }
+        }
+
+        String productList = "";
+        for(int i = 0; i < customerHistory.size(); i++){
+            productList += customerHistory.get(i).getProductName() + "," + customerHistory.get(i).getStoreName() + "," +
+                    customerHistory.get(i).getDescriptionOfProduct() + "," + customerHistory.get(i).getQuantityAvailable() + "," +
+                customerHistory.get(i).getPrice() + "," + customerHistory.get(i).getQuantityPurchased() + "-";
+        }
+        if(index == -1){
+            data.add(user.getEmail() + ":" + productList);
+        } else {
+            data.set(index, user.getEmail() + ":" + productList);
+        }
+
+        PrintWriter pw = null;
+        try{
+            pw = new PrintWriter("customerHistory.txt");
+            for(int i = 0; i < data.size(); i++){
+                pw.write(data.get(i) + ";");
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        pw.close();
+    }
+
+    public ArrayList<SoldProduct> makeCustomerHistory(User user){
+        ArrayList<SoldProduct> customerHistory = new ArrayList<>();
+        BufferedReader bfr;
+        ArrayList<String> historyData = new ArrayList<>();
+        try{
+            String line;
+            bfr = new BufferedReader(new FileReader("customerHistory.txt"));
+            while((line = bfr.readLine()) != null){
+                historyData.add(line);
+            }
+            bfr.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        int index = -1;
+        for(int i = 0; i < historyData.size(); i++){
+            if(user.getEmail().equals(historyData.get(i).substring(0, historyData.get(i).indexOf(':')))){
+                index = i;
+                if(index != -1){
+                    historyData.set(index, historyData.get(index).substring(historyData.get(index).indexOf(':') + 1));
+                }
+            }
+        }
+
+        if(index != -1) {
+            String[] eachProduct = historyData.get(index).split("-");
+            String[] oneProduct;
+
+            for(int i = 0; i < eachProduct.length - 1; i++){
+            oneProduct = eachProduct[i].split(",");
+            customerHistory.add(new SoldProduct(oneProduct[0], oneProduct[1], oneProduct[2], Integer.parseInt(oneProduct[3]),
+                    Double.parseDouble(oneProduct[4]), Integer.parseInt(oneProduct[5])));
+            }
+        }
+        return customerHistory;
+    }
 
 }
