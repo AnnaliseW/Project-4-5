@@ -761,5 +761,54 @@ public class GUICustomerView {
 
     }
 
+     public void customerHistory(User user, ArrayList<SoldProduct> purchaseHistory) {
+        Methods method = new Methods();
+        method.saveCustomerHistory(purchaseHistory, user);
+        if (purchaseHistory.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No History!",
+                    "Purchase History", JOptionPane.INFORMATION_MESSAGE);
+        }
+        else{
+            String[] products = new String[purchaseHistory.size()];
+            for(int i = 0; i < purchaseHistory.size(); i++){
+                products[i] = purchaseHistory.get(i).statisticsToString();
+            }
+
+            String product = (String) JOptionPane.showInputDialog(null, "Purchase History",
+                    "Purchase History", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+
+            if(product == null){
+                return;
+            }
+            else {
+                SoldProduct productChosen = null;
+                for(int i = 0; i < purchaseHistory.size(); i++){
+                    if(purchaseHistory.get(i).statisticsToString().equals(product)){
+                        productChosen = purchaseHistory.get(i);
+                    }
+                }
+
+                String productDescription = "<html>"
+                        + "Product Name: " + productChosen.getProductName() + "<br>"
+                        + "Store: " + productChosen.getStoreName() + "<br>"
+                        + "Description: " + productChosen.getDescriptionOfProduct() + "<br>"
+                        + "Available Quantity: " + productChosen.getQuantityAvailable() + "<br>"
+                        + "Price: " + productChosen.getPrice() + "<br>"
+                        + "Quantity Buying: " + productChosen.getQuantityPurchased() + "<br>"
+                        + "</html>";
+                JLabel productStatistics = new JLabel(productDescription, JLabel.CENTER);
+                productStatistics.setSize(600, 300);
+                productStatistics.setHorizontalAlignment(JLabel.CENTER);
+                JFrame frame = new JFrame();
+                frame.setTitle(productChosen.getProductName());
+                frame.setSize(600, 300);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setLocationRelativeTo(null);
+                frame.add(productStatistics);
+                frame.setVisible(true);
+            }
+        }
+    }
+
 
 }
