@@ -1,4 +1,3 @@
-
 import javax.imageio.IIOException;
 import javax.swing.*;
 import java.awt.*;
@@ -117,6 +116,7 @@ public class MarketPlaceClient extends JFrame {
 
                         try {
                             String userInformation = reader.readLine();
+                            System.out.println(userInformation);
 
                             String[] user = userInformation.split(",");
                             String nameUser = user[0];
@@ -128,6 +128,7 @@ public class MarketPlaceClient extends JFrame {
                         } catch (IOException g) {
                             g.printStackTrace();
                         }
+                        GUICustomerView guiCustomerView = new GUICustomerView();
 
 
                         //USER ACCOUNT must be taken from server and put into USER
@@ -154,10 +155,8 @@ public class MarketPlaceClient extends JFrame {
                             JButton viewCustomerCartsButton;
                             JButton exitButton;
 
-                            User userAccount = guiCustomerView.returnUserAccount(email, password);
 
 
-                            GUICustomerView guiCustomerView = new GUICustomerView();
                             guiCustomerView.createProductArray();
                             sellerView.setTitle("Marketplace Home Page");
                             sellerView.setSize(600, 300);
@@ -186,6 +185,8 @@ public class MarketPlaceClient extends JFrame {
                             sellerView.add(viewCustomerCartsButton);
                             sellerView.add(exitButton);
 
+                            sellerView.setVisible(true);
+
                             // implement buttons here
 
 
@@ -203,14 +204,12 @@ public class MarketPlaceClient extends JFrame {
 
                             JFrame CustomerView = new JFrame();
 
-                            GUICustomerView guiCustomerView = new GUICustomerView();
 
 
                             // NOTE : sign in message occurs twice using this method
 
 
                             //creating user
-                            User userAccount = guiCustomerView.returnUserAccount(email, password);
                             //creates product array list from file
                             guiCustomerView.createProductArray();
                             ArrayList<ShoppingCartProduct> shoppingCart = guiCustomerView.createShoppingCartArray(userAccount);
@@ -248,6 +247,23 @@ public class MarketPlaceClient extends JFrame {
                             CustomerView.add(exitButton);
 
                             CustomerView.setVisible(true);
+
+                            seeProductsButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    // TODO: Handle sell button action
+
+
+
+
+
+                                   // customerGui.SeeProducts(userAccount, shoppingCart);
+
+
+                                    //add implementation of seeing products
+
+
+                                }
+                            });
 
 
 
