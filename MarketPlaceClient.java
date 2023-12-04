@@ -1,8 +1,7 @@
 import javax.imageio.IIOException;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +21,14 @@ public class MarketPlaceClient extends JFrame {
 
     public boolean openSeller = false;
     public boolean logIn = false;
+
+    public Product productBought;
+
+    public Product productBoughtNew;
+
+    public boolean productInsight;
+
+    public boolean continueProduct;
 
 
     public static void run() throws IOException {
@@ -77,8 +84,12 @@ public class MarketPlaceClient extends JFrame {
             add(createAccountButton);
 
 
+
+
+
             signInButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    setVisible(false);
 
 
                     //SEND MESSAGE "SIGN IN PRESSED" TO SERVER
@@ -116,7 +127,7 @@ public class MarketPlaceClient extends JFrame {
 
                         try {
                             String userInformation = reader.readLine();
-                            System.out.println(userInformation);
+
 
                             String[] user = userInformation.split(",");
                             String nameUser = user[0];
@@ -156,7 +167,6 @@ public class MarketPlaceClient extends JFrame {
                             JButton exitButton;
 
 
-
                             guiCustomerView.createProductArray();
                             sellerView.setTitle("Marketplace Home Page");
                             sellerView.setSize(600, 300);
@@ -171,7 +181,7 @@ public class MarketPlaceClient extends JFrame {
                             salesByStoreButton = new JButton("Sales By Store");
                             editProfileButton = new JButton("Edit Profile");
                             viewCustomerCartsButton = new JButton("View Customer Carts");
-                            exitButton = new JButton("Exit");
+
 
                             sellerView.setLayout(new GridLayout(3, 3));
 
@@ -183,94 +193,1195 @@ public class MarketPlaceClient extends JFrame {
                             sellerView.add(salesByStoreButton);
                             sellerView.add(editProfileButton);
                             sellerView.add(viewCustomerCartsButton);
-                            sellerView.add(exitButton);
 
                             sellerView.setVisible(true);
 
                             // implement buttons here
 
 
-
-
                         } else {
-                            //opens buyer market side
-                            openSeller = false;
+
+                                //opens buyer market side
+                                openSeller = false;
 
 
-                            writer.write("buyer");
-                            writer.println();
-                            writer.flush();
+                                writer.write("buyer");
+                                writer.println();
+                                writer.flush();
 
 
-                            JFrame CustomerView = new JFrame();
+                                JFrame CustomerView = new JFrame();
 
 
-
-                            // NOTE : sign in message occurs twice using this method
-
-
-                            //creating user
-                            //creates product array list from file
-                            guiCustomerView.createProductArray();
-                            ArrayList<ShoppingCartProduct> shoppingCart = guiCustomerView.createShoppingCartArray(userAccount);
+                                // NOTE : sign in message occurs twice using this method
 
 
-                            //creates shopping cart array list from file
-                            CustomerView.setTitle("Marketplace Home Page");
-                            CustomerView.setSize(600, 300);
-                            CustomerView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                            CustomerView.setLocationRelativeTo(null);
-
-                            JButton seeProductsButton;
-                            JButton searchProductsButton;
-                            JButton viewShoppingCartButton;
-                            JButton editProfileButton;
-                            JButton viewPurchaseHistoryButton;
-                            JButton exitButton;
+                                //creating user
+                                //creates product array list from file
+                                guiCustomerView.createProductArray();
+                                ArrayList<ShoppingCartProduct> shoppingCart = guiCustomerView.createShoppingCartArray(userAccount);
 
 
-                            seeProductsButton = new JButton("See Products");
-                            searchProductsButton = new JButton("Search Products");
-                            viewShoppingCartButton = new JButton("View Shopping Cart");
-                            editProfileButton = new JButton("Edit Profile");
-                            viewPurchaseHistoryButton = new JButton("View Purchase History");
-                            exitButton = new JButton("Exit");
+                                //creates shopping cart array list from file
+                                CustomerView.setTitle("Marketplace Home Page");
+                                CustomerView.setSize(600, 300);
+                                CustomerView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                                CustomerView.setLocationRelativeTo(null);
+
+                                JButton seeProductsButton;
+                                JButton searchProductsButton;
+                                JButton viewShoppingCartButton;
+                                JButton editProfileButton;
+                                JButton viewPurchaseHistoryButton;
 
 
-                            CustomerView.setLayout (new GridLayout(2, 3));
+                                seeProductsButton = new JButton("See Products");
+                                searchProductsButton = new JButton("Search Products");
+                                viewShoppingCartButton = new JButton("View Shopping Cart");
+                                editProfileButton = new JButton("Edit Profile");
+                                viewPurchaseHistoryButton = new JButton("View Purchase History");
 
-                            CustomerView.add(seeProductsButton);
-                            CustomerView.add(searchProductsButton);
-                            CustomerView.add(viewShoppingCartButton);
-                            CustomerView.add(editProfileButton);
-                            CustomerView.add(viewPurchaseHistoryButton);
-                            CustomerView.add(exitButton);
 
-                            CustomerView.setVisible(true);
+                                CustomerView.setLayout(new GridLayout(2, 3));
 
-                            seeProductsButton.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    // TODO: Handle sell button action
+                                CustomerView.add(seeProductsButton);
+                                CustomerView.add(searchProductsButton);
+                                CustomerView.add(viewShoppingCartButton);
+                                CustomerView.add(editProfileButton);
+                                CustomerView.add(viewPurchaseHistoryButton);
+
+                                CustomerView.setVisible(true);
 
 
 
 
 
-                                   // customerGui.SeeProducts(userAccount, shoppingCart);
+                                seeProductsButton.addActionListener(new ActionListener() {
+                                    public void actionPerformed(ActionEvent e) {
+                                            productInsight = false;
+                                            continueProduct = false;
+                                            // TODO: Handle sell button action
+                                            writer.write("seeProduct");
+                                            writer.println();
+                                            writer.flush();
+                                            System.out.println("1 see products button ");
+                                            //indicator to process see products
+                                            if (Methods.productsOnMarket.isEmpty()) {
+                                                JOptionPane.showMessageDialog(null, "No products in the market!", "See Products", JOptionPane.INFORMATION_MESSAGE);
+                                            } else {
+                                                int sortResponse = JOptionPane.showConfirmDialog(null, "Would you like to sort the market?",
+                                                        "Sort Market", JOptionPane.YES_NO_OPTION);
+                                                if (sortResponse == -1) {
+                                                    System.out.println("no sort response exit ");
+                                                    return;
+                                                    //exiting
+                                                }
+                                                if (sortResponse == 0) {
+                                                    //chose yes
+                                                    System.out.println("choose to sort");
 
 
-                                    //add implementation of seeing products
+                                                    JFrame frame = new JFrame();
+                                                    JPanel panel = new JPanel(new GridLayout(2, 2));
+                                                    JButton sortByMinPrice = new JButton("sort low -> high price");
+                                                    JButton sortByMaxPrice = new JButton("sort high -> low price");
+                                                    JButton sortByMinQuantity = new JButton("sort low -> high quantity");
+                                                    JButton sortByMaxQuantity = new JButton("sort high -> low quantity");
+
+                                                    panel.add(sortByMinQuantity);
+                                                    panel.add(sortByMaxQuantity);
+                                                    panel.add(sortByMinPrice);
+                                                    panel.add(sortByMaxPrice);
+
+                                                    frame.add(panel);
+
+                                                    frame.pack();
+                                                    frame.setLocationRelativeTo(null);
+                                                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                                    frame.setVisible(true);
+                                                    Methods method = new Methods();
 
 
-                                }
-                            });
+
+
+
+                                                    //one button
+                                                    sortByMinQuantity.addActionListener(f -> {
+                                                        ArrayList<Product> copy = new ArrayList<>();
+                                                        copy = method.sortByMinQuantity(Methods.productsOnMarket);
+                                                        Methods.productsOnMarket.clear();
+                                                        Methods.productsOnMarket.addAll(copy);
+
+                                                        String[] products = new String[Methods.productsOnMarket.size()];
+                                                        for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                            products[i] = Methods.productsOnMarket.get(i).statisticsToString();
+                                                        }
+                                                        System.out.println(Arrays.toString(products));
+                                                        String chooseProduct = (String) JOptionPane.showInputDialog(null, "Products on market!",
+                                                                "Market", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+                                                        if (chooseProduct == null) {
+                                                            writer.write("null");
+                                                            writer.println();
+                                                            writer.flush();
+
+                                                        } else {
+
+                                                            //sending which product they chose
+                                                            Product productBuying = null;
+                                                            for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                                if (Methods.productsOnMarket.get(i).statisticsToString().equals(chooseProduct)) {
+                                                                    productBuying = Methods.productsOnMarket.get(i);
+                                                                }
+                                                            }
+
+                                                            writer.write(chooseProduct);
+                                                            writer.println();
+                                                            writer.flush();
+                                                            System.out.println(chooseProduct);
+
+
+                                                            productBought = productBuying;
+                                                            continueProduct = true;
+
+                                                        }
+                                                        frame.setVisible(false);
+                                                        System.out.println("2 sort");
+
+
+                                                    });
+
+                                                    sortByMaxQuantity.addActionListener(f -> {
+                                                        ArrayList<Product> copy = new ArrayList<>();
+                                                        copy = method.sortByMaxQuantity(Methods.productsOnMarket);
+                                                        Methods.productsOnMarket.clear();
+                                                        Methods.productsOnMarket.addAll(copy);
+
+
+                                                        String[] products = new String[Methods.productsOnMarket.size()];
+                                                        for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                            products[i] = Methods.productsOnMarket.get(i).statisticsToString();
+                                                        }
+
+                                                        String chooseProduct = (String) JOptionPane.showInputDialog(null, "Products on market!",
+                                                                "Market", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+                                                        if (chooseProduct == null) {
+                                                            writer.write("null");
+                                                            writer.println();
+                                                            writer.flush();
+                                                        } else {
+
+
+                                                            //sending which product they chose
+                                                            Product productBuying = null;
+                                                            for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                                if (Methods.productsOnMarket.get(i).statisticsToString().equals(chooseProduct)) {
+                                                                    productBuying = Methods.productsOnMarket.get(i);
+                                                                }
+                                                            }
+
+                                                            writer.write(chooseProduct);
+                                                            writer.println();
+                                                            writer.flush();
+
+
+                                                            productBought = productBuying;
+                                                            continueProduct = true;
+                                                            frame.setVisible(false);
+                                                        }
+                                                        System.out.println("2 sort");
+                                                    });
+
+                                                    sortByMinPrice.addActionListener(f -> {
+                                                        ArrayList<Product> copy = new ArrayList<>();
+                                                        copy = method.sortByMinPrice(Methods.productsOnMarket);
+                                                        Methods.productsOnMarket.clear();
+                                                        Methods.productsOnMarket.addAll(copy);
+
+
+                                                        String[] products = new String[Methods.productsOnMarket.size()];
+                                                        for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                            products[i] = Methods.productsOnMarket.get(i).statisticsToString();
+                                                        }
+
+                                                        String chooseProduct = (String) JOptionPane.showInputDialog(null, "Products on market!",
+                                                                "Market", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+                                                        if (chooseProduct == null) {
+                                                            writer.write("null");
+                                                            writer.println();
+                                                            writer.flush();
+                                                        } else {
+
+
+
+                                                            //sending which product they chose
+                                                            Product productBuying = null;
+                                                            for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                                if (Methods.productsOnMarket.get(i).statisticsToString().equals(chooseProduct)) {
+                                                                    productBuying = Methods.productsOnMarket.get(i);
+                                                                }
+                                                            }
+
+                                                            writer.write(chooseProduct);
+                                                            writer.println();
+                                                            writer.flush();
+
+
+                                                            productBought = productBuying;
+                                                            continueProduct = true;
+                                                            frame.setVisible(false);
+
+                                                        }
+                                                        System.out.println("2 sort");
+
+                                                    });
+
+                                                    sortByMaxPrice.addActionListener(f -> {
+                                                        ArrayList<Product> copy = new ArrayList<>();
+                                                        copy = method.sortByMaxPrice(Methods.productsOnMarket);
+                                                        Methods.productsOnMarket.clear();
+                                                        Methods.productsOnMarket.addAll(copy);
+
+
+                                                        String[] products = new String[Methods.productsOnMarket.size()];
+                                                        for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                            products[i] = Methods.productsOnMarket.get(i).statisticsToString();
+                                                        }
+
+                                                        String chooseProduct = (String) JOptionPane.showInputDialog(null, "Products on market!",
+                                                                "Market", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+
+                                                        System.out.println("show Up" + chooseProduct);
+                                                        if (chooseProduct == null) {
+                                                            writer.write("null");
+                                                            writer.println();
+                                                            writer.flush();
+                                                        } else {
+
+                                                            //sending which product they chose
+                                                            Product productBuying = null;
+                                                            for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                                if (Methods.productsOnMarket.get(i).statisticsToString().equals(chooseProduct)) {
+                                                                    productBuying = Methods.productsOnMarket.get(i);
+                                                                }
+                                                            }
+
+                                                            writer.write(chooseProduct);
+                                                            writer.println();
+                                                            writer.flush();
+
+
+                                                            productBought = productBuying;
+                                                            continueProduct = true;
+                                                            frame.setVisible(false);
+                                                        }
+                                                        System.out.println("2 sort");
+                                                    });
+
+
+                                                    //if exiting... buttonClicked will be null
+
+                                                }
+                                                else if (sortResponse == 1) {
+                                                    boolean newPage = false;
+
+                                                    String[] products = new String[Methods.productsOnMarket.size()];
+                                                    for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                        products[i] = Methods.productsOnMarket.get(i).statisticsToString();
+                                                    }
+
+                                                    String chooseProduct = (String) JOptionPane.showInputDialog(null, "Products on market!",
+                                                            "Market", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+                                                    if (chooseProduct == null) {
+                                                        writer.write("null");
+                                                        writer.println();
+                                                        writer.flush();
+                                                    } else {
+
+                                                        //sending which product they chose
+                                                        Product productBuying = null;
+                                                        for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                                            if (Methods.productsOnMarket.get(i).statisticsToString().equals(chooseProduct)) {
+                                                                productBuying = Methods.productsOnMarket.get(i);
+                                                            }
+                                                        }
+
+                                                        writer.write(chooseProduct);
+                                                        writer.println();
+                                                        writer.flush();
+
+
+                                                        productBought = productBuying;
+                                                        continueProduct = true;
+                                                    }
+                                                    System.out.println("2 market no sort ");
+
+
+
+                                                }
+                                                System.out.println("test boolean" + continueProduct);
+
+                                                if (continueProduct) {
+                                                    // variable productBuying is the product they chose
+
+                                                    System.out.println("3 panel pop up ");
+                                                    //DEALING WITH BUYING, SHOPPING CART, INSIGHTS
+                                                    JButton buyProduct;
+                                                    JButton addToCart;
+                                                    String productDescription = "<html>"
+                                                            + "Product Name: " + productBought.getProductName() + "<br>"
+                                                            + "Store: " + productBought.getStoreName() + "<br>"
+                                                            + "Description: " + productBought.getDescriptionOfProduct() + "<br>"
+                                                            + "Available Quantity: " + productBought.getQuantityAvailable() + "<br>"
+                                                            + "Price: " + productBought.getPrice() + "<br>"
+                                                            + "</html>";
+                                                    JLabel productStatistics = new JLabel(productDescription, JLabel.CENTER);
+                                                    productStatistics.setSize(600, 300);
+                                                    productStatistics.setHorizontalAlignment(JLabel.CENTER);
+                                                    JFrame productChosen = new JFrame();
+
+
+                                                    productChosen.setTitle(productBought.getProductName());
+                                                    productChosen.setSize(600, 300);
+                                                    productChosen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                                    productChosen.setLocationRelativeTo(null);
+
+                                                    buyProduct = new JButton("Buy Product");
+                                                    addToCart = new JButton("Add Product to Cart");
+
+
+                                                    JPanel panels = new JPanel();
+                                                    productChosen.setLayout(new BorderLayout());
+
+                                                    productChosen.add(productStatistics, BorderLayout.CENTER);
+                                                    productChosen.addWindowListener(new WindowAdapter() {
+                                                        @Override
+                                                        public void windowClosing(WindowEvent e) {
+                                                            // Check if the window closing event is due to the dispose on close
+                                                            if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+                                                                writer.write("null");
+                                                                writer.println();
+                                                                writer.flush();
+                                                                productChosen.dispose();
+                                                            }
+                                                            System.out.println("exit and print null");
+                                                        }
+                                                    });
 
 
 
 
+
+
+
+                                                    //BUYING PRODUCT BUTTON
+                                                    buyProduct.addActionListener(new ActionListener() {
+                                                        public void actionPerformed(ActionEvent e) {
+                                                            // implementation of buyProduct button
+                                                            writer.write("buyProduct");
+                                                            writer.println();
+                                                            writer.flush();
+                                                            //sending that clicked this button in SERVER
+
+
+                                                            //debugging to test if cancel or exit
+                                                            //boolean to see if shopping cart message and method will occur (if null or invalid it will not work)
+                                                            boolean purchaseMessage = true;
+                                                            int amountPurchasing = 0;
+                                                            String answer = "";
+                                                                try {
+                                                                    answer = JOptionPane.showInputDialog(null, "How many items would you like to purchase?",
+                                                                            "Buy Product", JOptionPane.QUESTION_MESSAGE);
+                                                                    if (answer == null) {
+                                                                        purchaseMessage = false;
+                                                                        writer.write("null");
+                                                                        writer.println();
+                                                                        writer.flush();
+                                                                        System.out.println("null redo to do cart/buy again ");
+                                                                    } else {
+                                                                        amountPurchasing = Integer.parseInt(answer);
+                                                                    }
+
+
+                                                                } catch (NumberFormatException f) {
+                                                                    JOptionPane.showMessageDialog(null, "Invalid input! Please try again",
+                                                                            "Buy Product", JOptionPane.ERROR_MESSAGE);
+                                                                    purchaseMessage = false;
+                                                                }
+
+
+
+                                                            if (purchaseMessage) {
+
+
+                                                                writer.write("" + amountPurchasing);
+                                                                writer.println();
+                                                                writer.flush();
+                                                                Methods method = new Methods();
+
+
+                                                                //TESTING
+
+
+                                                                //TESTING
+
+
+                                                                try {
+
+                                                                    String productAvailability = reader.readLine();
+
+
+                                                                    if (productAvailability.equals("soldOut")) {
+                                                                        //SOLD OUT READ FROM SERVER
+                                                                        JOptionPane.showMessageDialog(null, "Error! Product is sold out!",
+                                                                                "Buy Product", JOptionPane.ERROR_MESSAGE);
+                                                                        method.saveProductFile(Methods.productsOnMarket);
+                                                                        method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
+                                                                        method.saveProductFile(Methods.productsOnMarket);
+                                                                        method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+                                                                    } else if (productAvailability.equals("purchaseLimit")) {
+                                                                        // purchasing wanted > amount available
+                                                                        JOptionPane.showMessageDialog(null, "Could only purchase " + productBought.getQuantityAvailable() + " products!\n "
+                                                                                        + productBought.getProductName() + " purchased!",
+                                                                                "Buy Product", JOptionPane.INFORMATION_MESSAGE);
+
+                                                                        method.purchaseProduct(productBought, productBought.getQuantityAvailable());
+                                                                        for (int i = 0; i < shoppingCart.size(); i++) {
+                                                                            if (shoppingCart.get(i).getStoreName().equals(productBought.getStoreName()) &&
+                                                                                    shoppingCart.get(i).getProductName().equals(productBought.getProductName())) {
+                                                                                shoppingCart.get(i).setQuantityAvailable(productBought.getQuantityAvailable());
+
+                                                                            }
+                                                                        }
+                                                                        method.saveProductFile(Methods.productsOnMarket);
+                                                                        method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
+                                                                        method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                                                    } else if (productAvailability.equals("itemPurchased")) {
+                                                                        //item correctly purchased in the server
+                                                                        JOptionPane.showMessageDialog(null, productBought.getProductName() + " purchased!", "Buy Products",
+                                                                                JOptionPane.INFORMATION_MESSAGE);
+
+                                                                        method.purchaseProduct(productBought, amountPurchasing);
+                                                                        for (int i = 0; i < shoppingCart.size(); i++) {
+                                                                            if (shoppingCart.get(i).getStoreName().equals(productBought.getStoreName()) &&
+                                                                                    shoppingCart.get(i).getProductName().equals(productBought.getProductName())) {
+                                                                                shoppingCart.get(i).setQuantityAvailable(productBought.getQuantityAvailable());
+
+                                                                            }
+                                                                        }
+                                                                        method.saveProductFile(Methods.productsOnMarket);
+                                                                        method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
+                                                                        method.saveProductFile(Methods.productsOnMarket);
+                                                                        method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                                                    }
+                                                                } catch (IOException ex) {
+                                                                    ex.printStackTrace();
+                                                                }
+
+
+                                                            } else {
+                                                                return;
+                                                            }
+                                                            productChosen.setVisible(false);
+                                                            System.out.println("4: buy product");
+
+
+                                                        }
+
+                                                    });
+
+                                                    addToCart.addActionListener(new ActionListener() {
+                                                        public void actionPerformed(ActionEvent e) {
+                                                            //sending to server button clicked
+                                                            writer.write("addToCart");
+                                                            writer.println();
+                                                            writer.flush();
+
+                                                            boolean shoppingCartMessage = true;
+                                                            Methods method = new Methods();
+                                                            // implementation of adding to shopping cart button
+                                                            int quantityBuying = 0;
+                                                            String answer = "";
+                                                            try {
+                                                                answer = JOptionPane.showInputDialog(null, "How many items would you like to add to " +
+                                                                                "your shopping cart?",
+                                                                        "Shopping Cart", JOptionPane.QUESTION_MESSAGE);
+                                                                if (answer == null) {
+                                                                    shoppingCartMessage = false;
+                                                                    writer.write("null");
+                                                                    writer.println();
+                                                                    writer.flush();
+                                                                    System.out.println("null redo to do cart/buy again ");
+
+                                                                } else {
+                                                                    quantityBuying = Integer.parseInt(answer);
+                                                                }
+
+
+                                                            } catch (NumberFormatException f) {
+                                                                JOptionPane.showMessageDialog(null, "Invalid Input! Please try again",
+                                                                        "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                                                                shoppingCartMessage = false;
+
+                                                            }
+
+                                                            //sending to server quantityBuying
+
+
+                                                            if (shoppingCartMessage) {
+
+                                                                writer.write("" + quantityBuying);
+                                                                writer.println();
+                                                                writer.flush();
+
+                                                                String productName = productBought.getProductName();
+                                                                String storeName = productBought.getStoreName();
+                                                                String description = productBought.getDescriptionOfProduct();
+                                                                int quantityAvailable = productBought.getQuantityAvailable();
+                                                                double price = productBought.getPrice();
+
+
+                                                                try {
+                                                                    String successCart = reader.readLine();
+                                                                    if (successCart == null) {
+                                                                        writer.write("null");
+                                                                        writer.println();
+                                                                        writer.flush();
+                                                                        System.out.println("error fix");
+                                                                        productChosen.setVisible(false);
+                                                                        return;
+
+                                                                    } else {
+                                                                        if (successCart.equals("addedToCart")) {
+                                                                            JOptionPane.showMessageDialog(null, productBought.getProductName() + " added to your shopping cart!",
+                                                                                    "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                                                                            ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
+                                                                                    price, quantityBuying);
+                                                                            shoppingCart.add(addedProductToCart);
+
+                                                                        } else if (successCart.equals("soldOut")) {
+                                                                            JOptionPane.showMessageDialog(null, productBought.getProductName() + " sold out! Can't add to cart",
+                                                                                    "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                                                                        } else if (successCart.equals("limitedQuantity")) {
+                                                                            JOptionPane.showMessageDialog(null, productBought.getProductName() + " only " + productBought.getQuantityAvailable() + " quantity available to add to cart!",
+                                                                                    "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                                                                            ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
+                                                                                    price, quantityAvailable);
+                                                                            shoppingCart.add(addedProductToCart);
+                                                                        }
+                                                                        //TESTING IF QUANTITY CAN NOT BE ADDED
+                                                                    }
+                                                                } catch (IOException ex) {
+                                                                    ex.printStackTrace();
+                                                                }
+
+
+                                                            } else {
+                                                                return;
+                                                            }
+                                                            productChosen.setVisible(false);
+                                                            System.out.println("4: add cart");
+                                                        }
+
+                                                    });
+                                                    // CHECK: shouldn't need to send anything to server? Just exit out of panel
+
+
+                                                    panels.add(buyProduct);
+                                                    panels.add(addToCart);
+
+
+                                                    productChosen.add(panels, BorderLayout.CENTER);
+                                                    productChosen.setVisible(true);
+
+
+
+
+                                                }
+
+
+
+
+                                            }
+
+
+                                            // customerGui.SeeProducts(userAccount, shoppingCart);
+
+
+                                            //add implementation of seeing products
+
+
+
+                                    }
+
+                                });
+
+                                //OTHER BUTTON
+
+                                searchProductsButton.addActionListener(new ActionListener() {
+                                    public void actionPerformed(ActionEvent e) {
+                                        writer.write("searchProductsButton");
+                                        writer.println();
+                                        writer.flush();
+                                        // TODO: Handle sell button action
+                                        GUICustomerView customerGui = new GUICustomerView();
+
+                                        Product productBought = null;
+                                        boolean newPage = false;
+                                        Methods method = new Methods();
+                                        String wordSearch = null;
+
+                                        wordSearch = JOptionPane.showInputDialog(null, "What word would you like to input to search?",
+                                                "Search Product", JOptionPane.QUESTION_MESSAGE);
+
+                                        if (wordSearch == null) {
+                                            writer.write("");
+                                            writer.println();
+                                            writer.flush();
+                                            // Exit the method
+                                            return;
+                                        } else {
+
+
+                                            writer.write(wordSearch);
+                                            writer.println();
+                                            writer.flush();
+                                        }
+
+
+                                        try {
+                                            String foundProducts = reader.readLine();
+                                            System.out.println(foundProducts);
+
+                                            if (foundProducts.equals("noProductsFound")) {
+                                                JOptionPane.showMessageDialog(null, "Sorry! No products matched your search!",
+                                                        "Search Product", JOptionPane.INFORMATION_MESSAGE);
+                                            } else if (foundProducts.equals("productsFound")) {
+                                                String productsBrokenUp = reader.readLine();
+                                                System.out.println(productsBrokenUp);
+
+                                                String[] products = productsBrokenUp.split("@@");
+
+                                                String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Products that matched your search!",
+                                                        "See Products", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+
+                                                //sending back item chosen to server
+                                                writer.write(itemFromSearchChosen);
+                                                writer.println();
+                                                writer.flush();
+
+
+                                                for (int k = 0; k < Methods.productsOnMarket.size(); k++) {
+                                                    if (Methods.productsOnMarket.get(k).statisticsToString().equals(itemFromSearchChosen)) {
+                                                        productBoughtNew = Methods.productsOnMarket.get(k);
+                                                        //product insight page
+                                                    }
+                                                }
+
+
+                                                //DEALING WITH BUYING, SHOPPING CART, INSIGHTS
+                                                JButton buyProduct;
+                                                JButton addToCart;
+
+                                                String productDescription = "<html>"
+                                                        + "Product Name: " + productBoughtNew.getProductName() + "<br>"
+                                                        + "Store: " + productBoughtNew.getStoreName() + "<br>"
+                                                        + "Description: " + productBoughtNew.getDescriptionOfProduct() + "<br>"
+                                                        + "Available Quantity: " + productBoughtNew.getQuantityAvailable() + "<br>"
+                                                        + "Price: " + productBoughtNew.getPrice() + "<br>"
+                                                        + "</html>";
+                                                JLabel productStatistics = new JLabel(productDescription, JLabel.CENTER);
+                                                productStatistics.setSize(600, 300);
+                                                productStatistics.setHorizontalAlignment(JLabel.CENTER);
+                                                JFrame productChosen = new JFrame();
+
+
+                                                productChosen.setTitle(productBoughtNew.getProductName());
+                                                productChosen.setSize(600, 300);
+                                                productChosen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                                productChosen.setLocationRelativeTo(null);
+
+                                                buyProduct = new JButton("Buy Product");
+                                                addToCart = new JButton("Add Product to Cart");
+
+
+                                                JPanel panels = new JPanel();
+                                                productChosen.setLayout(new BorderLayout());
+
+                                                productChosen.add(productStatistics, BorderLayout.CENTER);
+
+
+                                                //BUYING PRODUCT BUTTON
+                                                buyProduct.addActionListener(new ActionListener() {
+                                                    public void actionPerformed(ActionEvent e) {
+                                                        // implementation of buyProduct button
+                                                        writer.write("buyProduct");
+                                                        writer.println();
+                                                        writer.flush();
+                                                        //sending that clicked this button in SERVER
+
+
+                                                        //debugging to test if cancel or exit
+                                                        //boolean to see if shopping cart message and method will occur (if null or invalid it will not work)
+                                                        boolean purchaseMessage = true;
+                                                        int amountPurchasing = 0;
+                                                        String answer = "";
+                                                        try {
+                                                            answer = JOptionPane.showInputDialog(null, "How many items would you like to purchase?",
+                                                                    "Buy Product", JOptionPane.QUESTION_MESSAGE);
+                                                            if (answer == null) {
+                                                                purchaseMessage = false;
+                                                                writer.write("null");
+                                                                writer.println();
+                                                                writer.flush();
+                                                            } else {
+                                                                amountPurchasing = Integer.parseInt(answer);
+                                                            }
+
+
+                                                        } catch (NumberFormatException f) {
+                                                            JOptionPane.showMessageDialog(null, "Invalid input! Please try again",
+                                                                    "Buy Product", JOptionPane.ERROR_MESSAGE);
+                                                            purchaseMessage = false;
+                                                        }
+
+
+                                                        if (purchaseMessage) {
+                                                            writer.write("" + amountPurchasing);
+                                                            writer.println();
+                                                            writer.flush();
+                                                            Methods method = new Methods();
+
+
+                                                            try {
+                                                                String productAvailability = reader.readLine();
+                                                                if (productAvailability.equals("soldOut")) {
+                                                                    //SOLD OUT READ FROM SERVER
+                                                                    JOptionPane.showMessageDialog(null, "Error! Product is sold out!",
+                                                                            "Buy Product", JOptionPane.ERROR_MESSAGE);
+                                                                } else if (productAvailability.equals("purchaseLimit")) {
+                                                                    // purchasing wanted > amount available
+                                                                    JOptionPane.showMessageDialog(null, "Could only purchase " + productBoughtNew.getQuantityAvailable() + " products!\n "
+                                                                                    + productBoughtNew.getProductName() + " purchased!",
+                                                                            "Buy Product", JOptionPane.INFORMATION_MESSAGE);
+                                                                } else if (productAvailability.equals("itemPurchased")) {
+                                                                    //item correctly purchased in the server
+                                                                    JOptionPane.showMessageDialog(null, productBoughtNew.getProductName() + " purchased!", "Buy Products",
+                                                                            JOptionPane.INFORMATION_MESSAGE);
+
+                                                                }
+                                                            } catch (IOException ex) {
+                                                                throw new RuntimeException(ex);
+                                                            }
+
+
+                                                        } else {
+                                                            return;
+                                                        }
+                                                        productChosen.setVisible(false);
+
+
+                                                    }
+                                                });
+
+                                                addToCart.addActionListener(new ActionListener() {
+                                                    public void actionPerformed(ActionEvent e) {
+                                                        //sending to server button clicked
+                                                        writer.write("addToCart");
+                                                        writer.println();
+                                                        writer.flush();
+
+                                                        boolean shoppingCartMessage = true;
+                                                        Methods method = new Methods();
+                                                        // implementation of adding to shopping cart button
+                                                        int quantityBuying = 0;
+                                                        String answer = "";
+                                                        try {
+                                                            answer = JOptionPane.showInputDialog(null, "How many items would you like to add to " +
+                                                                            "your shopping cart?",
+                                                                    "Shopping Cart", JOptionPane.QUESTION_MESSAGE);
+                                                            if (answer == null) {
+                                                                shoppingCartMessage = false;
+                                                                writer.write("null");
+                                                                writer.println();
+                                                                writer.flush();
+
+                                                            } else {
+                                                                quantityBuying = Integer.parseInt(answer);
+                                                            }
+
+
+                                                        } catch (NumberFormatException f) {
+                                                            JOptionPane.showMessageDialog(null, "Invalid Input! Please try again",
+                                                                    "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                                                            shoppingCartMessage = false;
+
+                                                        }
+
+                                                        //sending to server quantityBuying
+
+
+                                                        if (shoppingCartMessage) {
+
+                                                            writer.write("" + quantityBuying);
+                                                            writer.println();
+                                                            writer.flush();
+
+                                                            String productName = productBoughtNew.getProductName();
+                                                            String storeName = productBoughtNew.getStoreName();
+                                                            String description = productBoughtNew.getDescriptionOfProduct();
+                                                            int quantityAvailable = productBoughtNew.getQuantityAvailable();
+                                                            double price = productBoughtNew.getPrice();
+
+
+                                                            try {
+                                                                String successCart = reader.readLine();
+                                                                if (successCart.equals("addedToCart")) {
+                                                                    JOptionPane.showMessageDialog(null, productBoughtNew.getProductName() + " added to your shopping cart!",
+                                                                            "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                                                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
+                                                                            price, quantityBuying);
+                                                                    shoppingCart.add(addedProductToCart);
+
+                                                                } else if (successCart.equals("soldOut")) {
+                                                                    JOptionPane.showMessageDialog(null, productBoughtNew.getProductName() + " sold out! Can't add to cart",
+                                                                            "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                                                                } else if (successCart.equals("limitedQuantity")) {
+                                                                    JOptionPane.showMessageDialog(null, productBoughtNew.getProductName() + " only " + productBoughtNew.getQuantityAvailable() +
+                                                                                    " quantity available to add to cart!",
+                                                                            "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                                                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
+                                                                            price, quantityAvailable);
+                                                                    shoppingCart.add(addedProductToCart);
+                                                                }
+                                                                //TESTING IF QUANTITY CAN NOT BE ADDED
+                                                            } catch (IOException ex) {
+                                                                ex.printStackTrace();
+                                                            }
+
+
+                                                        } else {
+                                                            return;
+                                                        }
+                                                        productChosen.setVisible(false);
+                                                    }
+                                                });
+
+                                                // CHECK: shouldn't need to send anything to server? Just exit out of panel
+
+
+                                                panels.add(buyProduct);
+                                                panels.add(addToCart);
+
+
+                                                productChosen.add(panels, BorderLayout.CENTER);
+                                                productChosen.setVisible(true);
+
+
+                                            }
+
+                                        } catch (IOException ex) {
+                                            ex.printStackTrace();
+                                        }
+
+                                    }
+                                });
+
+                                viewShoppingCartButton.addActionListener(new ActionListener() {
+                                    public void actionPerformed(ActionEvent e) {
+                                        // must use shopping cart method in GUITEST
+                                        //*** THIS STILL MUST IMPLEMENT CUSTOMER RECEIPTS WHEN PURCHASING
+
+
+                                        //write to server view cart pressed
+                                        writer.write("viewShoppingCart");
+                                        writer.println();
+                                        writer.flush();
+
+                                        Methods method = new Methods();
+
+                                        if (shoppingCart.isEmpty()) {
+                                            JOptionPane.showMessageDialog(null, "Nothing in your shopping cart!",
+                                                    "Search Product", JOptionPane.INFORMATION_MESSAGE);
+                                            writer.write("emptyCart");
+                                            writer.println();
+                                            writer.flush();
+                                            System.out.println("empty cart print null");
+                                        } else {
+                                            JFrame frame = new JFrame();
+                                            JPanel panel = new JPanel(new GridLayout(1, 3));
+                                            JButton viewCart = new JButton("View shopping cart");
+                                            JButton removeProduct = new JButton("Remove a product from cart");
+                                            JButton purchaseCart = new JButton("Purchase items from cart");
+
+                                            panel.add(viewCart);
+                                            panel.add(removeProduct);
+                                            panel.add(purchaseCart);
+                                            frame.add(panel);
+                                            frame.pack();
+                                            frame.setLocationRelativeTo(null);
+                                            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                            frame.setVisible(true);
+
+                                            System.out.println("view cart");
+
+                                            frame.addWindowListener(new WindowAdapter() {
+                                                @Override
+                                                public void windowClosing(WindowEvent e) {
+                                                    // Check if the window closing event is due to the dispose on close
+                                                    if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+                                                        writer.write("null");
+                                                        writer.println();
+                                                        writer.flush();
+                                                        frame.dispose();
+                                                    }
+                                                    System.out.println("exit and print null");
+                                                }
+                                            });
+
+
+                                            viewCart.addActionListener(new ActionListener() {
+                                                public void actionPerformed(ActionEvent e) {
+                                                    writer.write("viewCart");
+                                                    writer.println();
+                                                    writer.flush();
+
+
+                                                    String[] products = new String[shoppingCart.size()];
+
+
+
+                                                    for (int i = 0; i < shoppingCart.size(); i++) {
+                                                        products[i] = shoppingCart.get(i).shoppingCartStatisticsToString();
+                                                        System.out.println("test for shopping cart" + products[i]);
+
+                                                    }
+
+
+
+                                                    String seeProduct = (String) JOptionPane.showInputDialog(null, "Shopping Cart!",
+                                                            "View Cart", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+                                                    if (seeProduct == null) {
+                                                        return;
+                                                    } else {
+
+
+                                                        ShoppingCartProduct productChosen = null;
+                                                        for (int i = 0; i < shoppingCart.size(); i++) {
+                                                            if (shoppingCart.get(i).shoppingCartStatisticsToString().equals(seeProduct)) {
+                                                                productChosen = shoppingCart.get(i);
+                                                            }
+                                                        }
+                                                        //shows cart and which product if want to view statistic
+
+                                                        String productDescription = "<html>"
+                                                                + "Product Name: " + productChosen.getProductName() + "<br>"
+                                                                + "Store: " + productChosen.getStoreName() + "<br>"
+                                                                + "Description: " + productChosen.getDescriptionOfProduct() + "<br>"
+                                                                + "Available Quantity: " + productChosen.getQuantityAvailable() + "<br>"
+                                                                + "Price: " + productChosen.getPrice() + "<br>"
+                                                                + "Quantity Buying: " + productChosen.getQuantityBuying() + "<br>"
+                                                                + "</html>";
+                                                        JLabel productStatistics = new JLabel(productDescription, JLabel.CENTER);
+                                                        productStatistics.setSize(600, 300);
+                                                        productStatistics.setHorizontalAlignment(JLabel.CENTER);
+                                                        JFrame frame = new JFrame();
+                                                        frame.setTitle(productChosen.getProductName());
+                                                        frame.setSize(600, 300);
+                                                        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                                        frame.setLocationRelativeTo(null);
+                                                        frame.add(productStatistics);
+                                                        frame.setVisible(true);
+                                                    }
+                                                    frame.setVisible(false);
+                                                }
+                                            });
+
+
+                                            removeProduct.addActionListener(new ActionListener() {
+                                                public void actionPerformed(ActionEvent e) {
+                                                    writer.write("removeProduct");
+                                                    writer.println();
+                                                    writer.flush();
+
+
+                                                    String[] products = new String[shoppingCart.size()];
+
+                                                    for (int i = 0; i < shoppingCart.size(); i++) {
+                                                        products[i] = shoppingCart.get(i).shoppingCartStatisticsToString();
+                                                        System.out.println("repeat test remove product \n" + products[i]);
+                                                    }
+
+                                                    // shows cart and choose which product to remove
+                                                    String seeProduct = (String) JOptionPane.showInputDialog(null, "Remove Product From Cart!",
+                                                            "Shopping Cart", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+                                                    if (seeProduct == null) {
+                                                        writer.write("null");
+                                                        writer.println();
+                                                        writer.flush();
+                                                        System.out.println("remove product null exit");
+
+                                                    } else {
+                                                        System.out.println("see Product " + seeProduct + "end ");
+
+                                                        System.out.println("remove product");
+
+                                                        writer.write(seeProduct);
+                                                        writer.println();
+                                                        writer.flush();
+                                                        //writing to server the product
+
+                                                        ShoppingCartProduct productChosen = null;
+                                                        String[] product = seeProduct.split(",");
+                                                        String[] findProductName = product[0].split(":");
+
+                                                        String productName = findProductName[2].substring(1);
+                                                        String storeName = product[1].substring(product[1].indexOf(":") + 2);
+                                                        int quantityBuying = Integer.parseInt(product[5].substring(product[5].indexOf(":") + 2));
+
+
+                                                        for (int i = 0; i < shoppingCart.size(); i++) {
+                                                            if (shoppingCart.get(i).getProductName().equals(productName) &&
+                                                                    shoppingCart.get(i).getStoreName().equals(storeName) &&
+                                                                    shoppingCart.get(i).getQuantityBuying() == quantityBuying) {
+                                                                productChosen = shoppingCart.get(i);
+                                                            }
+                                                        }
+
+
+                                                        assert productChosen != null;
+                                                        JOptionPane.showMessageDialog(null, productChosen.getProductName() + " removed from cart!",
+                                                                "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+
+
+                                                        shoppingCart.remove(productChosen);
+
+                                                        //save into file remove from shopping cart
+
+
+                                                        if (shoppingCart.isEmpty()) {
+                                                            frame.dispose();
+                                                        }
+
+                                                        frame.setVisible(false);
+                                                    }
+                                                }
+                                            });
+
+
+                                            purchaseCart.addActionListener(new ActionListener() {
+                                                public void actionPerformed(ActionEvent e) {
+                                                    System.out.println("cli reach1");
+                                                    writer.write("purchaseCart");
+                                                    writer.println();
+                                                    writer.flush();
+
+                                                    for (int i = 0; i < shoppingCart.size(); i++) {
+                                                        if (shoppingCart.get(i).getQuantityBuying() > shoppingCart.get(i).getQuantityAvailable()) {
+                                                            Product purchaseInCart = null;
+                                                            for (int k = 0; k < Methods.productsOnMarket.size(); k++) {
+                                                                //changing quantity in cart in client view
+                                                                if (Methods.productsOnMarket.get(k).getProductName().equals(shoppingCart.get(i).getProductName())
+                                                                        && Methods.productsOnMarket.get(k).getStoreName().equals(shoppingCart.get(i).getStoreName())) {
+                                                                    purchaseInCart = Methods.productsOnMarket.get(k);
+                                                                    Methods.productsOnMarket.get(k).setQuantityAvailable(0);
+
+                                                                    shoppingCart.get(i).setQuantityAvailable(0);
+                                                                    ///INSERT CUSTOMER RECIEPTS HERE
+
+                                                                    assert purchaseInCart != null;
+
+
+                                                                }
+                                                            }
+                                                        } else if (shoppingCart.get(i).getQuantityAvailable() == 0) {
+                                                            //nothing
+                                                        } else {
+
+                                                            Product purchaseInCart = null;
+                                                            for (int k = 0; k < Methods.productsOnMarket.size(); k++) {
+                                                                if (Methods.productsOnMarket.get(k).getProductName().equals(shoppingCart.get(i).getProductName())
+                                                                        && Methods.productsOnMarket.get(k).getStoreName().equals(shoppingCart.get(i).getStoreName())) {
+                                                                    purchaseInCart = Methods.productsOnMarket.get(k);
+                                                                    Methods.productsOnMarket.get(k).setQuantityAvailable(Methods.productsOnMarket.get(k).getQuantityAvailable() - shoppingCart.get(i).getQuantityBuying());
+                                                                    System.out.println("test1:" + Methods.productsOnMarket.get(k).getQuantityAvailable());
+                                                                }
+                                                                shoppingCart.get(i).setQuantityAvailable(shoppingCart.get(i).getQuantityAvailable() - shoppingCart.get(i).getQuantityBuying());
+                                                            }
+
+                                                        }
+                                                    }
+                                                    shoppingCart.clear();
+
+
+                                                    //after everything is purchased
+
+                                                    try {
+                                                        String purchased = reader.readLine();
+                                                        if (purchased.equals("null")) {
+                                                            //purchased not pressed
+                                                            System.out.println("null error fix ");
+
+                                                        } else {
+                                                            String[] messages = purchased.split("@@");
+                                                            if (messages[0].equals(" ")) {
+                                                                System.out.println("purchased is nothing purchased");
+
+
+                                                            } else {
+                                                                JOptionPane.showMessageDialog(null, messages[0]);
+                                                            }
+                                                            if (messages[1].equals(" ")) {
+
+                                                            } else {
+                                                                JOptionPane.showMessageDialog(null, messages[1]);
+                                                            }
+                                                            if (messages[2].equals(" ")) {
+
+                                                            } else {
+                                                                JOptionPane.showMessageDialog(null, messages[2]);
+                                                            }
+                                                        }
+
+
+                                                        } catch(IOException ex){
+                                                            ex.printStackTrace();
+                                                        }
+
+                                                        frame.dispose();
+
+                                                        frame.setVisible(false);
+
+                                                    }
+
+                                            });
+
+                                            frame.addWindowListener(new WindowAdapter() {
+                                                @Override
+                                                public void windowClosing(WindowEvent e) {
+                                                    // Check if the window closing event is due to the dispose on close
+                                                    if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+                                                        writer.write("null");
+                                                        writer.println();
+                                                        writer.flush();
+                                                        frame.dispose();
+                                                    }
+                                                    System.out.println("exit and print null");
+                                                }
+                                            });
+
+
+                                        }
+
+                                    }
+                                });
+
+
+                            }
                         }
 
-                    }
+
                 }
             });
 
@@ -284,7 +1395,6 @@ public class MarketPlaceClient extends JFrame {
 
 
     }
-
 
 
 }
