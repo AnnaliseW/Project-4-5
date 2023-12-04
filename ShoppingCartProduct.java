@@ -60,9 +60,9 @@ public class ShoppingCartProduct {
 
 
     public String shoppingCartStatisticsToString() {
-        return String.format("Product Statistics:\nProduct Name: " +
-                        "%s\nStore Name: %s\nDescription: %s\nQuantity Available:" +
-                        " %d\nPrice: %.2f\nQuantity Buying: %d", productName
+        return String.format("Product Statistics: Product Name: " +
+                        "%s, Store Name: %s, Description: %s, Quantity Available:" +
+                        " %d, Price: %.2f, Quantity Buying: %d", productName
                 , storeName, descriptionOfProduct, quantityAvailable, price, quantityBuying);
     }
 
