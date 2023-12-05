@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class Methods {
@@ -21,23 +20,23 @@ public class Methods {
     // this method searches for a product by what they input
 
 
-    public ArrayList<Product> searchForProduct(String searchWord) {
+    public ArrayList<Product> searchForProduct(String searchWord, ArrayList<Product> arrayList) {
         ArrayList<Product> searchedProducts = new ArrayList<>();
         Product similarProduct;
         // checking if it matches anything from the product name
-        for (int i = 0; i < productsOnMarket.size(); i++) {
-            if (productsOnMarket.get(i).getProductName().toLowerCase().contains(searchWord.toLowerCase())) {
-                similarProduct = productsOnMarket.get(i);
+        for (int i = 0; i < arrayList.size(); i++) {
+            if (arrayList.get(i).getProductName().toLowerCase().contains(searchWord.toLowerCase())) {
+                similarProduct = arrayList.get(i);
                 searchedProducts.add(similarProduct);
 
                 // checking if it matches anything from the store name
-            } else if (productsOnMarket.get(i).getStoreName().toLowerCase().contains(searchWord.toLowerCase())) {
-                similarProduct = productsOnMarket.get(i);
+            } else if (arrayList.get(i).getStoreName().toLowerCase().contains(searchWord.toLowerCase())) {
+                similarProduct = arrayList.get(i);
                 searchedProducts.add(similarProduct);
 
                 // checking if it matches anything from the description
-            } else if (productsOnMarket.get(i).getDescriptionOfProduct().toLowerCase().contains(searchWord.toLowerCase())) {
-                similarProduct = productsOnMarket.get(i);
+            } else if (arrayList.get(i).getDescriptionOfProduct().toLowerCase().contains(searchWord.toLowerCase())) {
+                similarProduct = arrayList.get(i);
                 searchedProducts.add(similarProduct);
             }
         }
@@ -192,10 +191,6 @@ public class Methods {
         saveProductFile(Methods.productsOnMarket);
     }
 
-    public void sellProduct(Product product) {
-        productsOnMarket.add(product);
-        saveDataFileWhenNewProductAdded(productsOnMarket, product);
-    }
 
     public void removeAccount(User user) {
         File dataFile = new File("data.txt");
@@ -251,7 +246,11 @@ public class Methods {
                     String[] productsLine = allUserData.get(i).split(";");
                     updatedString = user.getName() + "," + user.getEmail() + "," + newPassword
                             + "," + user.isSeller();
-                    updatedString += productsLine[1];
+                    if (productsLine.length == 1) {
+                        break;
+                    } else {
+                        updatedString += productsLine[1];
+                    }
                 } else {
                     printedOut.add(allUserData.get(i));
 
@@ -294,7 +293,11 @@ public class Methods {
                     String[] productsLine = allUserData.get(i).split(";");
                     updatedString = newUserName + "," + user.getEmail() + "," + user.getPassword()
                             + "," + user.isSeller();
-                    updatedString += productsLine[1];
+                    if (productsLine.length == 1) {
+                        break;
+                    } else {
+                        updatedString += productsLine[1];
+                    }
                 } else {
                     printedOut.add(allUserData.get(i));
 
@@ -337,7 +340,11 @@ public class Methods {
                     String[] productsLine = allUserData.get(i).split(";");
                     updatedString = user.getName() + "," + newUserEmail + "," + user.getPassword()
                             + "," + user.isSeller();
-                    updatedString += productsLine[1];
+                    if (productsLine.length == 1) {
+                        break;
+                    } else {
+                        updatedString += productsLine[1];
+                    }
                 } else {
                     printedOut.add(allUserData.get(i));
 
@@ -451,6 +458,8 @@ public class Methods {
 
 
         try {
+            System.out.println("saveShoppingCartArrayListToFile test");
+            allProducts.forEach(System.out::println);
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
             pw.print(firstPart);
             for (int i = 0; i < allProducts.size(); i++) {
@@ -471,18 +480,14 @@ public class Methods {
 
     public void saveDataFileWhenPurchased(ArrayList<Product> arrayList, Product updatedProduct) {
         File dataFile = new File("data.txt");
+        System.out.println(updatedProduct.getQuantityAvailable());
         // array list to reprint the file
-        ArrayList<String> updatedContent = new ArrayList<>();
         ArrayList<String> allUserData = new ArrayList<>();
-        String products;
-        ArrayList<String> allProducts = new ArrayList<>();
-        String updatedLine;
-
 
         String storeName = updatedProduct.getStoreName();
         String productName = updatedProduct.getProductName();
-        String description = updatedProduct.getDescriptionOfProduct();
         String quantity = String.valueOf(updatedProduct.getQuantityAvailable());
+        System.out.println("quantity test"+ quantity);
         String price = String.valueOf(updatedProduct.getPrice());
 
         try {
@@ -491,7 +496,6 @@ public class Methods {
             while ((line = bfr.readLine()) != null) {
                 allUserData.add(line);
             }
-            String updated;
 
             for (int i = 0; i < allUserData.size(); i++) {
                 String[] checkIfSeller = allUserData.get(i).split(",");
@@ -501,17 +505,18 @@ public class Methods {
                     if (allUserData.get(i).contains("@@")) {
                         String[] separtedByProduct = afterSemiColon[1].split("@@");
                         for (int k = 0; k < separtedByProduct.length; k++) {
+                            System.out.println("testtest");
                             String[] findStoreName = separtedByProduct[k].split(",");
-                            if (findStoreName.length >= 2 && findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
-                                updated = storeName + "," + productName + ","
-                                        + description + "," + quantity + "," + price;
-                                allUserData.set(i, allUserData.get(i).replace(separtedByProduct[k], updated));
+                            System.out.println("store Name " + storeName + "product name " + productName);
+                            System.out.println("store Name " + findStoreName[0] + "product name" + findStoreName[1]);
+                            if (findStoreName[0].equals(storeName) && findStoreName[1].equals(productName)) {
+                                allUserData.set(i, allUserData.get(i).replace(findStoreName[3], quantity));
+                                System.out.println("Updated line: " + allUserData.get(i));
                             }
                         }
                     }
                 }
             }
-
             bfr.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -521,49 +526,12 @@ public class Methods {
 
         try {
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
+            System.out.println("testing user data update in data.txt");
             for (int i = 0; i < allUserData.size(); i++) {
                 pw.println(allUserData.get(i));
+                System.out.println(allUserData.get(i));
             }
 
-            pw.flush();
-            pw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveDataFileWhenNewProductAdded(ArrayList<Product> arrayList, Product newProduct) {
-        File dataFile = new File("data.txt");
-        ArrayList<String> allUserData = new ArrayList<>();
-        String products;
-
-        try {
-            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
-            String line;
-            while ((line = bfr.readLine()) != null) {
-                allUserData.add(line);
-            }
-            bfr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String storeName = newProduct.getStoreName();
-        String productName = newProduct.getProductName();
-        String description = newProduct.getDescriptionOfProduct();
-        String quantity = String.valueOf(newProduct.getQuantityAvailable());
-        String price = String.valueOf(newProduct.getPrice());
-
-        String newProductData = storeName + "," + productName + ","
-                + description + "," + quantity + "," + price;
-
-        allUserData.add(newProductData);
-
-        try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
-            for (String userData : allUserData) {
-                pw.println(userData);
-            }
             pw.flush();
             pw.close();
         } catch (IOException e) {
@@ -575,12 +543,7 @@ public class Methods {
     public void saveDataFileCart(ShoppingCartProduct updatedProduct) {
         File dataFile = new File("data.txt");
         // array list to reprint the file
-        ArrayList<String> updatedContent = new ArrayList<>();
         ArrayList<String> allUserData = new ArrayList<>();
-        String products;
-        ArrayList<String> allProducts = new ArrayList<>();
-        String updatedLine;
-
 
         String storeName = updatedProduct.getStoreName();
         String productName = updatedProduct.getProductName();
@@ -606,7 +569,7 @@ public class Methods {
                         String[] separtedByProduct = afterSemiColon[1].split("@@");
                         for (int k = 0; k < separtedByProduct.length; k++) {
                             String[] findStoreName = separtedByProduct[k].split(",");
-                            if (findStoreName.length >= 2 && findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
+                            if (findStoreName[0].equals(storeName) && findStoreName[1].equals(productName) && findStoreName.length == 6) {
                                 updated = storeName + "," + productName + ","
                                         + description + "," + quantityAvailable + "," + price + "," + quantityBuying;
                                 allUserData.set(i, allUserData.get(i).replace(separtedByProduct[k], updated));
@@ -624,6 +587,8 @@ public class Methods {
         // Update the line with new information
 
         try {
+            System.out.println("saveDataFileCart test");
+            allUserData.forEach(System.out::println);
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
             for (int i = 0; i < allUserData.size(); i++) {
                 pw.println(allUserData.get(i));
