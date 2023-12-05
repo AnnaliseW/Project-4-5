@@ -173,6 +173,7 @@ public class MarketPlaceServer {
                         String chooseProduct = reader.readLine();
                         if (chooseProduct.equals("null")) {
 
+
                         } else {
                             System.out.println(chooseProduct);
                             System.out.println("chosen product");
@@ -198,7 +199,11 @@ public class MarketPlaceServer {
                             //OPENING NEW PANEL ON CLIENT SIDE WITH SHOPPING CART, BUY, PRODUCT STATISTICS
 
                             String buttonChosenStatistics = reader.readLine();
+                            if (buttonChosenStatistics == null) {
+
+                            }
                             if (buttonChosenStatistics.equals("null")) {
+                                System.out.println("buttonchosenstatistic null when choosing button");
 
                             }
 
@@ -210,94 +215,92 @@ public class MarketPlaceServer {
 
 
                                 //able to purchase correct input amount purchasing
-                                boolean loop = false;
 
                                 int amountPurchasing = 0;
 
-
                                 amountPurchasingString = reader.readLine();
-
                                 System.out.println("amount purchase string " + amountPurchasingString);
 
                                 if (!amountPurchasingString.equals("null")) {
                                     amountPurchasing = Integer.parseInt(amountPurchasingString);
                                     System.out.println("null");
-                                }
 
 
-                                System.out.println(amountPurchasing);
+                                    System.out.println(amountPurchasing);
 
 
-                                if (productBought.getQuantityAvailable() == 0) {
+                                    if (productBought.getQuantityAvailable() == 0) {
 
 
-                                    for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
-                                        if (Methods.productsOnMarket.get(i).getProductName().equals(findProductName) &&
-                                                Methods.productsOnMarket.get(i).getStoreName().equals(findStoreName)) {
-                                            productBought = Methods.productsOnMarket.get(i);
+                                        for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                            if (Methods.productsOnMarket.get(i).getProductName().equals(findProductName) &&
+                                                    Methods.productsOnMarket.get(i).getStoreName().equals(findStoreName)) {
+                                                productBought = Methods.productsOnMarket.get(i);
+                                            }
                                         }
-                                    }
-                                    //product is sold out
-                                    writer.write("soldOut");
-                                    writer.println();
-                                    writer.flush();
-                                    //writes back to client
-                                } else if (productBought.getQuantityAvailable() < amountPurchasing) {
-                                    // if more than quantity available
+                                        //product is sold out
+                                        writer.write("soldOut");
+                                        writer.println();
+                                        writer.flush();
+                                        //writes back to client
+                                    } else if (productBought.getQuantityAvailable() < amountPurchasing) {
+                                        // if more than quantity available
 
-                                    //ALL SAVING METHODS: sets shopping cart availability for all users, saves data file of products for all users,
-                                    // and saves shopping cart for specific USER
+                                        //ALL SAVING METHODS: sets shopping cart availability for all users, saves data file of products for all users,
+                                        // and saves shopping cart for specific USER
 
-                                    method.purchaseProduct(productBought, productBought.getQuantityAvailable());
-                                    productBought.setQuantityAvailable(0);
+                                        method.purchaseProduct(productBought, productBought.getQuantityAvailable());
+                                        productBought.setQuantityAvailable(0);
 
-                                    method.saveProductFile(Methods.productsOnMarket);
-                                    for (int i = 0; i < shoppingCart.size(); i++) {
-                                        if (shoppingCart.get(i).getProductName().equals(productBought.getProductName()) &&
-                                                shoppingCart.get(i).getStoreName().equals(productBought.getStoreName())) {
-                                            shoppingCart.get(i).setQuantityAvailable(0);
-                                            method.saveDataFileCart(shoppingCart.get(i));
+                                        method.saveProductFile(Methods.productsOnMarket);
+                                        for (int i = 0; i < shoppingCart.size(); i++) {
+                                            if (shoppingCart.get(i).getProductName().equals(productBought.getProductName()) &&
+                                                    shoppingCart.get(i).getStoreName().equals(productBought.getStoreName())) {
+                                                shoppingCart.get(i).setQuantityAvailable(0);
+                                                method.saveDataFileCart(shoppingCart.get(i));
+                                            }
                                         }
-                                    }
-                                    method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
-                                    method.saveProductFile(Methods.productsOnMarket);
-                                    method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+                                        method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
+                                        method.saveProductFile(Methods.productsOnMarket);
+                                        method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
 
-                                    //writing back to client for message
-                                    writer.write("purchaseLimit");
-                                    writer.println();
-                                    writer.flush();
+                                        //writing back to client for message
+                                        writer.write("purchaseLimit");
+                                        writer.println();
+                                        writer.flush();
 
 
-                                    //purchasing product
+                                        //purchasing product
 
-                                    // must implement customer receipts ******
+                                        // must implement customer receipts ******
 
-                                } else {
-                                    //no quantity limit when purchasing
-                                    int currentQuantityAvailable = productBought.getQuantityAvailable();
-                                    method.purchaseProduct(productBought, amountPurchasing);
-                                    productBought.setQuantityAvailable(currentQuantityAvailable - amountPurchasing);
+                                    } else {
+                                        System.out.println("amount purchasing " + amountPurchasing);
+                                        //no quantity limit when purchasing
+                                        int currentQuantityAvailable = productBought.getQuantityAvailable();
+                                        method.purchaseProduct(productBought, amountPurchasing);
+                                        productBought.setQuantityAvailable(currentQuantityAvailable - amountPurchasing);
 
-                                    //all saving methods for setting product available to new for data file, product file, shopping cart
-                                    for (int i = 0; i < shoppingCart.size(); i++) {
-                                        if (shoppingCart.get(i).getProductName().equals(productBought.getProductName()) &&
-                                                shoppingCart.get(i).getStoreName().equals(productBought.getStoreName())) {
-                                            shoppingCart.get(i).setQuantityAvailable(productBought.getQuantityAvailable());
-                                            method.saveDataFileCart(shoppingCart.get(i));
+                                        //all saving methods for setting product available to new for data file, product file, shopping cart
+                                        for (int i = 0; i < shoppingCart.size(); i++) {
+                                            if (shoppingCart.get(i).getProductName().equals(productBought.getProductName()) &&
+                                                    shoppingCart.get(i).getStoreName().equals(productBought.getStoreName())) {
+                                                shoppingCart.get(i).setQuantityAvailable(productBought.getQuantityAvailable());
+                                                method.saveDataFileCart(shoppingCart.get(i));
+                                            }
                                         }
+
+                                        method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
+                                        method.saveProductFile(Methods.productsOnMarket);
+                                        method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
+                                        method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+                                        // must implement customer reciepts *****
+
+                                        //writing back to client item purchase
+                                        writer.write("itemPurchased");
+                                        writer.println();
+                                        writer.flush();
                                     }
-
-                                    method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
-                                    method.saveProductFile(Methods.productsOnMarket);
-                                    method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
-                                    method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
-                                    // must implement customer reciepts *****
-
-                                    //writing back to client item purchase
-                                    writer.write("itemPurchased");
-                                    writer.println();
-                                    writer.flush();
                                 }
 
 
@@ -311,66 +314,70 @@ public class MarketPlaceServer {
                                 String quantityBuyingString = null;
                                 int quantityBuying = 0;
 
+
                                 quantityBuyingString = reader.readLine();
+
+
                                 if (!quantityBuyingString.equals("null")) {
                                     quantityBuying = Integer.parseInt(quantityBuyingString);
-                                    System.out.println("null");
+
+
+                                    String productName = productBought.getProductName();
+                                    String storeName = productBought.getStoreName();
+                                    String description = productBought.getDescriptionOfProduct();
+                                    int quantityAvailable = productBought.getQuantityAvailable();
+                                    double price = productBought.getPrice();
+
+                                    Methods method = new Methods();
+
+                                    if (quantityAvailable == 0) {
+                                        writer.write("soldOut");
+                                        writer.println();
+                                        writer.flush();
+                                    } else if (quantityAvailable < quantityBuying) {
+                                        writer.write("limitedQuantity");
+                                        writer.println();
+                                        writer.flush();
+                                        ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
+                                                price, quantityAvailable);
+                                        System.out.println("new quantity available test " + quantityAvailable);
+                                        shoppingCart.add(addedProductToCart);
+                                        method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                    } else {
+                                        ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
+                                                price, quantityBuying);
+                                        shoppingCart.add(addedProductToCart);
+                                        method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                        writer.write("addedToCart");
+                                        writer.println();
+                                        writer.flush();
+                                    }
+
                                 }
-
-
-                                String productName = productBought.getProductName();
-                                String storeName = productBought.getStoreName();
-                                String description = productBought.getDescriptionOfProduct();
-                                int quantityAvailable = productBought.getQuantityAvailable();
-                                double price = productBought.getPrice();
-
-                                Methods method = new Methods();
-
-                                if (quantityAvailable == 0) {
-                                    writer.write("soldOut");
-                                    writer.println();
-                                    writer.flush();
-                                } else if (quantityAvailable < quantityBuying) {
-                                    writer.write("limitedQuantity");
-                                    writer.println();
-                                    writer.flush();
-                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
-                                            price, quantityAvailable);
-                                    System.out.println("new quantity available test " + quantityAvailable);
-                                    shoppingCart.add(addedProductToCart);
-                                    method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
-
-                                } else {
-                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
-                                            price, quantityBuying);
-                                    shoppingCart.add(addedProductToCart);
-                                    method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
-
-                                    writer.write("addedToCart");
-                                    writer.println();
-                                    writer.flush();
-                                }
-
                             }
 
 
                         }
                     }
 
-                    if (buttonClicked.equals("searchedProductsButton")) {
+                    if (buttonClicked.equals("searchProductsButton")) {
 
                         Methods method = new Methods();
                         //search products button chosen
 
 
                         String wordSearch = reader.readLine();
+                        System.out.println("1 search product button pressed ");
+                        System.out.println("word searched: " + wordSearch + "end");
                         if (wordSearch.isEmpty()) {
+                            System.out.println("null/pressed exit");
 
                         } else {
                             ArrayList<Product> searchedProducts = new ArrayList<>();
-                            for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
-                                searchedProducts = method.searchForProduct(wordSearch);
-                            }
+                            searchedProducts = method.searchForProduct(wordSearch, Methods.productsOnMarket);
+                            System.out.println("searched found :" + searchedProducts);
 
                             if (searchedProducts.isEmpty()) {
                                 writer.write("noProductsFound");
@@ -396,158 +403,219 @@ public class MarketPlaceServer {
 
                                 //reading chosen item from client
                                 String itemFromSearchChosen = reader.readLine();
-                                String[] split = itemFromSearchChosen.split("@@");
-                                String productName = split[0].substring(split[0].indexOf(":") + 2);
-                                String storeName = split[1].substring(split[1].indexOf(":") + 2);
+                                if (itemFromSearchChosen.equals("null")) {
+                                    System.out.println("exit null press product from search");
+                                } else {
 
 
-                                Product productBoughtNew = null;
-                                boolean newPage = false;
-
-                                for (int k = 0; k < searchedProducts.size(); k++) {
-                                    if (searchedProducts.get(k).getProductName().equals(productName) &&
-                                            searchedProducts.get(k).getStoreName().equals(storeName)) {
-                                        productBoughtNew = searchedProducts.get(k);
-                                        newPage = true;
-                                        //product insight page
-                                    }
-                                }
-                                if (newPage) {
-                                    //PRODUCT INSIGHTS
-
-
-                                    String chooseProduct = reader.readLine();
                                     //reads the chosen product
 
-                                    for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
-                                        if (Methods.productsOnMarket.get(i).statisticsToString().equals(chooseProduct)) {
-                                            productBoughtNew = Methods.productsOnMarket.get(i);
+
+                                    String[] productChangedNames = itemFromSearchChosen.split(",");
+                                    String findProductName = productChangedNames[0].substring(productChangedNames[0].indexOf(":") + 2);
+                                    String findStoreName = productChangedNames[1].substring(productChangedNames[1].indexOf(":") + 2);
+                                    System.out.println("product name " + findProductName);
+                                    System.out.println("store name: " + findStoreName);
+
+
+                                    Product productBoughtNew = null;
+                                    boolean newPage = false;
+
+                                    for (int k = 0; k < searchedProducts.size(); k++) {
+                                        if (searchedProducts.get(k).getProductName().equals(findProductName) &&
+                                                searchedProducts.get(k).getStoreName().equals(findStoreName)) {
+                                            productBoughtNew = searchedProducts.get(k);
+                                            newPage = true;
+                                            //product insight page
                                         }
                                     }
+                                    System.out.println("product found statstic " + productBoughtNew.statisticsToString());
+                                    if (newPage) {
+                                        //PRODUCT INSIGHTS
 
 
-                                    //OPENING NEW PANEL ON CLIENT SIDE WITH SHOPPING CART, BUY, PRODUCT STATISTICS
-                                    String buttonChosenStatistics = reader.readLine();
-                                    if (buttonChosenStatistics.equals("buyProduct")) {
+                                        System.out.println("entering else ");
 
 
-                                        //able to purchase correct input amount purchasing
-                                        int amountPurchasing = Integer.parseInt(reader.readLine());
+                                        //reads the chosen product
 
-
-                                        if (productBoughtNew.getQuantityAvailable() == 0) {
-
-                                            //product is sold out
-                                            writer.write("soldOut");
-                                            writer.println();
-                                            writer.flush();
-                                            //writes back to client
-
-                                        } else if (productBoughtNew.getQuantityAvailable() < amountPurchasing) {
-                                            // if more than quantity available
-
-
-                                            // and saves shopping cart for specific USER
-                                            method.purchaseProduct(productBoughtNew, productBoughtNew.getQuantityAvailable());
-                                            method.saveProductFile(Methods.productsOnMarket);
-                                            for (int i = 0; i < shoppingCart.size(); i++) {
-                                                if (shoppingCart.get(i).getProductName().equals(productBoughtNew.getProductName()) &&
-                                                        shoppingCart.get(i).getStoreName().equals(productBoughtNew.getStoreName())) {
-                                                    shoppingCart.get(i).setQuantityAvailable(0);
-                                                    method.saveDataFileCart(shoppingCart.get(i));
-                                                }
+                                        for (int i = 0; i < Methods.productsOnMarket.size(); i++) {
+                                            if (Methods.productsOnMarket.get(i).getProductName().equals(findProductName) &&
+                                                    Methods.productsOnMarket.get(i).getStoreName().equals(findStoreName)) {
+                                                productBoughtNew = Methods.productsOnMarket.get(i);
                                             }
-                                            method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
-                                            method.saveProductFile(Methods.productsOnMarket);
-                                            method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
-
-                                            //writing back to client for message
-                                            writer.write("purchaseLimit");
-                                            writer.println();
-                                            writer.flush();
+                                        }
 
 
-                                            //purchasing product
+                                        //OPENING NEW PANEL ON CLIENT SIDE WITH SHOPPING CART, BUY, PRODUCT STATISTICS
+                                        String buttonChosenStatistics = null;
 
-                                            // must implement customer receipts ******
-
-
-                                            //purchasing product
-
-                                            // must implement customer receipts ******
-
-                                        } else {
+                                        buttonChosenStatistics = reader.readLine();
+                                        if (buttonChosenStatistics.equals("null")) {
+                                            System.out.println("null/exit");
 
 
-                                            method.purchaseProduct(productBoughtNew, amountPurchasing);
+                                        }
+                                        String amountPurchasingString = null;
+                                        if (buttonChosenStatistics.equals("buyProductSearch")) {
+                                            System.out.println("buy product");
 
-                                            //all saving methods for setting product available to new for data file, product file, shopping cart
-                                            for (int i = 0; i < shoppingCart.size(); i++) {
-                                                if (shoppingCart.get(i).getProductName().equals(productBoughtNew.getProductName()) &&
-                                                        shoppingCart.get(i).getStoreName().equals(productBoughtNew.getStoreName())) {
-                                                    shoppingCart.get(i).setQuantityAvailable(productBoughtNew.getQuantityAvailable());
-                                                    method.saveDataFileCart(shoppingCart.get(i));
+
+                                            //able to purchase correct input amount purchasing
+                                            int amountPurchasing = 0;
+
+
+                                            amountPurchasingString = reader.readLine();
+                                            System.out.println("amountpurchasing " + amountPurchasingString);
+
+
+                                            if (!amountPurchasingString.equals("null")) {
+                                                amountPurchasing = Integer.parseInt(amountPurchasingString);
+                                                System.out.println("invalid input");
+
+                                                System.out.println("amount buying " + amountPurchasing);
+
+
+                                                if (productBoughtNew.getQuantityAvailable() == 0) {
+
+                                                    //product is sold out
+                                                    writer.write("soldOut");
+                                                    writer.println();
+                                                    writer.flush();
+                                                    //writes back to client
+
+                                                } else if (productBoughtNew.getQuantityAvailable() < amountPurchasing) {
+                                                    // if more than quantity available
+
+
+                                                    // and saves shopping cart for specific USER
+                                                    method.purchaseProduct(productBoughtNew, productBoughtNew.getQuantityAvailable());
+                                                    productBoughtNew.setQuantityAvailable(0);
+
+                                                    method.saveProductFile(Methods.productsOnMarket);
+                                                    for (int i = 0; i < shoppingCart.size(); i++) {
+                                                        if (shoppingCart.get(i).getProductName().equals(productBoughtNew.getProductName()) &&
+                                                                shoppingCart.get(i).getStoreName().equals(productBoughtNew.getStoreName())) {
+                                                            shoppingCart.get(i).setQuantityAvailable(0);
+                                                            method.saveDataFileCart(shoppingCart.get(i));
+                                                        }
+                                                    }
+                                                    method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
+                                                    method.saveProductFile(Methods.productsOnMarket);
+                                                    method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                                    //writing back to client for message
+                                                    writer.write("purchaseLimit");
+                                                    writer.println();
+                                                    writer.flush();
+
+
+                                                    //purchasing product
+
+                                                    // must implement customer receipts ******
+
+
+                                                    //purchasing product
+
+                                                    // must implement customer receipts ******
+
+                                                } else {
+
+                                                    int currentQuantityAvailable = productBoughtNew.getQuantityAvailable();
+                                                    method.purchaseProduct(productBoughtNew, amountPurchasing);
+                                                    productBoughtNew.setQuantityAvailable(currentQuantityAvailable - amountPurchasing);
+                                                    System.out.println("product new quantity available after bought: " + productBoughtNew.getQuantityAvailable());
+
+
+                                                    //all saving methods for setting product available to new for data file, product file, shopping cart
+                                                    for (int i = 0; i < shoppingCart.size(); i++) {
+                                                        if (shoppingCart.get(i).getProductName().equals(productBoughtNew.getProductName()) &&
+                                                                shoppingCart.get(i).getStoreName().equals(productBoughtNew.getStoreName())) {
+                                                            shoppingCart.get(i).setQuantityAvailable(productBoughtNew.getQuantityAvailable());
+                                                            method.saveDataFileCart(shoppingCart.get(i));
+                                                        }
+                                                    }
+
+                                                    method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
+                                                    method.saveProductFile(Methods.productsOnMarket);
+                                                    method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
+                                                    method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+                                                    // must implement customer reciepts *****
+
+                                                    //writing back to client item purchase
+                                                    writer.write("itemPurchased");
+                                                    writer.println();
+                                                    writer.flush();
                                                 }
+
+
+                                            } else {
+
                                             }
 
-                                            method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
-                                            method.saveProductFile(Methods.productsOnMarket);
-                                            method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
-                                            method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
-                                            // must implement customer reciepts *****
-
-                                            //writing back to client item purchase
-                                            writer.write("itemPurchased");
-                                            writer.println();
-                                            writer.flush();
 
                                         }
 
-                                    } else if (buttonChosenStatistics.equals("addToCart")) {
-                                        // add to cart button in client pressed
 
-                                        String quantityBuyingString = reader.readLine();
-                                        int quantityBuying = Integer.parseInt(quantityBuyingString);
+                                        if (buttonChosenStatistics.equals("addToCartSearch")) {
+                                            // add to cart button in client pressed
+                                            System.out.println("add to cart button");
+
+                                            String quantityBuyingString = null;
+                                            int quantityBuying = 0;
+                                            boolean valid = false;
+
+                                            quantityBuyingString = reader.readLine();
 
 
-                                        assert productBoughtNew != null;
-                                        String description = productBoughtNew.getDescriptionOfProduct();
-                                        int quantityAvailable = productBoughtNew.getQuantityAvailable();
-                                        double price = productBoughtNew.getPrice();
+                                            if (quantityBuyingString.equals("null")) {
+                                                System.out.println("null quantity buying cart exit");
 
-                                        if (quantityAvailable == 0) {
-                                            writer.write("soldOut");
-                                            writer.println();
-                                            writer.flush();
-                                        } else if (quantityAvailable < quantityBuying) {
-                                            writer.write("limitedQuantity");
-                                            writer.println();
-                                            writer.flush();
-                                            ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
-                                                    price, quantityAvailable);
-                                            shoppingCart.add(addedProductToCart);
-                                            method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
 
-                                        } else {
-                                            ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
-                                                    price, quantityBuying);
-                                            shoppingCart.add(addedProductToCart);
-                                            method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+                                            } else {
+                                                quantityBuying = Integer.parseInt(quantityBuyingString);
+                                                System.out.println("not null");
 
-                                            writer.write("addedToCart");
-                                            writer.println();
-                                            writer.flush();
+
+                                                String description = productBoughtNew.getDescriptionOfProduct();
+                                                int quantityAvailable = productBoughtNew.getQuantityAvailable();
+                                                double price = productBoughtNew.getPrice();
+
+                                                if (quantityAvailable == 0) {
+                                                    writer.write("soldOut");
+                                                    writer.println();
+                                                    writer.flush();
+                                                } else if (quantityAvailable < quantityBuying) {
+                                                    writer.write("limitedQuantity");
+                                                    writer.println();
+                                                    writer.flush();
+                                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(findProductName, findStoreName, description, quantityAvailable,
+                                                            price, quantityAvailable);
+                                                    shoppingCart.add(addedProductToCart);
+                                                    method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                                } else {
+                                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(findProductName, findStoreName, description, quantityAvailable,
+                                                            price, quantityBuying);
+                                                    shoppingCart.add(addedProductToCart);
+                                                    method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                                    writer.write("addedToCart");
+                                                    writer.println();
+                                                    writer.flush();
+                                                }
+                                            }
                                         }
+
+
                                     }
-
-
                                 }
                             }
                         }
 
-
                     }
                     if (buttonClicked.equals("null")) {
+                        System.out.println("exit clicked no buy or cart");
 
                     }
                     if (buttonClicked.equals("viewShoppingCart")) {
@@ -633,9 +701,12 @@ public class MarketPlaceServer {
 
                                 if (shoppingCart.get(i).getQuantityAvailable() == 0) {
                                     soldOut.append(shoppingCart.get(i).getProductName()).append(" sold out!, ");
+                                    System.out.println("sold out message " + soldOut);
 
                                 } else if (shoppingCart.get(i).getQuantityBuying() > shoppingCart.get(i).getQuantityAvailable()) {
+
                                     limitedQuantity.append(shoppingCart.get(i).getProductName()).append(" ").append(shoppingCart.get(i).getQuantityAvailable()).append(" quantity available to purchase!, ");
+                                    System.out.println("limited quantity message " + limitedQuantity);
 
 
                                     //finding shopping cart in products on market
@@ -659,12 +730,13 @@ public class MarketPlaceServer {
                                     method.saveDataFileWhenPurchased(Methods.productsOnMarket, purchaseInCart);
                                     method.saveDataFileCart(updatedQuantity);
                                     method.saveProductFile(Methods.productsOnMarket);
+                                    //might not be needed as shopping cart will be cleared
                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                     //saves to file updating the item that get bought
                                 } else {
                                     //INSERT CUSTOMER RECEIPTS SOMEWHERE HERE
                                     purchasedCorrectly.append(shoppingCart.get(i).getProductName()).append(" purchased!, ");
-
+                                    System.out.println("purchased correctly message " + purchasedCorrectly);
 
                                     Product purchaseInCart = null;
                                     for (int k = 0; k < Methods.productsOnMarket.size(); k++) {
@@ -675,23 +747,17 @@ public class MarketPlaceServer {
                                     }
                                     //debug
 
+
                                     method.purchaseProduct(purchaseInCart, shoppingCart.get(i).getQuantityBuying());
-
                                     assert purchaseInCart != null;
-                                    purchaseInCart.setQuantityAvailable(shoppingCart.get(i).getQuantityAvailable() - shoppingCart.get(i).getQuantityBuying());
-
-                                    ShoppingCartProduct updatedQuantity = shoppingCart.get(i);
-                                    updatedQuantity.setQuantityAvailable(shoppingCart.get(i).getQuantityAvailable() - shoppingCart.get(i).getQuantityBuying());
+                                    shoppingCart.get(i).setQuantityAvailable(purchaseInCart.getQuantityAvailable());
 
 
-                                    System.out.println(purchaseInCart.getQuantityAvailable());
-                                    System.out.println(updatedQuantity.getQuantityAvailable());
+                                    System.out.println("product quantity after purchase " + purchaseInCart.getQuantityAvailable());
 
 
-                                    assert purchaseInCart != null;
                                     method.saveDataFileWhenPurchased(Methods.productsOnMarket, purchaseInCart);
-                                    System.out.println("shoppingCart.get(i): " + shoppingCart.get(i).getQuantityAvailable());
-                                    method.saveDataFileCart(updatedQuantity);
+                                    method.saveDataFileCart(shoppingCart.get(i));
                                     method.saveProductFile(Methods.productsOnMarket);
                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
 
