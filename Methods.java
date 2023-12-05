@@ -509,7 +509,7 @@ public class Methods {
                             String[] findStoreName = separtedByProduct[k].split(",");
                             System.out.println("store Name " + storeName + "product name " + productName);
                             System.out.println("store Name " + findStoreName[0] + "product name" + findStoreName[1]);
-                            if (findStoreName[0].equals(storeName) && findStoreName[1].equals(productName)) {
+                            if (findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
                                 allUserData.set(i, allUserData.get(i).replace(findStoreName[3], quantity));
                                 System.out.println("Updated line: " + allUserData.get(i));
                             }
@@ -569,7 +569,7 @@ public class Methods {
                         String[] separtedByProduct = afterSemiColon[1].split("@@");
                         for (int k = 0; k < separtedByProduct.length; k++) {
                             String[] findStoreName = separtedByProduct[k].split(",");
-                            if (findStoreName[0].equals(storeName) && findStoreName[1].equals(productName) && findStoreName.length == 6) {
+                            if (findStoreName[1].equals(storeName) && findStoreName[0].equals(productName) && findStoreName.length == 6) {
                                 updated = storeName + "," + productName + ","
                                         + description + "," + quantityAvailable + "," + price + "," + quantityBuying;
                                 allUserData.set(i, allUserData.get(i).replace(separtedByProduct[k], updated));
