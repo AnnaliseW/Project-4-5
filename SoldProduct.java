@@ -1,13 +1,5 @@
 public class SoldProduct extends Product{
     private static int quantityPurchased;
-    private static Customer purchasedBy;
-
-    public SoldProduct(String productName, String storeName, String descriptionOfProduct, int quantityAvailable,
-                       double price, int quantityPurchased, Customer purchasedBy){
-        super(productName, storeName, descriptionOfProduct, quantityAvailable, price);
-        this.quantityPurchased = quantityPurchased;
-        this.purchasedBy = purchasedBy;
-    }
 
     public SoldProduct(String productName, String storeName, String descriptionOfProduct, int quantityAvailable,
                        double price, int quantityPurchased){
@@ -23,9 +15,5 @@ public class SoldProduct extends Product{
 
     public static int getQuantityPurchased(){
         return quantityPurchased;
-    }
-
-    public static Customer getPurchasedBy(){
-        return purchasedBy;
     }
 }
