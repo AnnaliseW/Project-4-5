@@ -20,6 +20,8 @@ public class Methods {
     // this method searches for a product by what they input
 
 
+
+
     public ArrayList<Product> searchForProduct(String searchWord, ArrayList<Product> arrayList) {
         ArrayList<Product> searchedProducts = new ArrayList<>();
         Product similarProduct;
@@ -508,7 +510,7 @@ public class Methods {
                             System.out.println("testtest");
                             String[] findStoreName = separtedByProduct[k].split(",");
                             System.out.println("store Name " + storeName + "product name " + productName);
-                            System.out.println("store Name " + findStoreName[0] + "product name" + findStoreName[1]);
+                            System.out.println("store Name " + findStoreName[1] + "product name" + findStoreName[0]);
                             if (findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
                                 allUserData.set(i, allUserData.get(i).replace(findStoreName[3], quantity));
                                 System.out.println("Updated line: " + allUserData.get(i));
@@ -679,6 +681,37 @@ public class Methods {
         return newProductsArrayList;
     }
 
+    public ArrayList<Product> makeProductArrayList() {
+        ArrayList<Product> products = null;
+        try {
+            products = new ArrayList<>();
+            //reading products from file into the product array list
+            BufferedReader bfr = new BufferedReader(new FileReader("productArrayList.txt"));
+            String line = "";
+
+            while ((line = bfr.readLine()) != null) {
+                //splitting by @@ for each product
+                String[] arrayListOfProducts = line.split("@@");
+                for (int i = 0; i < arrayListOfProducts.length; i++) {
+                    String[] separateParameters = arrayListOfProducts[i].split(",");
+                    String productName = separateParameters[0];
+                    String storeName = separateParameters[1];
+                    String description = separateParameters[2];
+                    int quantityAvailable = Integer.parseInt(separateParameters[3]);
+                    double price = Double.parseDouble(separateParameters[4]);
+                    //recreate product that is currently selling
+                    Product eachProduct = new Product(productName, storeName, description, quantityAvailable, price);
+                    products.add(eachProduct);
+                }
+            }
+            bfr.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
 
     public ArrayList<Product> sortByMinQuantity(ArrayList<Product> productsArrayList) {
         ArrayList<Product> copyOfProducts = new ArrayList<>(productsArrayList);
@@ -726,6 +759,94 @@ public class Methods {
 
         return newProductsArrayList;
     }
+
+
+    public ArrayList<ShoppingCartProduct> createShoppingCartArray(User userAccount) {
+        String email = userAccount.getEmail();
+        ArrayList<ShoppingCartProduct> shoppingCart = new ArrayList<>();
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
+            String line = "";
+            ArrayList<String> allUserData = new ArrayList<>();
+
+
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+
+            for (int i = 0; i < allUserData.size(); i++) {
+                String[] oneUserData = allUserData.get(i).split(",");
+                //checking for email
+                if (oneUserData[1].equals(email)) {
+                    //splitting sales array
+                    String[] separatingForSalesArray = allUserData.get(i).split(";");
+
+                    if (separatingForSalesArray.length == 1) {
+
+
+                        // if we need to populate the array list with previous sales data
+                    } else {
+                        //splitting by PRODUCT
+
+                        if (!separatingForSalesArray[1].contains("@@")) {
+                            //there is only one product item
+                            String[] separateParameters = separatingForSalesArray[1].split(",");
+                            //order of text file: productName, storeName, description, quantityAvailable, price
+                            String productName = separateParameters[0];
+                            String storeName = separateParameters[1];
+                            String description = separateParameters[2];
+                            int quantityAvailable = Integer.parseInt(separateParameters[3]);
+                            double price = Double.parseDouble(separateParameters[4]);
+                            int quantityBuying = Integer.parseInt(separateParameters[5]);
+                            //recreate product that is currently selling
+                            ShoppingCartProduct eachProduct = new ShoppingCartProduct(productName,
+                                    storeName, description, quantityAvailable, price, quantityBuying);
+
+                            //adding to the items to shopping cart previously from file
+                            shoppingCart.add(eachProduct);
+
+                        } else {
+
+                            String[] arrayListCartProducts = separatingForSalesArray[1].split("@@");
+
+                            // separating the string text to get parameters for each product
+                            for (int j = 0; j < arrayListCartProducts.length; j++) {
+                                String[] separateParameters = arrayListCartProducts[j].split(",");
+                                //order of text file: productName, storeName, description, quantityAvailable, price
+                                String productName = separateParameters[0];
+                                String storeName = separateParameters[1];
+                                String description = separateParameters[2];
+                                int quantityAvailable = Integer.parseInt(separateParameters[3]);
+                                double price = Double.parseDouble(separateParameters[4]);
+                                int quantityBuying = Integer.parseInt(separateParameters[5]);
+                                //recreate product that is currently selling
+                                ShoppingCartProduct eachProduct = new ShoppingCartProduct(productName,
+                                        storeName, description, quantityAvailable, price, quantityBuying);
+
+                                //adding to the items to shopping cart previously from file
+                                shoppingCart.add(eachProduct);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            bfr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return shoppingCart;
+
+
+    }
+
+
+
+
+
+
 
 
     //NEW VERSION
