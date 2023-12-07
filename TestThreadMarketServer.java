@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+//CLIENT SHOULD NOT HAVE RUN AND THREAD. IT DOES NOT NEED ANY OF THAT
+
 public class TestThreadMarketServer {
 
     public static void main(String[] args) throws IOException {
