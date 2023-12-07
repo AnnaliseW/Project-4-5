@@ -1,4 +1,3 @@
-import javax.imageio.IIOException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -370,6 +369,9 @@ public class MarketPlaceClient extends JFrame {
 
                             shoppingCart = method.createShoppingCartArray(userAccount);
 
+                            //making customer history
+                            ArrayList<SoldProduct> customerHistory = method.makeCustomerHistory(userAccount);
+
 
                             //creates shopping cart array list from file
                             CustomerView.setTitle("Marketplace Home Page");
@@ -624,6 +626,8 @@ public class MarketPlaceClient extends JFrame {
                                                                     method.saveProductFile(Methods.productsOnMarket);
                                                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                                                 } else if (productAvailability.equals("purchaseLimit")) {
+
+                                                                    int purchaseHistoryQuantityAvailable = productBought.getQuantityAvailable();
                                                                     // purchasing wanted > amount available
                                                                     JOptionPane.showMessageDialog(null, "Could only purchase " + productBought.getQuantityAvailable() + " products!\n "
                                                                                     + productBought.getProductName() + " purchased!",
@@ -640,6 +644,15 @@ public class MarketPlaceClient extends JFrame {
                                                                     method.saveProductFile(Methods.productsOnMarket);
                                                                     method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                                                    ///customer history
+                                                                    //String productName, String storeName, String descriptionOfProduct, int quantityAvailable,
+                                                                    //                       double price, int quantityPurchased
+
+                                                                    SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                            productBought.getQuantityAvailable(), productBought.getPrice(), purchaseHistoryQuantityAvailable);
+                                                                    customerHistory.add(addedProductHistory);
+                                                                    method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                 } else if (productAvailability.equals("itemPurchased")) {
                                                                     //item correctly purchased in the server
@@ -658,6 +671,11 @@ public class MarketPlaceClient extends JFrame {
                                                                     method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                     method.saveProductFile(Methods.productsOnMarket);
                                                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+                                                                    SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                            productBought.getQuantityAvailable(), productBought.getPrice(), amountPurchasing);
+                                                                    customerHistory.add(addedProductHistory);
+                                                                    method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                 }
                                                             } catch (IOException ex) {
@@ -961,6 +979,8 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                                                     } else if (productAvailability.equals("purchaseLimit")) {
+                                                                        int purchaseHistoryQuantityAvailable = productBought.getQuantityAvailable();
+
                                                                         // purchasing wanted > amount available
                                                                         JOptionPane.showMessageDialog(null, "Could only purchase " + productBought.getQuantityAvailable() + " products!\n "
                                                                                         + productBought.getProductName() + " purchased!",
@@ -977,6 +997,12 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                        SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                                productBought.getQuantityAvailable(), productBought.getPrice(), purchaseHistoryQuantityAvailable);
+                                                                        customerHistory.add(addedProductHistory);
+                                                                        method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                     } else if (productAvailability.equals("itemPurchased")) {
                                                                         //item correctly purchased in the server
@@ -995,6 +1021,13 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                        SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                                productBought.getQuantityAvailable(), productBought.getPrice(), amountPurchasing);
+                                                                        customerHistory.add(addedProductHistory);
+                                                                        method.saveCustomerHistory(customerHistory, userAccount);
+
 
                                                                     }
                                                                 } catch (IOException ex) {
@@ -1296,6 +1329,8 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                                                     } else if (productAvailability.equals("purchaseLimit")) {
+
+                                                                        int purchaseHistoryQuantityAvailable = productBought.getQuantityAvailable();
                                                                         // purchasing wanted > amount available
                                                                         JOptionPane.showMessageDialog(null, "Could only purchase " + productBought.getQuantityAvailable() + " products!\n "
                                                                                         + productBought.getProductName() + " purchased!",
@@ -1312,6 +1347,12 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                        SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                                productBought.getQuantityAvailable(), productBought.getPrice(), purchaseHistoryQuantityAvailable);
+                                                                        customerHistory.add(addedProductHistory);
+                                                                        method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                     } else if (productAvailability.equals("itemPurchased")) {
                                                                         //item correctly purchased in the server
@@ -1330,6 +1371,12 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                        SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                                productBought.getQuantityAvailable(), productBought.getPrice(), amountPurchasing);
+                                                                        customerHistory.add(addedProductHistory);
+                                                                        method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                     }
                                                                 } catch (IOException ex) {
@@ -1639,6 +1686,7 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                                                     } else if (productAvailability.equals("purchaseLimit")) {
+                                                                        int purchaseHistoryQuantityAvailable = productBought.getQuantityAvailable();
                                                                         // purchasing wanted > amount available
                                                                         JOptionPane.showMessageDialog(null, "Could only purchase " + productBought.getQuantityAvailable() + " products!\n "
                                                                                         + productBought.getProductName() + " purchased!",
@@ -1655,6 +1703,12 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                        SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                                productBought.getQuantityAvailable(), productBought.getPrice(), purchaseHistoryQuantityAvailable);
+                                                                        customerHistory.add(addedProductHistory);
+                                                                        method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                     } else if (productAvailability.equals("itemPurchased")) {
                                                                         //item correctly purchased in the server
@@ -1673,6 +1727,12 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                        SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                                productBought.getQuantityAvailable(), productBought.getPrice(), amountPurchasing);
+                                                                        customerHistory.add(addedProductHistory);
+                                                                        method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                     }
                                                                 } catch (IOException ex) {
@@ -1981,6 +2041,7 @@ public class MarketPlaceClient extends JFrame {
                                                                     method.saveProductFile(Methods.productsOnMarket);
                                                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                                                 } else if (productAvailability.equals("purchaseLimit")) {
+                                                                    int purchaseHistoryQuantityAvailable = productBought.getQuantityAvailable();
                                                                     // purchasing wanted > amount available
                                                                     JOptionPane.showMessageDialog(null, "Could only purchase " + productBought.getQuantityAvailable() + " products!\n "
                                                                                     + productBought.getProductName() + " purchased!",
@@ -1997,6 +2058,12 @@ public class MarketPlaceClient extends JFrame {
                                                                     method.saveProductFile(Methods.productsOnMarket);
                                                                     method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                    SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                            productBought.getQuantityAvailable(), productBought.getPrice(), purchaseHistoryQuantityAvailable);
+                                                                    customerHistory.add(addedProductHistory);
+                                                                    method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                 } else if (productAvailability.equals("itemPurchased")) {
                                                                     //item correctly purchased in the server
@@ -2015,6 +2082,12 @@ public class MarketPlaceClient extends JFrame {
                                                                     method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                                     method.saveProductFile(Methods.productsOnMarket);
                                                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                    SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                            productBought.getQuantityAvailable(), productBought.getPrice(), amountPurchasing);
+                                                                    customerHistory.add(addedProductHistory);
+                                                                    method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                 }
                                                             } catch (IOException ex) {
@@ -2354,6 +2427,7 @@ public class MarketPlaceClient extends JFrame {
                                                                         JOptionPane.showMessageDialog(null, "Error! Product is sold out!",
                                                                                 "Buy Product", JOptionPane.ERROR_MESSAGE);
                                                                     } else if (productAvailability.equals("purchaseLimit")) {
+                                                                        int purchaseHistoryQuantityAvailable = productBought.getQuantityAvailable();
                                                                         // purchasing wanted > amount available
                                                                         JOptionPane.showMessageDialog(null, "Could only purchase " + productBoughtNew.getQuantityAvailable() + " products!\n "
                                                                                         + productBoughtNew.getProductName() + " purchased!",
@@ -2370,6 +2444,13 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                        SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                                productBought.getQuantityAvailable(), productBought.getPrice(), purchaseHistoryQuantityAvailable);
+                                                                        customerHistory.add(addedProductHistory);
+                                                                        method.saveCustomerHistory(customerHistory, userAccount);
+
                                                                     } else if (productAvailability.equals("itemPurchased")) {
                                                                         //item correctly purchased in the server
                                                                         JOptionPane.showMessageDialog(null, productBoughtNew.getProductName() + " purchased!", "Buy Products",
@@ -2386,6 +2467,12 @@ public class MarketPlaceClient extends JFrame {
                                                                         method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
                                                                         method.saveProductFile(Methods.productsOnMarket);
                                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
+
+
+                                                                        SoldProduct addedProductHistory = new SoldProduct(productBought.getProductName(), productBought.getStoreName(), productBought.getDescriptionOfProduct(),
+                                                                                productBought.getQuantityAvailable(), productBought.getPrice(), amountPurchasing);
+                                                                        customerHistory.add(addedProductHistory);
+                                                                        method.saveCustomerHistory(customerHistory, userAccount);
 
                                                                     }
                                                                 } catch (IOException ex) {
@@ -2740,10 +2827,21 @@ public class MarketPlaceClient extends JFrame {
                                                             if (Methods.productsOnMarket.get(k).getProductName().equals(shoppingCart.get(i).getProductName())
                                                                     && Methods.productsOnMarket.get(k).getStoreName().equals(shoppingCart.get(i).getStoreName())) {
                                                                 shoppingCart.get(i).setQuantityAvailable(Methods.productsOnMarket.get(k).getQuantityAvailable());
+
+                                                                int purchaseHistoryQuantityAvailable = Methods.productsOnMarket.get(k).getQuantityAvailable();
+
+
                                                                 Methods.productsOnMarket.get(k).setQuantityAvailable(0);
                                                                 shoppingCart.get(i).setQuantityAvailable(0);
                                                                 System.out.println("testing quantity" + Methods.productsOnMarket.get(k).getQuantityAvailable());
                                                                 ///INSERT CUSTOMER RECIEPTS HERE
+
+
+                                                                SoldProduct addedProductHistory = new SoldProduct(Methods.productsOnMarket.get(k).getProductName(), Methods.productsOnMarket.get(k).getStoreName(),
+                                                                        Methods.productsOnMarket.get(k).getDescriptionOfProduct(), Methods.productsOnMarket.get(k).getQuantityAvailable(), Methods.productsOnMarket.get(k).getPrice(),
+                                                                        purchaseHistoryQuantityAvailable);
+                                                                customerHistory.add(addedProductHistory);
+                                                                method.saveCustomerHistory(customerHistory, userAccount);
 
 
                                                             }
@@ -2759,6 +2857,12 @@ public class MarketPlaceClient extends JFrame {
                                                                 Methods.productsOnMarket.get(k).setQuantityAvailable(Methods.productsOnMarket.get(k).getQuantityAvailable() - shoppingCart.get(i).getQuantityBuying());
                                                                 shoppingCart.get(i).setQuantityAvailable(Methods.productsOnMarket.get(k).getQuantityAvailable());
                                                                 System.out.println("testing quantity on client: " + Methods.productsOnMarket.get(k).getQuantityAvailable());
+
+                                                                SoldProduct addedProductHistory = new SoldProduct(Methods.productsOnMarket.get(k).getProductName(), Methods.productsOnMarket.get(k).getStoreName(),
+                                                                        Methods.productsOnMarket.get(k).getDescriptionOfProduct(), Methods.productsOnMarket.get(k).getQuantityAvailable(), Methods.productsOnMarket.get(k).getPrice(),
+                                                                        shoppingCart.get(i).getQuantityBuying());
+                                                                customerHistory.add(addedProductHistory);
+                                                                method.saveCustomerHistory(customerHistory, userAccount);
                                                             }
 
                                                         }
@@ -2829,6 +2933,26 @@ public class MarketPlaceClient extends JFrame {
 
                                     }
 
+                                }
+                            });
+
+                            viewPurchaseHistoryButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    Methods methods = new Methods();
+                                    ArrayList<SoldProduct> history = methods.makeCustomerHistory(userAccount);
+                                    String[] historyString = new String[history.size()];
+                                    for (int i = 0; i < history.size(); i++) {
+                                        historyString[i] = history.get(i).statisticsToString();
+                                    }
+                                    if (history.isEmpty()) {
+                                        JOptionPane.showMessageDialog(null, "No History!", "Customer History",
+                                                JOptionPane.INFORMATION_MESSAGE);
+                                        System.out.println("empty history print null");
+                                    } else {
+                                        JOptionPane.showInputDialog(null, "Purchase History",
+                                                "Customer History", JOptionPane.QUESTION_MESSAGE, null, historyString, historyString[0]);
+                                        System.out.println("customer background shown");
+                                    }
                                 }
                             });
 
