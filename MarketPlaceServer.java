@@ -310,7 +310,6 @@ public class MarketPlaceServer {
 
                                                 method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                 method.saveProductFile(Methods.productsOnMarket);
-                                                method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBought);
                                                 method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                                 // must implement customer reciepts *****
 
@@ -557,7 +556,6 @@ public class MarketPlaceServer {
 
                                                             method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
                                                             method.saveProductFile(Methods.productsOnMarket);
-                                                            method.saveDataFileWhenPurchased(Methods.productsOnMarket, productBoughtNew);
                                                             method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
                                                             // must implement customer reciepts *****
 
