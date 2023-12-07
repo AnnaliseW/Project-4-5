@@ -1,1 +1,1 @@
-test1,test1,test1,1,1.0@@test4,test4,test4,4,4.0@@
+eraser,purdue,it is a small eraser,10,2.0@@pencils,walmart,a pack of 10 pencils,20,5.0@@pens,purdue,customized purdue pens,30,7.0@@sweatshirt,purdue,limited purdue sweatshirts,40,60.0@@notebook,local market,college rule notebook,43,10.0@@white out,ishaan storefront,small whiteout,15,3.5@@pencil sharpener,vinay store,cool fancy sharpener,10,2.5@@
