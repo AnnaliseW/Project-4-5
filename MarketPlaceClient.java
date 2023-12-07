@@ -2,10 +2,7 @@ import javax.imageio.IIOException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +20,16 @@ public class MarketPlaceClient extends JFrame {
     public Product productBoughtNew;
 
     public boolean productInsight;
+
+    public boolean signInWorks = false;
+    boolean alreadyAnAccount = false;
+
+    boolean customerOrSeller = false;
+
+    ArrayList<ShoppingCartProduct> shoppingCart;
+
+    //IMPORTANT: for threading, must reinstantiate the product array list for every instance in order to have new
+    // and updated array list from changes made if user buys
 
 
     public static void run() throws IOException {
@@ -77,10 +84,140 @@ public class MarketPlaceClient extends JFrame {
             add(signInButton);
             add(createAccountButton);
 
+            setVisible(true);
+
+
+            createAccountButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+
+
+                    JPanel panelAccount = new JPanel(new GridLayout(4, 1));
+                    panelAccount.add(new JLabel("name"));
+                    JTextField name = new JTextField();
+                    panelAccount.add(name);
+
+                    panelAccount.add(new JLabel("email"));
+                    JTextField email = new JTextField();
+                    panelAccount.add(email);
+
+                    panelAccount.add(new JLabel("password"));
+                    JPasswordField password = new JPasswordField();
+                    panelAccount.add(password);
+
+
+                    panelAccount.setVisible(true);
+
+                    System.out.println("visible");
+
+                    int option = JOptionPane.showOptionDialog(null, panelAccount, "Create Account",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+
+                    if (option == JOptionPane.OK_OPTION) {
+
+
+                        String[] choices = {"Seller", "Buyer"};
+
+                        int choice = JOptionPane.showOptionDialog(null, "Choose an option:", "Profile Selection",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
+
+                        if (choice == 0) {
+                            customerOrSeller = true;
+                        } else if (choice == 1) {
+                            customerOrSeller = false;
+                        }
+
+
+                        String nameAnswer = name.getText();
+                        String emailAnswer = email.getText();
+                        char[] passwordChar = password.getPassword();
+                        String passwordAnswer = new String(passwordChar);
+
+
+                        boolean fileIsEmpty = false;
+                        try (BufferedReader bfr = new BufferedReader(new FileReader("data.txt"))) {
+                            if (bfr.readLine() == null) {
+                                fileIsEmpty = true;
+                            }
+                        } catch (IOException m) {
+                            m.printStackTrace();
+                        }
+
+                        if (!fileIsEmpty) {
+                            try {
+                                BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
+                                String line = "";
+                                ArrayList<String> allUserData = new ArrayList<>();
+
+
+                                while ((line = bfr.readLine()) != null) {
+                                    allUserData.add(line);
+                                }
+
+                                alreadyAnAccount = false;
+                                for (int i = 0; i < allUserData.size(); i++) {
+                                    String[] oneUserData = allUserData.get(i).split(",");
+                                    if (oneUserData[1].equals(emailAnswer)) {
+                                        alreadyAnAccount = true;
+                                        break;
+                                    }
+                                }
+
+                                bfr.close();
+
+                            } catch (IOException m) {
+                                m.printStackTrace();
+                            }
+
+                        }
+
+
+                        if (alreadyAnAccount) {
+                            JOptionPane.showMessageDialog(null, "There is already an account with this email! Please log in!", "Create Account", JOptionPane.INFORMATION_MESSAGE);
+
+                            writer.write("createAcc");
+                            writer.println();
+                            writer.flush();
+                            //write to server not log in
+
+
+                            panelAccount.setVisible(false);
+                        } else {
+                            userAccount = new User(nameAnswer, emailAnswer, passwordAnswer, customerOrSeller);
+
+                            JOptionPane.showMessageDialog(null, "Account created! Please sign in", "Create Account", JOptionPane.INFORMATION_MESSAGE);
+
+
+                            //print data to file
+                            try {
+                                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("data.txt", true)));
+                                pw.println(userAccount.getName() + "," + userAccount.getEmail() + "," +
+                                        userAccount.getPassword() + "," + userAccount.isSeller() + ";");
+                                pw.flush();
+                                pw.close();
+
+                            } catch (IOException m) {
+                                m.printStackTrace();
+
+                            }
+                            writer.write("createAcc");
+                            writer.println();
+                            writer.flush();
+                            panelAccount.setVisible(false);
+                        }
+
+
+                    }
+                }
+
+            });
+
 
             signInButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    setVisible(false);
+
+                    writer.write("processSignIn");
+                    writer.println();
+                    writer.flush();
 
 
                     //SEND MESSAGE "SIGN IN PRESSED" TO SERVER
@@ -94,26 +231,44 @@ public class MarketPlaceClient extends JFrame {
                     writer.flush();
 
 
-                    //recievss message of succesfull sign in and whteher buyer or seller from server
+                    //recieves message of succesfull sign in and whteher buyer or seller from server
 
                     //open market
 
                     String[] infoArray;
 
 
-                    String info;
+                    String info = null;
                     try {
                         info = reader.readLine();
                     } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        ex.printStackTrace();
                     }
                     infoArray = info.split(",");
                     boolean seller = false;
 
+                    if (!infoArray[3].equals("true")) {
 
-                    if (infoArray[3].equals("true")) {
+
+                        //does not sign in
+
+                        JOptionPane.showMessageDialog(null, "Incorrect Sign In!", "Sign In", JOptionPane.INFORMATION_MESSAGE);
+
+                        writer.write("notSignIn");
+                        writer.println();
+                        writer.flush();
+
+
+                    } else {
+                        signInWorks = true;
+                        setVisible(false);
+
                         logIn = true;
                         // sign in worked
+
+                        writer.write("signIn");
+                        writer.println();
+                        writer.flush();
 
 
                         try {
@@ -130,7 +285,6 @@ public class MarketPlaceClient extends JFrame {
                         } catch (IOException g) {
                             g.printStackTrace();
                         }
-                        GUICustomerView guiCustomerView = new GUICustomerView();
 
 
                         //USER ACCOUNT must be taken from server and put into USER
@@ -158,7 +312,8 @@ public class MarketPlaceClient extends JFrame {
                             JButton exitButton;
 
 
-                            guiCustomerView.createProductArray();
+                            Methods method = new Methods();
+                            Methods.productsOnMarket = method.makeProductArrayList();
                             sellerView.setTitle("Marketplace Home Page");
                             sellerView.setSize(600, 300);
                             sellerView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -209,8 +364,11 @@ public class MarketPlaceClient extends JFrame {
 
                             //creating user
                             //creates product array list from file
-                            guiCustomerView.createProductArray();
-                            ArrayList<ShoppingCartProduct> shoppingCart = guiCustomerView.createShoppingCartArray(userAccount);
+
+                            Methods method = new Methods();
+                            Methods.productsOnMarket = method.makeProductArrayList();
+
+                            shoppingCart = method.createShoppingCartArray(userAccount);
 
 
                             //creates shopping cart array list from file
@@ -246,6 +404,8 @@ public class MarketPlaceClient extends JFrame {
 
                             seeProductsButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
+                                    Methods.productsOnMarket = method.makeProductArrayList();
+                                    //instantiate new updated array list
                                     productInsight = false;
                                     // TODO: Handle sell button action
                                     writer.write("seeProduct");
@@ -294,6 +454,7 @@ public class MarketPlaceClient extends JFrame {
 
                                             //one button
                                             sortByMinQuantity.addActionListener(f -> {
+                                                Methods.productsOnMarket = method.makeProductArrayList();
                                                 frame.setVisible(false);
                                                 ArrayList<Product> copy = new ArrayList<>();
                                                 copy = method.sortByMinQuantity(Methods.productsOnMarket);
@@ -387,6 +548,7 @@ public class MarketPlaceClient extends JFrame {
                                                 //BUYING PRODUCT BUTTON
                                                 buyProduct.addActionListener(new ActionListener() {
                                                     public void actionPerformed(ActionEvent e) {
+                                                        Methods.productsOnMarket = method.makeProductArrayList();
                                                         // implementation of buyProduct button
                                                         writer.write("buyProduct");
                                                         writer.println();
@@ -516,6 +678,7 @@ public class MarketPlaceClient extends JFrame {
 
                                                 addToCart.addActionListener(new ActionListener() {
                                                     public void actionPerformed(ActionEvent e) {
+                                                        Methods.productsOnMarket = method.makeProductArrayList();
                                                         //sending to server button clicked
                                                         writer.write("addToCart");
                                                         writer.println();
@@ -633,6 +796,7 @@ public class MarketPlaceClient extends JFrame {
                                             });
 
                                             sortByMaxQuantity.addActionListener(f -> {
+                                                Methods.productsOnMarket = method.makeProductArrayList();
                                                 ArrayList<Product> copy = new ArrayList<>();
                                                 copy = method.sortByMaxQuantity(Methods.productsOnMarket);
                                                 Methods.productsOnMarket.clear();
@@ -723,6 +887,7 @@ public class MarketPlaceClient extends JFrame {
                                                     //BUYING PRODUCT BUTTON
                                                     buyProduct.addActionListener(new ActionListener() {
                                                         public void actionPerformed(ActionEvent e) {
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
                                                             // implementation of buyProduct button
                                                             writer.write("buyProduct");
                                                             writer.println();
@@ -850,6 +1015,7 @@ public class MarketPlaceClient extends JFrame {
 
                                                     addToCart.addActionListener(new ActionListener() {
                                                         public void actionPerformed(ActionEvent e) {
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
                                                             //sending to server button clicked
                                                             writer.write("addToCart");
                                                             writer.println();
@@ -968,6 +1134,7 @@ public class MarketPlaceClient extends JFrame {
                                             });
 
                                             sortByMinPrice.addActionListener(f -> {
+                                                Methods.productsOnMarket = method.makeProductArrayList();
                                                 ArrayList<Product> copy = new ArrayList<>();
                                                 copy = method.sortByMinPrice(Methods.productsOnMarket);
                                                 Methods.productsOnMarket.clear();
@@ -1057,6 +1224,7 @@ public class MarketPlaceClient extends JFrame {
                                                     //BUYING PRODUCT BUTTON
                                                     buyProduct.addActionListener(new ActionListener() {
                                                         public void actionPerformed(ActionEvent e) {
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
                                                             // implementation of buyProduct button
                                                             writer.write("buyProduct");
                                                             writer.println();
@@ -1182,6 +1350,7 @@ public class MarketPlaceClient extends JFrame {
 
                                                     addToCart.addActionListener(new ActionListener() {
                                                         public void actionPerformed(ActionEvent e) {
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
                                                             //sending to server button clicked
                                                             writer.write("addToCart");
                                                             writer.println();
@@ -1301,6 +1470,7 @@ public class MarketPlaceClient extends JFrame {
                                             });
 
                                             sortByMaxPrice.addActionListener(f -> {
+                                                Methods.productsOnMarket = method.makeProductArrayList();
                                                 ArrayList<Product> copy = new ArrayList<>();
                                                 copy = method.sortByMaxPrice(Methods.productsOnMarket);
                                                 Methods.productsOnMarket.clear();
@@ -1393,6 +1563,7 @@ public class MarketPlaceClient extends JFrame {
                                                     //BUYING PRODUCT BUTTON
                                                     buyProduct.addActionListener(new ActionListener() {
                                                         public void actionPerformed(ActionEvent e) {
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
                                                             // implementation of buyProduct button
                                                             writer.write("buyProduct");
                                                             writer.println();
@@ -1522,6 +1693,7 @@ public class MarketPlaceClient extends JFrame {
 
                                                     addToCart.addActionListener(new ActionListener() {
                                                         public void actionPerformed(ActionEvent e) {
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
                                                             //sending to server button clicked
                                                             writer.write("addToCart");
                                                             writer.println();
@@ -1644,6 +1816,7 @@ public class MarketPlaceClient extends JFrame {
                                             //if exiting... buttonClicked will be null
                                         }
                                         if (sortResponse == 1) {
+                                            Methods.productsOnMarket = method.makeProductArrayList();
                                             boolean newPage = false;
 
                                             String[] products = new String[Methods.productsOnMarket.size()];
@@ -1732,6 +1905,7 @@ public class MarketPlaceClient extends JFrame {
                                                 //BUYING PRODUCT BUTTON
                                                 buyProduct.addActionListener(new ActionListener() {
                                                     public void actionPerformed(ActionEvent e) {
+                                                        Methods.productsOnMarket = method.makeProductArrayList();
                                                         // implementation of buyProduct button
                                                         writer.write("buyProduct");
                                                         writer.println();
@@ -1861,6 +2035,7 @@ public class MarketPlaceClient extends JFrame {
 
                                                 addToCart.addActionListener(new ActionListener() {
                                                     public void actionPerformed(ActionEvent e) {
+                                                        Methods.productsOnMarket = method.makeProductArrayList();
                                                         //sending to server button clicked
                                                         writer.write("addToCart");
                                                         writer.println();
@@ -1999,12 +2174,12 @@ public class MarketPlaceClient extends JFrame {
 
                             searchProductsButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
+                                    Methods.productsOnMarket = method.makeProductArrayList();
                                     writer.write("searchProductsButton");
                                     writer.println();
                                     writer.flush();
                                     System.out.println("1 search product button pressed ");
                                     // TODO: Handle sell button action
-                                    GUICustomerView customerGui = new GUICustomerView();
 
                                     Product productBought = null;
                                     boolean newPage = false;
@@ -2120,6 +2295,7 @@ public class MarketPlaceClient extends JFrame {
                                                     //BUYING PRODUCT BUTTON
                                                     buyProduct.addActionListener(new ActionListener() {
                                                         public void actionPerformed(ActionEvent e) {
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
                                                             // implementation of buyProduct button
                                                             writer.write("buyProductSearch");
                                                             writer.println();
@@ -2213,7 +2389,7 @@ public class MarketPlaceClient extends JFrame {
 
                                                                     }
                                                                 } catch (IOException ex) {
-                                                                    throw new RuntimeException(ex);
+                                                                    ex.printStackTrace();
                                                                 }
 
 
@@ -2229,6 +2405,7 @@ public class MarketPlaceClient extends JFrame {
 
                                                     addToCart.addActionListener(new ActionListener() {
                                                         public void actionPerformed(ActionEvent e) {
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
                                                             //sending to server button clicked
                                                             writer.write("addToCartSearch");
                                                             writer.println();
@@ -2358,6 +2535,8 @@ public class MarketPlaceClient extends JFrame {
 
                             viewShoppingCartButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
+                                    shoppingCart = method.createShoppingCartArray(userAccount);
+                                    Methods.productsOnMarket = method.makeProductArrayList();
                                     // must use shopping cart method in GUITEST
                                     //*** THIS STILL MUST IMPLEMENT CUSTOMER RECEIPTS WHEN PURCHASING
 
@@ -2411,6 +2590,8 @@ public class MarketPlaceClient extends JFrame {
 
                                         viewCart.addActionListener(new ActionListener() {
                                             public void actionPerformed(ActionEvent e) {
+                                                shoppingCart = method.createShoppingCartArray(userAccount);
+                                                Methods.productsOnMarket = method.makeProductArrayList();
                                                 writer.write("viewCart");
                                                 writer.println();
                                                 writer.flush();
@@ -2472,6 +2653,8 @@ public class MarketPlaceClient extends JFrame {
 
                                         removeProduct.addActionListener(new ActionListener() {
                                             public void actionPerformed(ActionEvent e) {
+                                                shoppingCart = method.createShoppingCartArray(userAccount);
+                                                Methods.productsOnMarket = method.makeProductArrayList();
                                                 writer.write("removeProduct");
                                                 writer.println();
                                                 writer.flush();
@@ -2543,6 +2726,8 @@ public class MarketPlaceClient extends JFrame {
 
                                         purchaseCart.addActionListener(new ActionListener() {
                                             public void actionPerformed(ActionEvent e) {
+                                                shoppingCart = method.createShoppingCartArray(userAccount);
+                                                Methods.productsOnMarket = method.makeProductArrayList();
                                                 System.out.println("purchase cart pressed");
                                                 writer.write("purchaseCart");
                                                 writer.println();
@@ -2650,9 +2835,9 @@ public class MarketPlaceClient extends JFrame {
 
                         }
                     }
-
-
                 }
+
+
             });
 
 
@@ -2660,7 +2845,7 @@ public class MarketPlaceClient extends JFrame {
 
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
 
