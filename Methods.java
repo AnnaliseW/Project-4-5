@@ -185,12 +185,11 @@ public class Methods {
                 } else {
                     productsOnMarket.get(i).setQuantityAvailable(productsOnMarket.get(i).getQuantityAvailable()
                             - quantityPurchased);
-                    productsOnMarket.get(i).setQuantitySold(quantityPurchased);
+                
                 }
             }
         }
-        saveDataFileWhenPurchased(Methods.productsOnMarket, product);
-        saveProductFile(Methods.productsOnMarket);
+        
     }
 
 
