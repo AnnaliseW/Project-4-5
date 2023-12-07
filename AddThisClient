@@ -1,4 +1,4 @@
-                            openSeller = true;
+openSeller = true;
                             //opens seller side
 
                             writer.write("seller");
@@ -59,6 +59,8 @@
                             sellButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("sellButton");
+                                    writer.println();
+                                    writer.flush();
 
                                     JPanel panel = new JPanel(new GridLayout(5, 2));
 
@@ -99,6 +101,8 @@
                                         productInfo += "," + price;
 
                                         writer.write(productInfo);
+                                        writer.println();
+                                        writer.flush();
 
                                         String sucess = "";
                                         try {
@@ -119,6 +123,8 @@
                                 public void actionPerformed(ActionEvent e) {
                                     boolean cont = false;
                                     writer.write("editButton");
+                                    writer.println();
+                                    writer.flush();
                                     ArrayList<Product> productList = new ArrayList<>();
                                     try {
                                         String line = reader.readLine();
@@ -163,6 +169,8 @@
                                         }
 
                                         writer.println(selection);
+                                        writer.println();
+                                        writer.flush();
 
                                         JPanel panel = new JPanel(new GridLayout(5, 2));
 
@@ -197,10 +205,20 @@
                                             double newPrice = Double.parseDouble(priceField.getText());
 
                                             writer.println(newProductName);
+                                            writer.println();
+                                            writer.flush();
                                             writer.println(newStoreName);
+                                            writer.println();
+                                            writer.flush();
                                             writer.println(newDescription);
+                                            writer.println();
+                                            writer.flush();
                                             writer.println(newQuantity);
+                                            writer.println();
+                                            writer.flush();
                                             writer.println(newPrice);
+                                            writer.println();
+                                            writer.flush();
 
                                         }
 
@@ -222,6 +240,8 @@
                                 public void actionPerformed(ActionEvent e) {
                                     boolean cont = false;
                                     writer.write("deleteButton");
+                                    writer.println();
+                                    writer.flush();
 
                                     ArrayList<Product> productList = new ArrayList<>();
                                     try {
@@ -266,6 +286,8 @@
                                         }
 
                                         writer.println(selection);
+                                        writer.println();
+                                        writer.flush();
 
                                         String sucess = "";
                                         try {
@@ -283,6 +305,8 @@
                             importButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("importButton");
+                                    writer.println();
+                                    writer.flush();
 
                                     String fileName = JOptionPane.showInputDialog(null, "Enter the filename:");
 
@@ -299,6 +323,8 @@
                                         }
                                         for (String item : lines) {
                                             writer.println(item);
+                                            writer.println();
+                                            writer.flush();
                                         }
                                     }
                                     String sucess = "";
@@ -316,6 +342,8 @@
                             exportButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("exportButton");
+                                    writer.println();
+                                    writer.flush();
 
                                     boolean cont = false;
 
@@ -362,6 +390,8 @@
                                         }
 
                                         writer.println(selection);
+                                        writer.println();
+                                        writer.flush();
 
                                         String sucess = "";
                                         try {
@@ -380,7 +410,8 @@
                             salesByStoreButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("salesByStoreButton");
-
+                                    writer.println();
+                                    writer.flush();
 
 
                                 }
@@ -388,6 +419,8 @@
                             editProfileButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("editProfileButton");
+                                    writer.println();
+                                    writer.flush();
 
                                     JOptionPane.showMessageDialog(null, "Leave fields empty if you would like to keep anything");
 
@@ -425,10 +458,13 @@
 
                                         String combined = newUserName + "," + newUserEmail + "," + newUserPassword;
                                         writer.write(combined);
+                                        writer.println();
+                                        writer.flush();
 
                                         String oldUserAccountInfo = userAccount.getName() + "," + userAccount.getEmail() + "," + userAccount.getPassword();
                                         writer.write(oldUserAccountInfo);
-
+                                        writer.println();
+                                        writer.flush();
 
                                         String sucess = "";
                                         try {
@@ -446,7 +482,8 @@
                             viewCustomerCartsButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("viewCustomerCartsButton");
-
+                                    writer.println();
+                                    writer.flush();
 
                                 }
                             });
