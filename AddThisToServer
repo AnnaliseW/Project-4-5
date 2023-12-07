@@ -1,4 +1,4 @@
-boolean exitSeller = false;
+ boolean exitSeller = false;
 
                 String userName = reader.readLine();
                 String userEmail = reader.readLine();
@@ -32,15 +32,21 @@ boolean exitSeller = false;
                         method.saveDataFileWhenNewProductAddedUserAccount(userAccount, sellThis);
 
                         writer.println("Success");
+                        writer.println();
+                        writer.flush();
 
                     } else if (button.equals("editButton")) {
 
                         if (myProducts.isEmpty()) {
                             writer.println("Empty");
+                            writer.println();
+                            writer.flush();
                         } else {
                             for (Product product : myProducts) {
                                 writer.println(product.statisticsToString());
                             }
+                            writer.println();
+                            writer.flush();
                         }
 
                         int selection = Integer.parseInt(reader.readLine());
@@ -75,15 +81,21 @@ boolean exitSeller = false;
                         method.replaceProductInDataFile(selected, newProduct);
 
                         writer.println("Success");
+                        writer.println();
+                        writer.flush();
 
                     } else if (button.equals("deleteButton")) {
 
                         if (myProducts.isEmpty()) {
                             writer.println("Empty");
+                            writer.println();
+                            writer.flush();
                         } else {
                             for (Product product : myProducts) {
                                 writer.println(product.statisticsToString());
                             }
+                            writer.println();
+                            writer.flush();
                         }
 
                         int selection = Integer.parseInt(reader.readLine());
@@ -102,7 +114,8 @@ boolean exitSeller = false;
                         method.removeProductFromDataFile(userAccount, productToRemove);
 
                         writer.println("Success");
-
+                        writer.println();
+                        writer.flush();
 
                     } else if (button.equals("importButton")) {
 
@@ -112,6 +125,7 @@ boolean exitSeller = false;
                         while ((line = reader.readLine()) != null) {
                             receivedList.add(line);
                         }
+
 
                         for (String productString : receivedList) {
                             try {
@@ -137,15 +151,21 @@ boolean exitSeller = false;
                         }
 
                         writer.println("Success");
+                        writer.println();
+                        writer.flush();
 
                     } else if (button.equals("exportButton")) {
 
                         if (myProducts.size() == 0) {
                             writer.println("Empty");
+                            writer.println();
+                            writer.flush();
                         } else {
                             for (Product product : myProducts) {
                                 writer.println(product.toString());
                             }
+                            writer.println();
+                            writer.flush();
                         }
 
                         int selection = Integer.parseInt(reader.readLine());
@@ -162,6 +182,8 @@ boolean exitSeller = false;
                         method.removeProductFromDataFile(userAccount, productToRemove);
 
                         writer.println("Success");
+                        writer.println();
+                        writer.flush();
 
                     } else if (button.equals("salesByStoreButton")) {
                         //TODO: salesbystore
@@ -190,6 +212,8 @@ boolean exitSeller = false;
                         method.changePassword(newPassword, oldUser);
 
                         writer.println("Success");
+                        writer.println();
+                        writer.flush();
 
                     } else if (button.equals("viewCustomerCartsButton")) {
                         //TODO: customerCarts
@@ -197,4 +221,3 @@ boolean exitSeller = false;
                     }
 
                 }
-                
