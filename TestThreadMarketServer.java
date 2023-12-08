@@ -5,7 +5,12 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-//CLIENT SHOULD NOT HAVE RUN AND THREAD. IT DOES NOT NEED ANY OF THAT
+/*
+If IntelliJ or platform says that "cannot run in parallel":
+1. Right click on client
+2. Select (two windows button) Edit "..."
+3. Select "allow Parallel Run"
+ */
 
 public class TestThreadMarketServer {
 
@@ -39,13 +44,19 @@ public class TestThreadMarketServer {
                         // Call create account method
                         createAccount();
                     } else {
+                        while (true) {
 
 
 
+
+
+
+
+
+                        }
                     }
                 }
 
-                // Continue reading and responding to client requests within this thread
 
             } catch (IOException e) {
                 e.printStackTrace();
