@@ -1,3 +1,4 @@
+import javax.crypto.CipherInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -307,12 +308,17 @@ public class MarketPlaceClient extends JFrame {
                             JButton exportButton;
                             JButton salesByStoreButton;
                             JButton editProfileButton;
+                            JButton deleteAccountButton;
                             JButton viewCustomerCartsButton;
-                            JButton exitButton;
 
+                            String userName = userAccount.getName();
+                            String userEmail = userAccount.getEmail();
+                            String userPassword = userAccount.getPassword();
 
-                            Methods method = new Methods();
-                            Methods.productsOnMarket = method.makeProductArrayList();
+                            writer.write(userName);
+                            writer.write(userEmail);
+                            writer.write(userPassword);
+
                             sellerView.setTitle("Marketplace Home Page");
                             sellerView.setSize(600, 300);
                             sellerView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -325,6 +331,7 @@ public class MarketPlaceClient extends JFrame {
                             exportButton = new JButton("Export");
                             salesByStoreButton = new JButton("Sales By Store");
                             editProfileButton = new JButton("Edit Profile");
+                            deleteAccountButton = new JButton("Delete Account");
                             viewCustomerCartsButton = new JButton("View Customer Carts");
 
 
@@ -337,9 +344,472 @@ public class MarketPlaceClient extends JFrame {
                             sellerView.add(exportButton);
                             sellerView.add(salesByStoreButton);
                             sellerView.add(editProfileButton);
+                            sellerView.add(deleteAccountButton);
                             sellerView.add(viewCustomerCartsButton);
 
                             sellerView.setVisible(true);
+
+                            // implement buttons here
+                            sellButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("sellButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                    JPanel panel = new JPanel(new GridLayout(5, 2));
+
+                                    panel.add(new JLabel("Product Name:"));
+                                    JTextField productNameField = new JTextField();
+                                    panel.add(productNameField);
+
+                                    panel.add(new JLabel("Store Name:"));
+                                    JTextField storeNameField = new JTextField();
+                                    panel.add(storeNameField);
+
+                                    panel.add(new JLabel("Description:"));
+                                    JTextField descriptionField = new JTextField();
+                                    panel.add(descriptionField);
+
+                                    panel.add(new JLabel("Quantity Selling:"));
+                                    JTextField quantityField = new JTextField();
+                                    panel.add(quantityField);
+
+                                    panel.add(new JLabel("Price:"));
+                                    JTextField priceField = new JTextField();
+                                    panel.add(priceField);
+
+                                    int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                    if (result == JOptionPane.OK_OPTION) {
+                                        String productName = productNameField.getText();
+                                        String storeName = storeNameField.getText();
+                                        String description = descriptionField.getText();
+                                        int quantity = Integer.parseInt(quantityField.getText());
+                                        double price = Double.parseDouble(priceField.getText());
+
+                                        String productInfo = productName;
+                                        productInfo += "," + storeName;
+                                        productInfo += "," + description;
+                                        productInfo += "," + quantity;
+                                        productInfo += "," + price;
+
+                                        writer.write(productInfo);
+                                        writer.println();
+                                        writer.flush();
+
+                                        String sucess = "";
+                                        try {
+                                            sucess = reader.readLine();
+                                        } catch (IOException g) {
+                                            g.printStackTrace();
+                                        }
+
+                                        if (sucess.equals("Success")) {
+                                            JOptionPane.showMessageDialog(null, "Your product has been added to the market!", "Successfully Added", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                    }
+
+                                }
+                            });
+
+                            editButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    boolean cont = false;
+                                    writer.write("editButton");
+                                    writer.println();
+                                    writer.flush();
+                                    ArrayList<Product> productList = new ArrayList<>();
+                                    try {
+                                        String line = reader.readLine();
+                                        if (line.equals("Empty")) {
+                                            JOptionPane.showMessageDialog(null, "No items to edit", "Empty List", JOptionPane.INFORMATION_MESSAGE);
+                                        } else {
+                                            cont = true;
+                                            do {
+                                                String[] parts = line.split("\n");
+                                                String productName = parts[1].split(": ")[1];
+                                                String storeName = parts[2].split(": ")[1];
+                                                String description = parts[3].split(": ")[1];
+                                                int quantityAvailable = Integer.parseInt(parts[4].split(": ")[1]);
+                                                double price = Double.parseDouble(parts[5].split(": ")[1]);
+                                                productList.add(new Product(productName, storeName, description, quantityAvailable, price));
+                                                line = reader.readLine();
+                                            } while (line != null);
+                                        }
+                                    } catch (IOException i) {
+                                        i.printStackTrace();
+                                    }
+
+                                    if (cont) {
+
+                                        String[] products = new String[productList.size()];
+                                        for (int i = 0; i < productList.size(); i++) {
+                                            products[i] = productList.get(i).statisticsToString();
+                                        }
+                                        String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Select item to edit",
+                                                "Edit", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+
+                                        Product productToEdit = productList.get(0);
+
+                                        int selection = 0;
+
+                                        for (int k = 0; k < productList.size(); k++) {
+                                            if (productList.get(k).statisticsToString().equals(itemFromSearchChosen)) {
+                                                productToEdit = productList.get(k);
+                                                selection = k;
+                                                break;
+                                            }
+                                        }
+
+                                        writer.println(selection);
+                                        writer.println();
+                                        writer.flush();
+
+                                        JPanel panel = new JPanel(new GridLayout(5, 2));
+
+                                        panel.add(new JLabel("New Product Name:"));
+                                        JTextField productNameField = new JTextField();
+                                        panel.add(productNameField);
+
+                                        panel.add(new JLabel("New Store Name:"));
+                                        JTextField storeNameField = new JTextField();
+                                        panel.add(storeNameField);
+
+                                        panel.add(new JLabel("New Description:"));
+                                        JTextField descriptionField = new JTextField();
+                                        panel.add(descriptionField);
+
+                                        panel.add(new JLabel("New Quantity Selling:"));
+                                        JTextField quantityField = new JTextField();
+                                        panel.add(quantityField);
+
+                                        panel.add(new JLabel("New Price:"));
+                                        JTextField priceField = new JTextField();
+                                        panel.add(priceField);
+
+                                        int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                        if (result == JOptionPane.OK_OPTION) {
+                                            String newProductName = productNameField.getText();
+                                            String newStoreName = storeNameField.getText();
+                                            String newDescription = descriptionField.getText();
+                                            int newQuantity = Integer.parseInt(quantityField.getText());
+                                            double newPrice = Double.parseDouble(priceField.getText());
+
+                                            writer.println(newProductName);
+                                            writer.println();
+                                            writer.flush();
+                                            writer.println(newStoreName);
+                                            writer.println();
+                                            writer.flush();
+                                            writer.println(newDescription);
+                                            writer.println();
+                                            writer.flush();
+                                            writer.println(newQuantity);
+                                            writer.println();
+                                            writer.flush();
+                                            writer.println(newPrice);
+                                            writer.println();
+                                            writer.flush();
+
+                                        }
+
+                                        String sucess = "";
+                                        try {
+                                            sucess = reader.readLine();
+                                        } catch (IOException g) {
+                                            g.printStackTrace();
+                                        }
+
+                                        if (sucess.equals("Success")) {
+                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                    }
+                                }
+                            });
+
+                            deleteButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    boolean cont = false;
+                                    writer.write("deleteButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                    ArrayList<Product> productList = new ArrayList<>();
+                                    try {
+                                        String line = reader.readLine();
+                                        if (line.equals("Empty")) {
+                                            JOptionPane.showMessageDialog(null, "No items to edit", "Empty List", JOptionPane.INFORMATION_MESSAGE);
+                                        } else {
+                                            cont = true;
+                                            do {
+                                                String[] parts = line.split("\n");
+                                                String productName = parts[1].split(": ")[1];
+                                                String storeName = parts[2].split(": ")[1];
+                                                String description = parts[3].split(": ")[1];
+                                                int quantityAvailable = Integer.parseInt(parts[4].split(": ")[1]);
+                                                double price = Double.parseDouble(parts[5].split(": ")[1]);
+                                                productList.add(new Product(productName, storeName, description, quantityAvailable, price));
+                                                line = reader.readLine();
+                                            } while (line != null);
+                                        }
+                                    } catch (IOException i) {
+                                        i.printStackTrace();
+                                    }
+
+                                    if (cont) {
+                                        String[] products = new String[productList.size()];
+                                        for (int i = 0; i < productList.size(); i++) {
+                                            products[i] = productList.get(i).statisticsToString();
+                                        }
+                                        String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Select item to delete",
+                                                "Delete", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+
+                                        Product productToDelete = productList.get(0);
+
+                                        int selection = 0;
+
+                                        for (int k = 0; k < productList.size(); k++) {
+                                            if (productList.get(k).statisticsToString().equals(itemFromSearchChosen)) {
+                                                productToDelete = productList.get(k);
+                                                selection = k;
+                                                break;
+                                            }
+                                        }
+
+                                        writer.println(selection);
+                                        writer.println();
+                                        writer.flush();
+
+                                        String sucess = "";
+                                        try {
+                                            sucess = reader.readLine();
+                                        } catch (IOException g) {
+                                            g.printStackTrace();
+                                        }
+                                        if (sucess.equals("Success")) {
+                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                    }
+
+                                }
+                            });
+                            importButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("importButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                    String fileName = JOptionPane.showInputDialog(null, "Enter the filename:");
+
+                                    if (fileName != null && !fileName.isEmpty()) {
+                                        ArrayList<String> lines = new ArrayList<>();
+
+                                        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+                                            String line;
+                                            while ((line = br.readLine()) != null) {
+                                                lines.add(line);
+                                            }
+                                        } catch (IOException ioException) {
+                                            ioException.printStackTrace();
+                                        }
+                                        for (String item : lines) {
+                                            writer.println(item);
+                                            writer.println();
+                                            writer.flush();
+                                        }
+                                    }
+                                    String sucess = "";
+                                    try {
+                                        sucess = reader.readLine();
+                                    } catch (IOException g) {
+                                        g.printStackTrace();
+                                    }
+                                    if (sucess.equals("Success")) {
+                                        JOptionPane.showMessageDialog(null, "Your products have been imported!", "Successfully imported", JOptionPane.INFORMATION_MESSAGE);
+                                    }
+
+                                }
+                            });
+                            exportButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("exportButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                    boolean cont = false;
+
+                                    ArrayList<Product> productList = new ArrayList<>();
+                                    try {
+                                        String line = reader.readLine();
+                                        if (line.equals("Empty")) {
+                                            JOptionPane.showMessageDialog(null, "No items to edit", "Empty List", JOptionPane.INFORMATION_MESSAGE);
+                                        } else {
+                                            cont = true;
+                                            do {
+                                                String[] parts = line.split("\n");
+                                                String productName = parts[1].split(": ")[1];
+                                                String storeName = parts[2].split(": ")[1];
+                                                String description = parts[3].split(": ")[1];
+                                                int quantityAvailable = Integer.parseInt(parts[4].split(": ")[1]);
+                                                double price = Double.parseDouble(parts[5].split(": ")[1]);
+                                                productList.add(new Product(productName, storeName, description, quantityAvailable, price));
+                                                line = reader.readLine();
+                                            } while (line != null);
+                                        }
+                                    } catch (IOException i) {
+                                        i.printStackTrace();
+                                    }
+
+                                    if (cont) {
+                                        String[] products = new String[productList.size()];
+                                        for (int i = 0; i < productList.size(); i++) {
+                                            products[i] = productList.get(i).statisticsToString();
+                                        }
+                                        String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Select item to export",
+                                                "Export", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+
+                                        Product productToExport = productList.get(0);
+
+                                        int selection = 0;
+
+                                        for (int k = 0; k < productList.size(); k++) {
+                                            if (productList.get(k).statisticsToString().equals(itemFromSearchChosen)) {
+                                                productToExport = productList.get(k);
+                                                selection = k;
+                                                break;
+                                            }
+                                        }
+
+                                        writer.println(selection);
+                                        writer.println();
+                                        writer.flush();
+
+                                        String sucess = "";
+                                        try {
+                                            sucess = reader.readLine();
+                                        } catch (IOException g) {
+                                            g.printStackTrace();
+                                        }
+                                        if (sucess.equals("Success")) {
+                                            JOptionPane.showMessageDialog(null, "Your product has been exported!", "Successfully Exported", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+
+                                    }
+
+                                }
+                            });
+                            salesByStoreButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("salesByStoreButton");
+                                    writer.println();
+                                    writer.flush();
+
+
+                                }
+                            });
+
+                            editProfileButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("editProfileButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                    int message = JOptionPane.showOptionDialog(null, "Leave fields empty if you would like to keep anything", "Message", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                                    if (message == -1) {
+                                        writer.write("null");
+                                        writer.println();
+                                        writer.flush();
+
+                                    } else {
+
+                                        JPanel panel = new JPanel(new GridLayout(5, 2));
+
+                                        panel.add(new JLabel("New Name:"));
+                                        JTextField newNameField = new JTextField();
+                                        panel.add(newNameField);
+
+                                        panel.add(new JLabel("New Email:"));
+                                        JTextField newEmailField = new JTextField();
+                                        panel.add(newEmailField);
+
+                                        panel.add(new JLabel("New Password:"));
+                                        JTextField newPasswordField = new JTextField();
+                                        panel.add(newPasswordField);
+
+                                        int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                        if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
+                                            writer.write("null");
+                                            writer.println();
+                                            writer.flush();
+                                        } else if (result == JOptionPane.OK_OPTION) {
+                                            String newUserName = newNameField.getText();
+                                            String newUserEmail = newEmailField.getText();
+                                            String newUserPassword = newPasswordField.getText();
+
+                                            if (newUserName.isEmpty()) {
+                                                newUserName = userAccount.getName();
+                                            } else {
+                                                userAccount.setName(newUserName);
+                                            }
+
+                                            if (newUserEmail.isEmpty()) {
+                                                newUserEmail = userAccount.getEmail();
+                                            } else {
+                                                userAccount.setEmail(newUserEmail);
+                                            }
+
+                                            if (newUserPassword.isEmpty()) {
+                                                newUserPassword = userAccount.getPassword();
+                                            } else {
+                                                userAccount.setPassword(newUserPassword);
+                                            }
+
+                                            String combined = newUserName + "," + newUserEmail + "," + newUserPassword;
+                                            writer.write(combined);
+                                            writer.println();
+                                            writer.flush();
+
+                                            System.out.println(combined);
+
+                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+
+
+                                        }
+                                    }
+                                }
+                            });
+
+                            deleteAccountButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("deleteAccount");
+                                    writer.println();
+                                    writer.flush();
+
+                                    String sucess = "";
+                                    try {
+                                        sucess = reader.readLine();
+                                    } catch (IOException g) {
+                                        g.printStackTrace();
+                                    }
+                                    if (sucess.equals("Success")) {
+                                        JOptionPane.showMessageDialog(null, "All data will be removed. Please close the program now", "Your account has been deleted", JOptionPane.INFORMATION_MESSAGE);
+                                    }
+
+                                }
+                            });
+
+                            viewCustomerCartsButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("viewCustomerCartsButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                }
+                            });
 
                             // implement buttons here
 
@@ -384,6 +854,7 @@ public class MarketPlaceClient extends JFrame {
                             JButton viewShoppingCartButton;
                             JButton editProfileButton;
                             JButton viewPurchaseHistoryButton;
+                            JButton exportFiles;
 
 
                             seeProductsButton = new JButton("See Products");
@@ -391,6 +862,7 @@ public class MarketPlaceClient extends JFrame {
                             viewShoppingCartButton = new JButton("View Shopping Cart");
                             editProfileButton = new JButton("Edit Profile");
                             viewPurchaseHistoryButton = new JButton("View Purchase History");
+                            exportFiles = new JButton("Export Files");
 
 
                             CustomerView.setLayout(new GridLayout(2, 3));
@@ -400,8 +872,16 @@ public class MarketPlaceClient extends JFrame {
                             CustomerView.add(viewShoppingCartButton);
                             CustomerView.add(editProfileButton);
                             CustomerView.add(viewPurchaseHistoryButton);
+                            CustomerView.add(exportFiles);
 
                             CustomerView.setVisible(true);
+
+                            exportFiles.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    //exporting customer reciepts into a file
+
+                                }
+                            });
 
 
                             seeProductsButton.addActionListener(new ActionListener() {
@@ -2899,6 +3379,79 @@ public class MarketPlaceClient extends JFrame {
                                         JOptionPane.showInputDialog(null, "Purchase History",
                                                 "Customer History", JOptionPane.QUESTION_MESSAGE, null, historyString, historyString[0]);
                                         System.out.println("customer background shown");
+                                    }
+                                }
+                            });
+
+
+                            editProfileButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("editProfileButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                    int message = JOptionPane.showOptionDialog(null, "Leave fields empty if you would like to keep anything", "Message", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                                    if (message == -1) {
+                                        writer.write("null");
+                                        writer.println();
+                                        writer.flush();
+
+                                    } else {
+
+                                        JPanel panel = new JPanel(new GridLayout(5, 2));
+
+                                        panel.add(new JLabel("New Name:"));
+                                        JTextField newNameField = new JTextField();
+                                        panel.add(newNameField);
+
+                                        panel.add(new JLabel("New Email:"));
+                                        JTextField newEmailField = new JTextField();
+                                        panel.add(newEmailField);
+
+                                        panel.add(new JLabel("New Password:"));
+                                        JTextField newPasswordField = new JTextField();
+                                        panel.add(newPasswordField);
+
+                                        int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                        if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
+                                            writer.write("null");
+                                            writer.println();
+                                            writer.flush();
+                                        } else if (result == JOptionPane.OK_OPTION) {
+                                            String newUserName = newNameField.getText();
+                                            String newUserEmail = newEmailField.getText();
+                                            String newUserPassword = newPasswordField.getText();
+
+                                            if (newUserName.isEmpty()) {
+                                                newUserName = userAccount.getName();
+                                            } else {
+                                                userAccount.setName(newUserName);
+                                            }
+
+                                            if (newUserEmail.isEmpty()) {
+                                                newUserEmail = userAccount.getEmail();
+                                            } else {
+                                                userAccount.setEmail(newUserEmail);
+                                            }
+
+                                            if (newUserPassword.isEmpty()) {
+                                                newUserPassword = userAccount.getPassword();
+                                            } else {
+                                                userAccount.setPassword(newUserPassword);
+                                            }
+
+                                            String combined = newUserName + "," + newUserEmail + "," + newUserPassword;
+                                            writer.write(combined);
+                                            writer.println();
+                                            writer.flush();
+
+                                            System.out.println(combined);
+
+                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+
+
+                                        }
                                     }
                                 }
                             });
