@@ -1,4 +1,4 @@
-else if (button.equals("editProfileButton")) {
+} else if (button.equals("editProfileButton")) {
                         String profileInfo = reader.readLine();
                         String[] partsNew = profileInfo.split(",");
 
@@ -25,4 +25,4 @@ else if (button.equals("editProfileButton")) {
                         writer.println();
                         writer.flush();
 
-                    } 
+                    }
