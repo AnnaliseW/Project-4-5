@@ -1,0 +1,10 @@
+else if (button.equals("deleteAccount")) {
+
+    Methods method = new Methods();
+    method.removeAccount(userAccount);
+
+    writer.println("Success");
+    writer.println();
+    writer.flush();
+
+}
