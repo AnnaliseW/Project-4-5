@@ -1,3 +1,4 @@
+//Inside while no exit loop
 else if (button.equals("deleteAccount")) {
 
     Methods method = new Methods();
