@@ -4,60 +4,68 @@ editProfileButton.addActionListener(new ActionListener() {
                                     writer.println();
                                     writer.flush();
 
-                                    JOptionPane.showMessageDialog(null, "Leave fields empty if you would like to keep anything");
-
-                                    JPanel panel = new JPanel(new GridLayout(5, 2));
-
-                                    panel.add(new JLabel("New Name:"));
-                                    JTextField newNameField = new JTextField();
-                                    panel.add(newNameField);
-
-                                    panel.add(new JLabel("New Email:"));
-                                    JTextField newEmailField = new JTextField();
-                                    panel.add(newEmailField);
-
-                                    panel.add(new JLabel("New Password:"));
-                                    JTextField newPasswordField = new JTextField();
-                                    panel.add(newPasswordField);
-
-                                    int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
-                                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-                                    if (result == JOptionPane.OK_OPTION) {
-                                        String newUserName = newNameField.getText();
-                                        String newUserEmail = newEmailField.getText();
-                                        String newUserPassword = newPasswordField.getText();
-
-                                        if (newUserName.length() < 1) {
-                                            newUserName = userAccount.getName();
-                                        }
-                                        if (newUserEmail.length() < 1) {
-                                            newUserEmail = userAccount.getEmail();
-                                        }
-                                        if (newUserPassword.length() < 1) {
-                                            newUserPassword = userAccount.getPassword();
-                                        }
-
-                                        String combined = newUserName + "," + newUserEmail + "," + newUserPassword;
-                                        writer.write(combined);
+                                    int message = JOptionPane.showOptionDialog(null, "Leave fields empty if you would like to keep anything", "Message", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                                    if (message == -1) {
+                                        writer.write("null");
                                         writer.println();
                                         writer.flush();
 
-                                        String oldUserAccountInfo = userAccount.getName() + "," + userAccount.getEmail() + "," + userAccount.getPassword();
-                                        writer.write(oldUserAccountInfo);
-                                        writer.println();
-                                        writer.flush();
+                                    } else {
 
-                                        String sucess = "";
-                                        try {
-                                            sucess = reader.readLine();
-                                        } catch (IOException g) {
-                                            g.printStackTrace();
-                                        }
-                                        if (sucess.equals("Success")) {
+                                        JPanel panel = new JPanel(new GridLayout(5, 2));
+
+                                        panel.add(new JLabel("New Name:"));
+                                        JTextField newNameField = new JTextField();
+                                        panel.add(newNameField);
+
+                                        panel.add(new JLabel("New Email:"));
+                                        JTextField newEmailField = new JTextField();
+                                        panel.add(newEmailField);
+
+                                        panel.add(new JLabel("New Password:"));
+                                        JTextField newPasswordField = new JTextField();
+                                        panel.add(newPasswordField);
+
+                                        int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                        if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
+                                            writer.write("null");
+                                            writer.println();
+                                            writer.flush();
+                                        } else if (result == JOptionPane.OK_OPTION) {
+                                            String newUserName = newNameField.getText();
+                                            String newUserEmail = newEmailField.getText();
+                                            String newUserPassword = newPasswordField.getText();
+
+                                            if (newUserName.isEmpty()) {
+                                                newUserName = userAccount.getName();
+                                            } else {
+                                                userAccount.setName(newUserName);
+                                            }
+
+                                            if (newUserEmail.isEmpty()) {
+                                                newUserEmail = userAccount.getEmail();
+                                            } else {
+                                                userAccount.setEmail(newUserEmail);
+                                            }
+
+                                            if (newUserPassword.isEmpty()) {
+                                                newUserPassword = userAccount.getPassword();
+                                            } else {
+                                                userAccount.setPassword(newUserPassword);
+                                            }
+
+                                            String combined = newUserName + "," + newUserEmail + "," + newUserPassword;
+                                            writer.write(combined);
+                                            writer.println();
+                                            writer.flush();
+
+                                            System.out.println(combined);
+
                                             JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
-                                        }
 
+
+                                        }
                                     }
                                 }
                             });
