@@ -1,28 +1,32 @@
-} else if (button.equals("editProfileButton")) {
-                        String profileInfo = reader.readLine();
-                        String[] partsNew = profileInfo.split(",");
+}if (buttonClicked.equals("editProfileButton")) {
+                                System.out.println("edit profile enter");
+                                String profileInfo = reader.readLine();
 
-                        String newUserName = partsNew[0];
-                        String newEmail = partsNew[1];
-                        String newPassword = partsNew[2];
+                                if (profileInfo.equals("null")) {
+                                    // exited out
 
-                        String oldUserAccount = reader.readLine();
-                        String[] partsOld = oldUserAccount.split(",");
+                                } else {
+                                    String[] partsNew = profileInfo.split(",");
 
-                        String oldUserName = partsOld[0];
-                        String oldEmail = partsOld[1];
-                        String oldPassword = partsOld[2];
+                                    String newUserName = partsNew[0];
+                                    String newEmail = partsNew[1];
+                                    String newPassword = partsNew[2];
 
-                        User oldUser = new User(oldUserName, oldEmail, oldPassword, true);
 
-                        Methods method = new Methods();
+                                    method.changeAccount(newUserName, newEmail, newPassword, userAccount);
 
-                        method.changeUserName(newUserName, oldUser);
-                        method.changeUserEmail(newEmail, oldUser);
-                        method.changePassword(newPassword, oldUser);
 
-                        writer.println("Success");
-                        writer.println();
-                        writer.flush();
+                                    if (!newUserName.equals(userAccount.getName())) {
+                                        userAccount.setName(newUserName);
+                                    }
+                                    if (!newEmail.equals(userAccount.getEmail())) {
+                                        userAccount.setEmail(newEmail);
+                                    }
+                                    if (!newPassword.equals(userAccount.getPassword())) {
+                                        userAccount.setPassword(newPassword);
+                                    }
+                                    System.out.println("successful edit");
 
-                    }
+                                }
+
+                            }
