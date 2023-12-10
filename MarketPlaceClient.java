@@ -394,48 +394,48 @@ public class MarketPlaceClient extends JFrame {
                                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
                                     if (result == JOptionPane.OK_OPTION) {
-                                        String productName = productNameField.getText();
-                                        String storeName = storeNameField.getText();
-                                        String description = descriptionField.getText();
-                                        int quantity = Integer.parseInt(quantityField.getText());
-                                        double price = Double.parseDouble(priceField.getText());
-
-                                        String productInfo = productName;
-                                        productInfo += "," + storeName;
-                                        productInfo += "," + description;
-                                        productInfo += "," + quantity;
-                                        productInfo += "," + price;
-
-
-                                        writer.write(productInfo);
-                                        writer.println();
-                                        writer.flush();
-
-                                        System.out.println("Produt info " + productInfo);
-
-
-                                        //sending info if store name exists already
-                                        String storeNameExists = null;
                                         try {
-                                            storeNameExists = reader.readLine();
+                                            String productName = productNameField.getText();
+                                            String storeName = storeNameField.getText();
+                                            String description = descriptionField.getText();
+                                            int quantity = Integer.parseInt(quantityField.getText());
+                                            double price = Double.parseDouble(priceField.getText());
+
+                                            if (quantity <= 0 || price <= 0) {
+                                                JOptionPane.showMessageDialog(null, "Quantity and price must be greater than zero", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                                                writer.write("wrong");
+                                                writer.println();
+                                                writer.flush();
+                                            } else {
+
+                                                String productInfo = productName + "," + storeName + "," + description + "," + quantity + "," + price;
+
+                                                writer.write(productInfo);
+                                                writer.println();
+                                                writer.flush();
+
+                                                System.out.println("Product info " + productInfo);
+
+                                                String storeNameExists = reader.readLine();
+
+                                                if (storeNameExists.equals("existingStoreName")) {
+                                                    JOptionPane.showMessageDialog(null, "Store name already exists! Please enter a different store name", "Not added", JOptionPane.INFORMATION_MESSAGE);
+                                                } else if (storeNameExists.equals("noPreviousStoreName"))
+                                                    JOptionPane.showMessageDialog(null, "Your product has been added to the market!", "Successfully Added", JOptionPane.INFORMATION_MESSAGE);
+                                            }
+                                        } catch (NumberFormatException ex) {
+                                            JOptionPane.showMessageDialog(null, "Please enter valid numeric values for Quantity and Price", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                                            writer.write("wrong");
+                                            writer.println();
+                                            writer.flush();
                                         } catch (IOException ex) {
                                             ex.printStackTrace();
                                         }
-
-                                        // ADD HERE IF INPUT VALUES FOR PRICE OR QUANTITY IS WRONG
-
-                                        if (storeNameExists.equals("existingStoreName")) {
-                                            JOptionPane.showMessageDialog(null, "Store name already exists! Please enter a different store name", "Not added", JOptionPane.INFORMATION_MESSAGE);
-                                        } else if (storeNameExists.equals("noPreviousStoreName"))
-
-                                            JOptionPane.showMessageDialog(null, "Your product has been added to the market!", "Successfully Added", JOptionPane.INFORMATION_MESSAGE);
-
                                     } else {
                                         writer.write("PanelClosed");
                                         writer.println();
                                         writer.flush();
                                     }
-
                                 }
                             });
 
@@ -454,8 +454,6 @@ public class MarketPlaceClient extends JFrame {
                                             System.out.println("reader line " + line);
                                             lines.add(line);
                                         }
-
-
                                     } catch (IOException i) {
                                         i.printStackTrace();
                                     }
@@ -514,6 +512,7 @@ public class MarketPlaceClient extends JFrame {
                                             writer.write(Integer.toString(selection));
                                             writer.println();
                                             writer.flush();
+                                            System.out.println("sent selection");
 
                                             JPanel panel = new JPanel(new GridLayout(5, 2));
 
@@ -541,49 +540,57 @@ public class MarketPlaceClient extends JFrame {
                                                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
                                             if (result == JOptionPane.OK_OPTION) {
-                                                String newProductName = productNameField.getText();
-                                                String newStoreName = storeNameField.getText();
-                                                String newDescription = descriptionField.getText();
-                                                int newQuantity = Integer.parseInt(quantityField.getText());
-                                                double newPrice = Double.parseDouble(priceField.getText());
-
-                                                writer.println(newProductName);
-                                                writer.flush();
-                                                writer.println(newStoreName);
-                                                writer.flush();
-                                                writer.println(newDescription);
-                                                writer.flush();
-                                                writer.println(newQuantity);
-                                                writer.flush();
-                                                writer.println(newPrice);
-                                                writer.flush();
-
-                                                System.out.println("sent details to server");
-
-
-                                                String storeNameExists = null;
                                                 try {
-                                                    storeNameExists = reader.readLine();
+                                                    String newName = productNameField.getText();
+                                                    String newStore = storeNameField.getText();
+                                                    String newDescription = descriptionField.getText();
+                                                    int newQuantity = Integer.parseInt(quantityField.getText());
+                                                    double newPrice = Double.parseDouble(priceField.getText());
+
+                                                    if (newQuantity <= 0 || newPrice <= 0) {
+                                                        JOptionPane.showMessageDialog(null, "New Quantity and Price must be greater than zero", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                                                        writer.write("wrong");
+                                                        writer.println();
+                                                        writer.flush();
+
+
+                                                    } else {
+
+                                                        writer.println(newName);
+                                                        writer.flush();
+                                                        writer.println(newStore);
+                                                        writer.flush();
+                                                        writer.println(newDescription);
+                                                        writer.flush();
+
+
+                                                        writer.println(newQuantity);
+                                                        writer.flush();
+                                                        writer.println(newPrice);
+                                                        writer.flush();
+
+                                                        String storeNameExists = reader.readLine();
+
+                                                        if (storeNameExists.equals("existingStoreName")) {
+                                                            JOptionPane.showMessageDialog(null, "Store name already exists! Please enter a different store name", "Not edited", JOptionPane.INFORMATION_MESSAGE);
+                                                        } else if (storeNameExists.equals("noPreviousStoreName")) {
+                                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+                                                        }
+                                                    }
+                                                } catch (NumberFormatException ex) {
+                                                    JOptionPane.showMessageDialog(null, "Please enter valid numeric values for Quantity and Price", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                                                    writer.write("wrong");
+                                                    writer.println();
+                                                    writer.flush();
                                                 } catch (IOException ex) {
                                                     ex.printStackTrace();
                                                 }
-
-                                                // ADD HERE IF INPUT VALUES FOR PRICE OR QUANTITY IS WRONG
-
-                                                if (storeNameExists.equals("existingStoreName")) {
-                                                    JOptionPane.showMessageDialog(null, "Store name already exists! Please enter a different store name", "Not edited", JOptionPane.INFORMATION_MESSAGE);
-                                                } else if (storeNameExists.equals("noPreviousStoreName")) {
-
-                                                    JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
-                                                }
-
 
                                             } else if (result == JOptionPane.CLOSED_OPTION || result == JOptionPane.CANCEL_OPTION) {
                                                 writer.write("PanelClosed");
                                                 writer.println();
                                                 writer.flush();
                                             }
-
                                         } else {
                                             writer.write("PanelClosed");
                                             writer.println();
@@ -729,59 +736,86 @@ public class MarketPlaceClient extends JFrame {
 
                             exportButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
+                                    System.out.println("export button");
+                                    boolean cont = false;
                                     writer.write("exportButton");
                                     writer.println();
                                     writer.flush();
 
-                                    boolean cont = false;
+                                    ArrayList<String> lines = new ArrayList<>();
+
 
                                     ArrayList<Product> productList = new ArrayList<>();
                                     try {
-                                        String line = reader.readLine();
-                                        if (line.equals("Empty")) {
-                                            JOptionPane.showMessageDialog(null, "No items to edit", "Empty List", JOptionPane.INFORMATION_MESSAGE);
-                                        } else {
-                                            cont = true;
-                                            do {
-                                                String[] parts = line.split("\n");
-                                                String productName = parts[1].split(": ")[1];
-                                                String storeName = parts[2].split(": ")[1];
-                                                String description = parts[3].split(": ")[1];
-                                                int quantityAvailable = Integer.parseInt(parts[4].split(": ")[1]);
-                                                double price = Double.parseDouble(parts[5].split(": ")[1]);
-                                                productList.add(new Product(productName, storeName, description, quantityAvailable, price));
-                                                line = reader.readLine();
-                                            } while (line != null);
+                                        String line;
+                                        while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                                            lines.add(line);
                                         }
+
                                     } catch (IOException i) {
                                         i.printStackTrace();
                                     }
+                                    ArrayList<Product> products = new ArrayList<>();
+                                    if (lines.size() == 1 && lines.get(0).equals("Empty")) {
+                                        JOptionPane.showMessageDialog(null, "No products to delete", "Error", JOptionPane.INFORMATION_MESSAGE);
+                                    } else {
+                                        for (String productString : lines) {
+                                            String[] parts = productString.split("Quantity Available: ");
+                                            String productInfo = parts[0];
+                                            String quantityAndPriceInfo = parts[1];
 
-                                    if (cont) {
-                                        String[] products = new String[productList.size()];
-                                        for (int i = 0; i < productList.size(); i++) {
-                                            products[i] = productList.get(i).statisticsToString();
+                                            String[] productInfoParts = productInfo.split(" ");
+                                            String productName = productInfoParts[3];
+                                            String storeName = productInfoParts[6];
+                                            String descriptionOfProduct = productInfoParts[6];
+                                            String[] quantityAndPriceInfoParts = quantityAndPriceInfo.split(" ");
+                                            int quantityAvailable = Integer.parseInt(quantityAndPriceInfoParts[0]);
+                                            Double price = Double.parseDouble(quantityAndPriceInfoParts[2]);
+
+                                            products.add(new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price));
                                         }
-                                        String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Select item to export",
-                                                "Export", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
 
-                                        Product productToExport = productList.get(0);
+                                        String[] productOptions = new String[products.size()];
+                                        for (int i = 0; i < products.size(); i++) {
+                                            productOptions[i] = products.get(i).statisticsToString();
+                                        }
+
+                                        String selectedProduct = (String) JOptionPane.showInputDialog(
+                                                null,
+                                                "Select a product:",
+                                                "Product Selection",
+                                                JOptionPane.QUESTION_MESSAGE,
+                                                null,
+                                                productOptions,
+                                                productOptions[0]
+                                        );
+
 
                                         int selection = 0;
-
-                                        for (int k = 0; k < productList.size(); k++) {
-                                            if (productList.get(k).statisticsToString().equals(itemFromSearchChosen)) {
-                                                productToExport = productList.get(k);
+                                        Product selector = products.get(0);
+                                        for (int k = 0; k < products.size(); k++) {
+                                            if (products.get(k).statisticsToString().equals(selectedProduct)) {
+                                                selectedProduct = products.get(k).statisticsToString();
+                                                selector = products.get(k);
                                                 selection = k;
                                                 break;
                                             }
                                         }
 
-                                        writer.println(selection);
-                                        writer.println();
-                                        writer.flush();
+                                        if (selectedProduct != null) {
+                                            JOptionPane.showMessageDialog(null, "You exported:\n" + selector.toString());
 
-                                        JOptionPane.showMessageDialog(null, "Your product has been exported!", "Successfully Exported", JOptionPane.INFORMATION_MESSAGE);
+                                            writer.write(Integer.toString(selection));
+                                            writer.println();
+                                            writer.flush();
+
+                                            System.out.println("Reached");
+
+                                        } else {
+                                            writer.write("PanelClosed");
+                                            writer.println();
+                                            writer.flush();
+                                        }
 
 
                                     }
@@ -876,9 +910,9 @@ public class MarketPlaceClient extends JFrame {
                                     writer.println();
                                     writer.flush();
 
-
                                     JOptionPane.showMessageDialog(null, "All data will be removed. Please close the program now", "Your account has been deleted", JOptionPane.INFORMATION_MESSAGE);
 
+                                    //works for data.txt
 
                                 }
                             });
@@ -3559,5 +3593,3 @@ public class MarketPlaceClient extends JFrame {
 
 
 }
-
-
