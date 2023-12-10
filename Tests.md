@@ -1,6 +1,6 @@
 # Tests
 
-## Test 1: User creating an account
+### Test 1: User creating an account
 
 Steps:
 
