@@ -35,7 +35,6 @@ public class ThreadedMarketPlaceServer {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
-
                 while (true) {
 
                     String createOrSignIn = reader.readLine();
@@ -43,9 +42,7 @@ public class ThreadedMarketPlaceServer {
                         System.out.println("signing in processing ");
                         //signing in created in client saved to file
 
-
                         //create market array list
-
 
                         try {
                             //reading products from file into the product array list
@@ -73,7 +70,6 @@ public class ThreadedMarketPlaceServer {
                             e.printStackTrace();
                         }
 
-
                         User userAccount = null;
 
                         String emailAndPassword = reader.readLine();
@@ -82,7 +78,6 @@ public class ThreadedMarketPlaceServer {
                         String[] info = new String[4];
                         String userAccountString = "";
                         String logInInfo = "";
-
 
                         try {
                             BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
@@ -201,82 +196,87 @@ public class ThreadedMarketPlaceServer {
 
                                         if (productToSell.equals("PanelClosed")) {
 
-                                        } else {
+                                        } else if (productToSell.equals("wrong")) {
 
+                                        } else {
                                             String[] productInfoParts = productToSell.split(",");
                                             String productName = productInfoParts[0];
                                             String storeName = productInfoParts[1];
                                             String description = productInfoParts[2];
-                                            int quantity = Integer.parseInt(productInfoParts[3]);
-                                            double price = Double.parseDouble(productInfoParts[4]);
-
-
-                                            boolean existingStoreName = false;
 
                                             try {
-                                                BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
-                                                String line = "";
-                                                ArrayList<String> allUserData = new ArrayList<>();
+                                                int quantity = Integer.parseInt(productInfoParts[3]);
+                                                double price = Double.parseDouble(productInfoParts[4]);
 
-                                                while ((line = bfr.readLine()) != null) {
-                                                    allUserData.add(line);
+                                                if (quantity <= 0 || price <= 0) {
+                                                    writer.write("InvalidInput");
+                                                    writer.println();
+                                                    writer.flush();
+                                                    return;
                                                 }
 
-                                                for (int i = 0; i < allUserData.size(); i++) {
-                                                    // checking to see if they are sellers
-                                                    String[] checkIfSeller = allUserData.get(i).split(",");
-                                                    // seller identified
-                                                    if (checkIfSeller[3].startsWith("true")) {
-                                                        String[] oneUserDataEachProduct = allUserData.get(i).split(";");
+                                                boolean existingStoreName = false;
 
-                                                        if (oneUserDataEachProduct.length == 1) {
-                                                            //no products so no problem
-                                                        } else {
-                                                            // separating the individual products
-                                                            String[] eachProduct = oneUserDataEachProduct[1].split("@@");
-                                                            for (int k = 0; k < eachProduct.length; k++) {
-                                                                String[] eachFieldForProduct = eachProduct[k].split(",");
-                                                                // checking if store name is the same and email is the same
-                                                                if (eachFieldForProduct[1].equals(storeName) &&
-                                                                        !checkIfSeller[1].equals(userAccount.getEmail())) {
-                                                                    existingStoreName = true;
-                                                                    break;
+                                                try {
+                                                    BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
+                                                    String line = "";
+                                                    ArrayList<String> allUserData = new ArrayList<>();
+
+                                                    while ((line = bfr.readLine()) != null) {
+                                                        allUserData.add(line);
+                                                    }
+
+                                                    for (int i = 0; i < allUserData.size(); i++) {
+                                                        String[] checkIfSeller = allUserData.get(i).split(",");
+                                                        if (checkIfSeller[3].startsWith("true")) {
+                                                            String[] oneUserDataEachProduct = allUserData.get(i).split(";");
+
+                                                            if (oneUserDataEachProduct.length == 1) {
+
+                                                            } else {
+                                                                String[] eachProduct = oneUserDataEachProduct[1].split("@@");
+                                                                for (int k = 0; k < eachProduct.length; k++) {
+                                                                    String[] eachFieldForProduct = eachProduct[k].split(",");
+                                                                    if (eachFieldForProduct[1].equals(storeName) &&
+                                                                            !checkIfSeller[1].equals(userAccount.getEmail())) {
+                                                                        existingStoreName = true;
+                                                                        break;
+                                                                    }
                                                                 }
-                                                            }
 
+                                                            }
                                                         }
                                                     }
+
+                                                    bfr.close();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
                                                 }
 
-                                                bfr.close();
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
+                                                if (existingStoreName) {
+                                                    writer.write("existingStoreName");
+                                                    writer.println();
+                                                    writer.flush();
+                                                } else {
+                                                    writer.write("noPreviousStoreName");
+                                                    writer.println();
+                                                    writer.flush();
 
-                                            if (existingStoreName) {
-                                                writer.write("existingStoreName");
+                                                    Product sellThis = new Product(productName, storeName, description, quantity, price);
+
+                                                    //myProducts arraylist (in server)
+                                                    myProducts.add(sellThis);
+                                                    //Products arraylist (all products on market)
+                                                    Methods.productsOnMarket.add(sellThis);
+                                                    method.saveProductFile(Methods.productsOnMarket);
+                                                    //Data file (data for each account)
+                                                    method.saveDataFileWhenNewProductAddedUserAccount(userAccount, sellThis);                                                }
+                                            } catch (NumberFormatException e) {
+                                                writer.write("InvalidInput");
                                                 writer.println();
                                                 writer.flush();
-                                            } else {
-                                                writer.write("noPreviousStoreName");
-                                                writer.println();
-                                                writer.flush();
-
-
-                                                Product sellThis = new Product(productName, storeName, description, quantity, price);
-
-                                                //myProducts arraylist (in server)
-                                                myProducts.add(sellThis);
-                                                //Products arraylist (all products on market)
-                                                Methods.productsOnMarket.add(sellThis);
-                                                method.saveProductFile(Methods.productsOnMarket);
-                                                //Data file (data for each account)
-                                                method.saveDataFileWhenNewProductAddedUserAccount(userAccount, sellThis);
                                             }
-
-
                                         }
-
                                     } else if (button.equals("editButton")) {
                                         System.out.println("edit button");
                                         System.out.println(myProducts);
@@ -295,30 +295,30 @@ public class ThreadedMarketPlaceServer {
 
                                             String closeSelect = reader.readLine();
                                             if (closeSelect.equals("PanelClosed")) {
-
                                             } else {
-
                                                 System.out.println(closeSelect);
                                                 int selection = Integer.parseInt(closeSelect);
                                                 System.out.println("selected item #" + selection);
                                                 Product oldSelected = myProducts.get(selection);
                                                 System.out.println("selected " + oldSelected.statisticsToString());
 
-
                                                 String newProductName = reader.readLine();
 
                                                 if (newProductName.equals("PanelClosed")) {
+                                                }  else if (newProductName.equals("wrong")) {
 
                                                 } else {
                                                     String newStoreName = reader.readLine();
                                                     String newDescription = reader.readLine();
-                                                    int newQuantity = Integer.parseInt(reader.readLine());
-                                                    double newPrice = Double.parseDouble(reader.readLine());
-
-
-                                                    boolean existingStoreName = false;
 
                                                     try {
+                                                        int newQuantity = Integer.parseInt(reader.readLine());
+                                                        double newPrice = Double.parseDouble(reader.readLine());
+
+
+
+                                                        boolean existingStoreName = false;
+
                                                         BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
                                                         String line = "";
                                                         ArrayList<String> allUserData = new ArrayList<>();
@@ -348,79 +348,73 @@ public class ThreadedMarketPlaceServer {
                                                                             break;
                                                                         }
                                                                     }
-
                                                                 }
                                                             }
                                                         }
 
                                                         bfr.close();
+
+                                                        if (existingStoreName) {
+                                                            writer.write("existingStoreName");
+                                                            writer.println();
+                                                            writer.flush();
+                                                        } else {
+                                                            writer.write("noPreviousStoreName");
+                                                            writer.println();
+                                                            writer.flush();
+
+                                                            Product newProduct = new Product(newProductName, newStoreName, newDescription, newQuantity, newPrice);
+
+                                                            //Products arraylist (all products on market)
+                                                            Methods.productsOnMarket = method.makeProductArrayList();
+                                                            int indexSelectionMarket = Methods.productsOnMarket.indexOf(oldSelected);
+
+                                                            for (Product product : Methods.productsOnMarket) {
+                                                                System.out.println(product.statisticsToStringNoSpace());
+                                                            }
+                                                            System.out.println();
+                                                            System.out.println("Product I want to change in myproducts");
+                                                            System.out.println(oldSelected.statisticsToStringNoSpace());
+                                                            System.out.println();
+
+                                                            System.out.println("New Product deets");
+                                                            System.out.println(newProduct.statisticsToStringNoSpace());
+                                                            System.out.println();
+
+                                                            for (Product product : myProducts) {
+                                                                if (product.statisticsToStringNoSpace().equals(oldSelected.statisticsToStringNoSpace())) {
+                                                                    System.out.println("I found the product I want to change in my products");
+                                                                    System.out.println(product.statisticsToStringNoSpace());
+                                                                    System.out.println("Here is where i chage it");
+                                                                    myProducts.set(myProducts.indexOf(product), newProduct);
+                                                                    System.out.println("Changed!");
+                                                                    System.out.println("Changed product in my products:");
+                                                                    System.out.println(myProducts.get(myProducts.indexOf(newProduct)).statisticsToStringNoSpace());
+                                                                    method.saveDataFileWithNewProductList(userAccount, myProducts);
+                                                                    break;
+                                                                }
+                                                            }
+
+                                                            for (Product product : Methods.productsOnMarket) {
+                                                                if (product.statisticsToStringNoSpace().equals(oldSelected.statisticsToStringNoSpace())) {
+                                                                    System.out.println("I found the product I want to change in the marketplace");
+                                                                    System.out.println(product.statisticsToStringNoSpace());
+                                                                    System.out.println("Here is where i chage it");
+                                                                    Methods.productsOnMarket.set(Methods.productsOnMarket.indexOf(product), newProduct);
+                                                                    System.out.println("Changed!");
+                                                                    System.out.println("Changed product in marketplace:");
+                                                                    System.out.println(Methods.productsOnMarket.get(Methods.productsOnMarket.indexOf(newProduct)).statisticsToStringNoSpace());
+                                                                    method.saveProductFile(Methods.productsOnMarket);
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
-                                                    }
-
-                                                    if (existingStoreName) {
-                                                        writer.write("existingStoreName");
-                                                        writer.println();
-                                                        writer.flush();
-                                                    } else {
-                                                        writer.write("noPreviousStoreName");
-                                                        writer.println();
-                                                        writer.flush();
-
-
-                                                        Product newProduct = new Product(newProductName, newStoreName, newDescription, newQuantity, newPrice);
-
-                                                        //Products arraylist (all products on market)
-                                                        Methods.productsOnMarket = method.makeProductArrayList();
-                                                        int indexSelectionMarket = Methods.productsOnMarket.indexOf(oldSelected);
-
-                                                        for (Product product : Methods.productsOnMarket) {
-                                                            System.out.println(product.statisticsToStringNoSpace());
-                                                        }
-                                                        System.out.println();
-                                                        System.out.println("Product I want to change in myproducts");
-                                                        System.out.println(oldSelected.statisticsToStringNoSpace());
-                                                        System.out.println();
-
-
-                                                        System.out.println("New Product deets");
-                                                        System.out.println(newProduct.statisticsToStringNoSpace());
-                                                        System.out.println();
-
-                                                        for (Product product : myProducts) {
-                                                            if (product.statisticsToStringNoSpace().equals(oldSelected.statisticsToStringNoSpace())) {
-                                                                System.out.println("I found the product I want to change in my products");
-                                                                System.out.println(product.statisticsToStringNoSpace());
-                                                                System.out.println("Here is where i chage it");
-                                                                myProducts.set(myProducts.indexOf(product), newProduct);
-                                                                System.out.println("Changed!");
-                                                                System.out.println("Changed product in my products:");
-                                                                System.out.println(myProducts.get(myProducts.indexOf(newProduct)).statisticsToStringNoSpace());
-                                                                method.saveDataFileWithNewProductList(userAccount, myProducts);
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        for (Product product : Methods.productsOnMarket) {
-                                                            if (product.statisticsToStringNoSpace().equals(oldSelected.statisticsToStringNoSpace())) {
-                                                                System.out.println("I found the product I want to change in the marketplace");
-                                                                System.out.println(product.statisticsToStringNoSpace());
-                                                                System.out.println("Here is where i chage it");
-                                                                Methods.productsOnMarket.set(Methods.productsOnMarket.indexOf(product), newProduct);
-                                                                System.out.println("Changed!");
-                                                                System.out.println("Changed product in marketplace:");
-                                                                System.out.println(Methods.productsOnMarket.get(Methods.productsOnMarket.indexOf(newProduct)).statisticsToStringNoSpace());
-                                                                method.saveProductFile(Methods.productsOnMarket);
-                                                                break;
-                                                            }
-                                                        }
-
                                                     }
                                                 }
                                             }
                                         }
-
-
                                     } else if (button.equals("deleteButton")) {
                                         System.out.println("delete button");
 
