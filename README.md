@@ -137,9 +137,13 @@ It would be stored using these formats:
 
 Joseph,jhsin1234,1234,false;
 
+
+
 *Seller with no stores:*
 
 Annalise,wang1234,1234,true;
+
+
 
 *Seller with stores:*
 
