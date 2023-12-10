@@ -290,13 +290,13 @@ public class MarketPlaceClient extends JFrame {
                         //USER ACCOUNT must be taken from server and put into USER
 
                         if (seller) {
+
                             openSeller = true;
                             //opens seller side
 
                             writer.write("seller");
                             writer.println();
                             writer.flush();
-
 
                             //open seller market
                             JFrame sellerView = new JFrame();
@@ -349,6 +349,17 @@ public class MarketPlaceClient extends JFrame {
 
                             sellerView.setVisible(true);
 
+
+                            writer.write(userName);
+                            writer.println();
+                            writer.flush();
+                            writer.write(userEmail);
+                            writer.println();
+                            writer.flush();
+                            writer.write(userPassword);
+                            writer.println();
+                            writer.flush();
+
                             // implement buttons here
                             sellButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
@@ -356,6 +367,7 @@ public class MarketPlaceClient extends JFrame {
                                     writer.println();
                                     writer.flush();
 
+                                    System.out.println("sellButton pressed");
                                     JPanel panel = new JPanel(new GridLayout(5, 2));
 
                                     panel.add(new JLabel("Product Name:"));
@@ -394,20 +406,34 @@ public class MarketPlaceClient extends JFrame {
                                         productInfo += "," + quantity;
                                         productInfo += "," + price;
 
+
                                         writer.write(productInfo);
                                         writer.println();
                                         writer.flush();
 
-                                        String sucess = "";
+                                        System.out.println("Produt info " + productInfo);
+
+
+                                        //sending info if store name exists already
+                                        String storeNameExists = null;
                                         try {
-                                            sucess = reader.readLine();
-                                        } catch (IOException g) {
-                                            g.printStackTrace();
+                                            storeNameExists = reader.readLine();
+                                        } catch (IOException ex) {
+                                            ex.printStackTrace();
                                         }
 
-                                        if (sucess.equals("Success")) {
+                                        // ADD HERE IF INPUT VALUES FOR PRICE OR QUANTITY IS WRONG
+
+                                        if (storeNameExists.equals("existingStoreName")) {
+                                            JOptionPane.showMessageDialog(null, "Store name already exists! Please enter a different store name", "Not added", JOptionPane.INFORMATION_MESSAGE);
+                                        } else if (storeNameExists.equals("noPreviousStoreName"))
+
                                             JOptionPane.showMessageDialog(null, "Your product has been added to the market!", "Successfully Added", JOptionPane.INFORMATION_MESSAGE);
-                                        }
+
+                                    } else {
+                                        writer.write("PanelClosed");
+                                        writer.println();
+                                        writer.flush();
                                     }
 
                                 }
@@ -415,116 +441,154 @@ public class MarketPlaceClient extends JFrame {
 
                             editButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
+                                    System.out.println("edit button");
                                     boolean cont = false;
                                     writer.write("editButton");
                                     writer.println();
                                     writer.flush();
-                                    ArrayList<Product> productList = new ArrayList<>();
+                                    ArrayList<String> lines = new ArrayList<>();
+
                                     try {
-                                        String line = reader.readLine();
-                                        if (line.equals("Empty")) {
-                                            JOptionPane.showMessageDialog(null, "No items to edit", "Empty List", JOptionPane.INFORMATION_MESSAGE);
-                                        } else {
-                                            cont = true;
-                                            do {
-                                                String[] parts = line.split("\n");
-                                                String productName = parts[1].split(": ")[1];
-                                                String storeName = parts[2].split(": ")[1];
-                                                String description = parts[3].split(": ")[1];
-                                                int quantityAvailable = Integer.parseInt(parts[4].split(": ")[1]);
-                                                double price = Double.parseDouble(parts[5].split(": ")[1]);
-                                                productList.add(new Product(productName, storeName, description, quantityAvailable, price));
-                                                line = reader.readLine();
-                                            } while (line != null);
+                                        String line;
+                                        while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                                            System.out.println("reader line " + line);
+                                            lines.add(line);
                                         }
+
+
                                     } catch (IOException i) {
                                         i.printStackTrace();
                                     }
+                                    ArrayList<Product> products = new ArrayList<>();
+                                    if (lines.size() == 1 && lines.get(0).equals("Empty")) {
+                                        JOptionPane.showMessageDialog(null, "No products to edit", "Error", JOptionPane.INFORMATION_MESSAGE);
+                                    } else {
+                                        System.out.println("lines" + lines);
+                                        for (String productString : lines) {
+                                            String[] parts = productString.split("Quantity Available: ");
+                                            String productInfo = parts[0];
+                                            String quantityAndPriceInfo = parts[1];
 
-                                    if (cont) {
+                                            String[] productInfoParts = productInfo.split(" ");
+                                            String productName = productInfoParts[3];
+                                            String storeName = productInfoParts[6];
+                                            String descriptionOfProduct = productInfoParts[6];
+                                            String[] quantityAndPriceInfoParts = quantityAndPriceInfo.split(" ");
+                                            int quantityAvailable = Integer.parseInt(quantityAndPriceInfoParts[0]);
+                                            Double price = Double.parseDouble(quantityAndPriceInfoParts[2]);
 
-                                        String[] products = new String[productList.size()];
-                                        for (int i = 0; i < productList.size(); i++) {
-                                            products[i] = productList.get(i).statisticsToString();
+                                            products.add(new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price));
                                         }
-                                        String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Select item to edit",
-                                                "Edit", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
 
-                                        Product productToEdit = productList.get(0);
+                                        System.out.println(products);
+
+                                        String[] productOptions = new String[products.size()];
+                                        for (int i = 0; i < products.size(); i++) {
+                                            productOptions[i] = products.get(i).statisticsToString();
+                                        }
+
+                                        String selectedProduct = (String) JOptionPane.showInputDialog(
+                                                null,
+                                                "Select a product:",
+                                                "Product Selection",
+                                                JOptionPane.QUESTION_MESSAGE,
+                                                null,
+                                                productOptions,
+                                                productOptions[0]
+                                        );
 
                                         int selection = 0;
-
-                                        for (int k = 0; k < productList.size(); k++) {
-                                            if (productList.get(k).statisticsToString().equals(itemFromSearchChosen)) {
-                                                productToEdit = productList.get(k);
+                                        Product selector = products.get(0);
+                                        for (int k = 0; k < products.size(); k++) {
+                                            if (products.get(k).statisticsToString().equals(selectedProduct)) {
+                                                selectedProduct = products.get(k).statisticsToString();
+                                                selector = products.get(k);
                                                 selection = k;
                                                 break;
                                             }
                                         }
 
-                                        writer.println(selection);
-                                        writer.println();
-                                        writer.flush();
+                                        if (selectedProduct != null) {
+                                            JOptionPane.showMessageDialog(null, "You selected:\n" + selector.toString());
 
-                                        JPanel panel = new JPanel(new GridLayout(5, 2));
-
-                                        panel.add(new JLabel("New Product Name:"));
-                                        JTextField productNameField = new JTextField();
-                                        panel.add(productNameField);
-
-                                        panel.add(new JLabel("New Store Name:"));
-                                        JTextField storeNameField = new JTextField();
-                                        panel.add(storeNameField);
-
-                                        panel.add(new JLabel("New Description:"));
-                                        JTextField descriptionField = new JTextField();
-                                        panel.add(descriptionField);
-
-                                        panel.add(new JLabel("New Quantity Selling:"));
-                                        JTextField quantityField = new JTextField();
-                                        panel.add(quantityField);
-
-                                        panel.add(new JLabel("New Price:"));
-                                        JTextField priceField = new JTextField();
-                                        panel.add(priceField);
-
-                                        int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
-                                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-                                        if (result == JOptionPane.OK_OPTION) {
-                                            String newProductName = productNameField.getText();
-                                            String newStoreName = storeNameField.getText();
-                                            String newDescription = descriptionField.getText();
-                                            int newQuantity = Integer.parseInt(quantityField.getText());
-                                            double newPrice = Double.parseDouble(priceField.getText());
-
-                                            writer.println(newProductName);
-                                            writer.println();
-                                            writer.flush();
-                                            writer.println(newStoreName);
-                                            writer.println();
-                                            writer.flush();
-                                            writer.println(newDescription);
-                                            writer.println();
-                                            writer.flush();
-                                            writer.println(newQuantity);
-                                            writer.println();
-                                            writer.flush();
-                                            writer.println(newPrice);
+                                            writer.write(Integer.toString(selection));
                                             writer.println();
                                             writer.flush();
 
-                                        }
+                                            JPanel panel = new JPanel(new GridLayout(5, 2));
 
-                                        String sucess = "";
-                                        try {
-                                            sucess = reader.readLine();
-                                        } catch (IOException g) {
-                                            g.printStackTrace();
-                                        }
+                                            panel.add(new JLabel("New Product Name:"));
+                                            JTextField productNameField = new JTextField();
+                                            panel.add(productNameField);
 
-                                        if (sucess.equals("Success")) {
-                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+                                            panel.add(new JLabel("New Store Name:"));
+                                            JTextField storeNameField = new JTextField();
+                                            panel.add(storeNameField);
+
+                                            panel.add(new JLabel("New Description:"));
+                                            JTextField descriptionField = new JTextField();
+                                            panel.add(descriptionField);
+
+                                            panel.add(new JLabel("New Quantity Selling:"));
+                                            JTextField quantityField = new JTextField();
+                                            panel.add(quantityField);
+
+                                            panel.add(new JLabel("New Price:"));
+                                            JTextField priceField = new JTextField();
+                                            panel.add(priceField);
+
+                                            int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
+                                                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                            if (result == JOptionPane.OK_OPTION) {
+                                                String newProductName = productNameField.getText();
+                                                String newStoreName = storeNameField.getText();
+                                                String newDescription = descriptionField.getText();
+                                                int newQuantity = Integer.parseInt(quantityField.getText());
+                                                double newPrice = Double.parseDouble(priceField.getText());
+
+                                                writer.println(newProductName);
+                                                writer.flush();
+                                                writer.println(newStoreName);
+                                                writer.flush();
+                                                writer.println(newDescription);
+                                                writer.flush();
+                                                writer.println(newQuantity);
+                                                writer.flush();
+                                                writer.println(newPrice);
+                                                writer.flush();
+
+                                                System.out.println("sent details to server");
+
+
+                                                String storeNameExists = null;
+                                                try {
+                                                    storeNameExists = reader.readLine();
+                                                } catch (IOException ex) {
+                                                    ex.printStackTrace();
+                                                }
+
+                                                // ADD HERE IF INPUT VALUES FOR PRICE OR QUANTITY IS WRONG
+
+                                                if (storeNameExists.equals("existingStoreName")) {
+                                                    JOptionPane.showMessageDialog(null, "Store name already exists! Please enter a different store name", "Not edited", JOptionPane.INFORMATION_MESSAGE);
+                                                } else if (storeNameExists.equals("noPreviousStoreName")) {
+
+                                                    JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+                                                }
+
+
+                                            } else if (result == JOptionPane.CLOSED_OPTION || result == JOptionPane.CANCEL_OPTION) {
+                                                writer.write("PanelClosed");
+                                                writer.println();
+                                                writer.flush();
+                                            }
+
+                                        } else {
+                                            writer.write("PanelClosed");
+                                            writer.println();
+                                            writer.flush();
+                                            System.out.println("Closed");
                                         }
                                     }
                                 }
@@ -532,79 +596,103 @@ public class MarketPlaceClient extends JFrame {
 
                             deleteButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
+                                    System.out.println("delete button");
                                     boolean cont = false;
                                     writer.write("deleteButton");
                                     writer.println();
                                     writer.flush();
 
+                                    ArrayList<String> lines = new ArrayList<>();
+
+
                                     ArrayList<Product> productList = new ArrayList<>();
                                     try {
-                                        String line = reader.readLine();
-                                        if (line.equals("Empty")) {
-                                            JOptionPane.showMessageDialog(null, "No items to edit", "Empty List", JOptionPane.INFORMATION_MESSAGE);
-                                        } else {
-                                            cont = true;
-                                            do {
-                                                String[] parts = line.split("\n");
-                                                String productName = parts[1].split(": ")[1];
-                                                String storeName = parts[2].split(": ")[1];
-                                                String description = parts[3].split(": ")[1];
-                                                int quantityAvailable = Integer.parseInt(parts[4].split(": ")[1]);
-                                                double price = Double.parseDouble(parts[5].split(": ")[1]);
-                                                productList.add(new Product(productName, storeName, description, quantityAvailable, price));
-                                                line = reader.readLine();
-                                            } while (line != null);
+                                        String line;
+                                        while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                                            lines.add(line);
                                         }
+
                                     } catch (IOException i) {
                                         i.printStackTrace();
                                     }
+                                    ArrayList<Product> products = new ArrayList<>();
+                                    if (lines.size() == 1 && lines.get(0).equals("Empty")) {
+                                        JOptionPane.showMessageDialog(null, "No products to delete", "Error", JOptionPane.INFORMATION_MESSAGE);
+                                    } else {
+                                        for (String productString : lines) {
+                                            String[] parts = productString.split("Quantity Available: ");
+                                            String productInfo = parts[0];
+                                            String quantityAndPriceInfo = parts[1];
 
-                                    if (cont) {
-                                        String[] products = new String[productList.size()];
-                                        for (int i = 0; i < productList.size(); i++) {
-                                            products[i] = productList.get(i).statisticsToString();
+                                            String[] productInfoParts = productInfo.split(" ");
+                                            String productName = productInfoParts[3];
+                                            String storeName = productInfoParts[6];
+                                            String descriptionOfProduct = productInfoParts[6];
+                                            String[] quantityAndPriceInfoParts = quantityAndPriceInfo.split(" ");
+                                            int quantityAvailable = Integer.parseInt(quantityAndPriceInfoParts[0]);
+                                            Double price = Double.parseDouble(quantityAndPriceInfoParts[2]);
+
+                                            products.add(new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price));
                                         }
-                                        String itemFromSearchChosen = (String) JOptionPane.showInputDialog(null, "Select item to delete",
-                                                "Delete", JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
 
-                                        Product productToDelete = productList.get(0);
+                                        String[] productOptions = new String[products.size()];
+                                        for (int i = 0; i < products.size(); i++) {
+                                            productOptions[i] = products.get(i).statisticsToString();
+                                        }
+
+                                        String selectedProduct = (String) JOptionPane.showInputDialog(
+                                                null,
+                                                "Select a product:",
+                                                "Product Selection",
+                                                JOptionPane.QUESTION_MESSAGE,
+                                                null,
+                                                productOptions,
+                                                productOptions[0]
+                                        );
+
 
                                         int selection = 0;
-
-                                        for (int k = 0; k < productList.size(); k++) {
-                                            if (productList.get(k).statisticsToString().equals(itemFromSearchChosen)) {
-                                                productToDelete = productList.get(k);
+                                        Product selector = products.get(0);
+                                        for (int k = 0; k < products.size(); k++) {
+                                            if (products.get(k).statisticsToString().equals(selectedProduct)) {
+                                                selectedProduct = products.get(k).statisticsToString();
+                                                selector = products.get(k);
                                                 selection = k;
                                                 break;
                                             }
                                         }
 
-                                        writer.println(selection);
-                                        writer.println();
-                                        writer.flush();
+                                        if (selectedProduct != null) {
+                                            JOptionPane.showMessageDialog(null, "You removed:\n" + selector.toString());
 
-                                        String sucess = "";
-                                        try {
-                                            sucess = reader.readLine();
-                                        } catch (IOException g) {
-                                            g.printStackTrace();
+                                            writer.write(Integer.toString(selection));
+                                            writer.println();
+                                            writer.flush();
+
+                                            System.out.println("Reached");
+
+                                        } else {
+                                            writer.write("PanelClosed");
+                                            writer.println();
+                                            writer.flush();
                                         }
-                                        if (sucess.equals("Success")) {
-                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
-                                        }
+
+
                                     }
-
                                 }
                             });
+
                             importButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("importButton");
                                     writer.println();
                                     writer.flush();
 
-                                    String fileName = JOptionPane.showInputDialog(null, "Enter the filename:");
+                                    String fileName = JOptionPane.showInputDialog(null, "Enter the filename (Products should be seperated by a new line:");
 
+                                    //Example: importThis.txt
                                     if (fileName != null && !fileName.isEmpty()) {
+
                                         ArrayList<String> lines = new ArrayList<>();
 
                                         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -612,27 +700,33 @@ public class MarketPlaceClient extends JFrame {
                                             while ((line = br.readLine()) != null) {
                                                 lines.add(line);
                                             }
-                                        } catch (IOException ioException) {
-                                            ioException.printStackTrace();
-                                        }
-                                        for (String item : lines) {
-                                            writer.println(item);
+                                            String everything = "";
+                                            for (int i = 0; i < lines.size() - 1; i++) {
+                                                everything += lines.get(i);
+                                                everything += "@@";
+                                            }
+                                            everything += lines.get(lines.size() - 1);
+
+                                            System.out.println(everything);
+                                            writer.write(everything);
                                             writer.println();
                                             writer.flush();
+
+                                            JOptionPane.showMessageDialog(null, "Your products have been imported!", "Successfully imported", JOptionPane.INFORMATION_MESSAGE);
+
+                                        } catch (IOException ioException) {
+                                            JOptionPane.showMessageDialog(null, "Could not find file", "Error", JOptionPane.INFORMATION_MESSAGE);
                                         }
-                                    }
-                                    String sucess = "";
-                                    try {
-                                        sucess = reader.readLine();
-                                    } catch (IOException g) {
-                                        g.printStackTrace();
-                                    }
-                                    if (sucess.equals("Success")) {
-                                        JOptionPane.showMessageDialog(null, "Your products have been imported!", "Successfully imported", JOptionPane.INFORMATION_MESSAGE);
+
+                                    } else {
+                                        writer.write("PanelClosed");
+                                        writer.println();
+                                        writer.flush();
                                     }
 
                                 }
                             });
+
                             exportButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("exportButton");
@@ -687,15 +781,8 @@ public class MarketPlaceClient extends JFrame {
                                         writer.println();
                                         writer.flush();
 
-                                        String sucess = "";
-                                        try {
-                                            sucess = reader.readLine();
-                                        } catch (IOException g) {
-                                            g.printStackTrace();
-                                        }
-                                        if (sucess.equals("Success")) {
-                                            JOptionPane.showMessageDialog(null, "Your product has been exported!", "Successfully Exported", JOptionPane.INFORMATION_MESSAGE);
-                                        }
+                                        JOptionPane.showMessageDialog(null, "Your product has been exported!", "Successfully Exported", JOptionPane.INFORMATION_MESSAGE);
+
 
                                     }
 
@@ -789,15 +876,9 @@ public class MarketPlaceClient extends JFrame {
                                     writer.println();
                                     writer.flush();
 
-                                    String sucess = "";
-                                    try {
-                                        sucess = reader.readLine();
-                                    } catch (IOException g) {
-                                        g.printStackTrace();
-                                    }
-                                    if (sucess.equals("Success")) {
-                                        JOptionPane.showMessageDialog(null, "All data will be removed. Please close the program now", "Your account has been deleted", JOptionPane.INFORMATION_MESSAGE);
-                                    }
+
+                                    JOptionPane.showMessageDialog(null, "All data will be removed. Please close the program now", "Your account has been deleted", JOptionPane.INFORMATION_MESSAGE);
+
 
                                 }
                             });
@@ -862,10 +943,11 @@ public class MarketPlaceClient extends JFrame {
                             viewShoppingCartButton = new JButton("View Shopping Cart");
                             editProfileButton = new JButton("Edit Profile");
                             viewPurchaseHistoryButton = new JButton("View Purchase History");
-                            exportFiles = new JButton("Export Files");
+                            exportFiles = new JButton("");
+                            //FIX FIX
 
 
-                            CustomerView.setLayout(new GridLayout(2, 3));
+                            CustomerView.setLayout(new GridLayout(2, 4));
 
                             CustomerView.add(seeProductsButton);
                             CustomerView.add(searchProductsButton);
@@ -3477,3 +3559,5 @@ public class MarketPlaceClient extends JFrame {
 
 
 }
+
+
