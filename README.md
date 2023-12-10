@@ -18,13 +18,13 @@ Aviana Franco - Submitted Presentation on Brightspace
 ## Classes
 
 ### MarketPlaceClient
-Enter text here.
+(Enter text here)
 
 ### ThreadedMarketPlaceServer
-Enter text here.
+(Enter text here)
 
 ### Methods
-Enter text here.
+(Enter text here)
 
 ### Product
 Product has fields to store information about a product in the marketplace, such as its name, the store selling it, a description, the quantity available, the price, and the quantity sold. It also includes methods to access and modify these fields.
@@ -97,7 +97,7 @@ SoldProduct extends Product. This class is used to represent a product that has 
 - quantityPurchased: Represents the quantity of the product that has been purchased.
 
 **Constructors:**
--There are two ‘SoldProduct’ constructors. One takes the individual variables, and the other takes the ‘Product’ object along with the quantity purchased.
+- There are two ‘SoldProduct’ constructors. One takes the individual variables, and the other takes the ‘Product’ object along with the quantity purchased.
 
 **Methods:**
 - getQuantityPurchased: An accessor method that returns the quantity of the product that has been purchased.
