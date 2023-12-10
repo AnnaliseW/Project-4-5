@@ -11,5 +11,4 @@ Enter text here.
 
 ### MarketPlaceClient
 Something right here.
-Something here too.
 #### Instance Variables:
