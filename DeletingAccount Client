@@ -1,28 +1,12 @@
-//Creating all the buttons
-JButton deleteAccountButton;
-
-//Giving button name fields
-deleteAccountButton = new JButton("Delete Account");
-
-//Adding button to panel
-sellerView.add(deleteAccountButton);
-
-//Inside while no exit loop
 deleteAccountButton.addActionListener(new ActionListener() {
-  public void actionPerformed(ActionEvent e) {
-    writer.write("deleteAccount");
-    writer.println();
-    writer.flush();
+    public void actionPerformed(ActionEvent e) {
+        writer.write("deleteAccount");
+        writer.println();
+        writer.flush();
 
-    String sucess = "";
-    try {
-        sucess = reader.readLine();
-    } catch (IOException g) {
-         g.printStackTrace();
-    }
-    if (sucess.equals("Success")) {
         JOptionPane.showMessageDialog(null, "All data will be removed. Please close the program now", "Your account has been deleted", JOptionPane.INFORMATION_MESSAGE);
-    }
 
- }
+        //works for data.txt
+
+        }
 });
