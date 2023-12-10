@@ -151,6 +151,7 @@ Aviana,franco28,1234,true;Eraser,Target,It is a small eraser,10,2.00@@Pencils,Wa
 Used to store the ArrayLists of the products being sold by sellers. These will be listed in the same format as a ‘Seller with stores’ after the semicolon (;).
 
 *Example:*
+
 Eraser,Target,It is a small eraser,10,2.00@@Pencils,Walmart,A pack of 10 pencils,20,5.00@@
 
 
