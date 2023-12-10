@@ -1,0 +1,3 @@
+imported,importedStore,thisWasImported,1,1.0
+imported2,importedStore2,thisWasImported2,2,2.0
+imported3,importedStore3,thisWasImported3,3,3.0
