@@ -18,6 +18,44 @@ Aviana Franco - Submitted Presentation on Brightspace
 ## Classes
 
 ### MarketPlaceClient
-Something right here.
+Enter text here.
+
+### ThreadedMarketPlaceServer
+Enter text here.
+
+### Methods
+Enter text here.
+
+### Product
+Product has fields to store information about a product in the marketplace, such as its name, the store selling it, a description, the quantity available, the price, and the quantity sold. It also includes methods to access and modify these fields.
 
 **Instance Variables:**
+- productName: The name of the product.
+- storeName: The name of the store selling the product.
+- descriptionOfProduct: A description of the product.
+- quantityAvailable: The quantity of the product available in the store.
+- price: The price of the product.
+- quantitySold: The quantity of the product that has been sold.
+
+**Constructor:**
+- Product: Creates an object with specified values for the parameters.
+
+**Methods:**
+- getProductName: Returns the name of this product.
+- setProductName: Sets the name of this product.
+- getStoreName: Returns the store name of this product.
+- setStoreName: Set the store name of this product.
+- getDescriptionOfProduct: Returns the description of this product.
+- setDescriptionOfProduct: Sets the description of this product.
+- getQuantityAvailable: Returns the quantity available of this product.
+- setQuantityAvailable: Sets the quantity available of this product.
+- getPrice: Returns the price of this product.
+- setPrice: Sets the price of this product.
+- getQuantitySold: Returns the quantity sold of this product.
+- setQuantitySold: Sets the quantity sold of this product.
+- statisticsToString: Formats and returns a string with statistics about the product, including its name, store, description, quantity available, and price.
+- listingPagetoString: Formats and returns a string with a representation for a product listing, including the product name, store name, and price.
+- equals: Compares two Product objects to see if they are equal. Two Product objects are considered equal if their name, store name, description, quantity available, and price are all equal.
+
+###
+
