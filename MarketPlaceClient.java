@@ -896,7 +896,7 @@ public class MarketPlaceClient extends JFrame {
 
                                             System.out.println(combined);
 
-                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+                                            JOptionPane.showMessageDialog(null, "Your account has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
 
 
                                         }
@@ -3564,7 +3564,7 @@ public class MarketPlaceClient extends JFrame {
 
                                             System.out.println(combined);
 
-                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
+                                            JOptionPane.showMessageDialog(null, "Your account has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
 
 
                                         }
