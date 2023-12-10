@@ -10,3 +10,6 @@ Enter text here.
 ## Classes
 
 ### MarketPlaceClient
+Something right here.
+Something here too.
+#### Instance Variables:
