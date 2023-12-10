@@ -157,6 +157,7 @@ public class MarketPlaceServer {
 
 
                     if (sellerOrBuyer.equals("seller")) {
+
                         // PROCESSING FOR SELLER
                         boolean exitSeller = false;
                         Methods method = new Methods();
@@ -169,148 +170,325 @@ public class MarketPlaceServer {
 
                         ArrayList<Product> myProducts = method.generateMyProducts(userAccount);
 
+
                         while (!exitSeller) {
+
                             String button = reader.readLine();
 
                             if (button.equals("sellButton")) {
+                                System.out.println("Sell pressed");
                                 String productToSell = reader.readLine();
-                                String[] productInfoParts = productToSell.split(",");
-                                String productName = productInfoParts[0];
-                                String storeName = productInfoParts[1];
-                                String description = productInfoParts[2];
-                                int quantity = Integer.parseInt(productInfoParts[3]);
-                                double price = Double.parseDouble(productInfoParts[4]);
 
-                                Product sellThis = new Product(productName, storeName, description, quantity, price);
+                                if (productToSell.equals("PanelClosed")) {
 
-                                //myProducts arraylist (in server)
-                                myProducts.add(sellThis);
-                                //Products arraylist (all products on market)
-                                Methods.productsOnMarket.add(sellThis);
-                                method.saveProductFile(Methods.productsOnMarket);
-                                //Data file (data for each account)
-                                method.saveDataFileWhenNewProductAddedUserAccount(userAccount, sellThis);
-
-                                writer.println("Success");
-                                writer.println();
-                                writer.flush();
-
-                            } else if (button.equals("editButton")) {
-
-                                if (myProducts.isEmpty()) {
-                                    writer.println("Empty");
-                                    writer.println();
-                                    writer.flush();
                                 } else {
-                                    for (Product product : myProducts) {
-                                        writer.println(product.statisticsToString());
-                                    }
-                                    writer.println();
-                                    writer.flush();
-                                }
 
-                                int selection = Integer.parseInt(reader.readLine());
-
-                                String newProductName = reader.readLine();
-                                String newStoreName = reader.readLine();
-                                String newDescription = reader.readLine();
-                                int newQuantity = Integer.parseInt(reader.readLine());
-                                double newPrice = Double.parseDouble(reader.readLine());
-
-                                Product selected = myProducts.get(selection);
-
-                                //myProducts arraylist (in server)
-                                myProducts.get(selection).setProductName(newProductName);
-                                myProducts.get(selection).setStoreName(newStoreName);
-                                myProducts.get(selection).setDescriptionOfProduct(newDescription);
-                                myProducts.get(selection).setQuantityAvailable(newQuantity);
-                                myProducts.get(selection).setPrice(newPrice);
-
-                                //Products arraylist (all products on market)
-                                int indexSelectionMarket = Methods.productsOnMarket.indexOf(selected);
-                                Methods.productsOnMarket.get(indexSelectionMarket).setProductName(newProductName);
-                                Methods.productsOnMarket.get(indexSelectionMarket).setStoreName(newStoreName);
-                                Methods.productsOnMarket.get(indexSelectionMarket).setDescriptionOfProduct(newDescription);
-                                Methods.productsOnMarket.get(indexSelectionMarket).setQuantityAvailable(newQuantity);
-                                Methods.productsOnMarket.get(indexSelectionMarket).setPrice(newPrice);
-                                method.saveProductFile(Methods.productsOnMarket);
-
-                                //Data file (data for each account)
-                                Product newProduct = new Product(newProductName, newStoreName, newDescription, newQuantity, newPrice);
-                                method.replaceProductInDataFile(selected, newProduct);
-
-                                writer.println("Success");
-                                writer.println();
-                                writer.flush();
-
-                            } else if (button.equals("deleteButton")) {
-
-                                if (myProducts.isEmpty()) {
-                                    writer.println("Empty");
-                                    writer.println();
-                                    writer.flush();
-                                } else {
-                                    for (Product product : myProducts) {
-                                        writer.println(product.statisticsToString());
-                                    }
-                                    writer.println();
-                                    writer.flush();
-                                }
-
-                                int selection = Integer.parseInt(reader.readLine());
-
-                                Product productToRemove = myProducts.get(selection);
-
-                                //myProducts arraylist (in server)
-                                myProducts.remove(selection);
-
-                                //Products arraylist (all products on market)
-                                Methods.productsOnMarket.remove(productToRemove);
-                                method.saveProductFile(Methods.productsOnMarket);
-
-                                //Data file (data for each account)
-                                method.removeProductFromDataFile(userAccount, productToRemove);
-
-                                writer.println("Success");
-                                writer.println();
-                                writer.flush();
-
-                            } else if (button.equals("importButton")) {
-
-                                ArrayList<String> receivedList = new ArrayList<>();
-
-                                String line;
-                                while ((line = reader.readLine()) != null) {
-                                    receivedList.add(line);
-                                }
+                                    String[] productInfoParts = productToSell.split(",");
+                                    String productName = productInfoParts[0];
+                                    String storeName = productInfoParts[1];
+                                    String description = productInfoParts[2];
+                                    int quantity = Integer.parseInt(productInfoParts[3]);
+                                    double price = Double.parseDouble(productInfoParts[4]);
 
 
-                                for (String productString : receivedList) {
+                                    boolean existingStoreName = false;
+
                                     try {
-                                        String[] parts = productString.split(",");
-                                        String productName = parts[0];
-                                        String storeName = parts[1];
-                                        String descriptionOfProduct = parts[2];
-                                        int quantityAvailable = Integer.parseInt(parts[3]);
-                                        double price = Double.parseDouble(parts[4]);
-                                        Product product = new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price);
-                                        myProducts.add(product);
+                                        BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
+                                        String line = "";
+                                        ArrayList<String> allUserData = new ArrayList<>();
 
+                                        while ((line = bfr.readLine()) != null) {
+                                            allUserData.add(line);
+                                        }
+
+                                        for (int i = 0; i < allUserData.size(); i++) {
+                                            // checking to see if they are sellers
+                                            String[] checkIfSeller = allUserData.get(i).split(",");
+                                            // seller identified
+                                            if (checkIfSeller[3].startsWith("true")) {
+                                                String[] oneUserDataEachProduct = allUserData.get(i).split(";");
+
+                                                if (oneUserDataEachProduct.length == 1) {
+                                                    //no products so no problem
+                                                } else {
+                                                    // separating the individual products
+                                                    String[] eachProduct = oneUserDataEachProduct[1].split("@@");
+                                                    for (int k = 0; k < eachProduct.length; k++) {
+                                                        String[] eachFieldForProduct = eachProduct[k].split(",");
+                                                        // checking if store name is the same and email is the same
+                                                        if (eachFieldForProduct[1].equals(storeName) &&
+                                                                !checkIfSeller[1].equals(userAccount.getEmail())) {
+                                                            existingStoreName = true;
+                                                            break;
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
+                                        bfr.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    if (existingStoreName) {
+                                        writer.write("existingStoreName");
+                                        writer.println();
+                                        writer.flush();
+                                    } else {
+                                        writer.write("noPreviousStoreName");
+                                        writer.println();
+                                        writer.flush();
+
+
+                                        Product sellThis = new Product(productName, storeName, description, quantity, price);
+
+                                        //myProducts arraylist (in server)
+                                        myProducts.add(sellThis);
                                         //Products arraylist (all products on market)
-                                        Methods.productsOnMarket.add(product);
+                                        Methods.productsOnMarket.add(sellThis);
                                         method.saveProductFile(Methods.productsOnMarket);
                                         //Data file (data for each account)
-                                        method.saveDataFileWhenNewProductAddedUserAccount(userAccount, product);
+                                        method.saveDataFileWhenNewProductAddedUserAccount(userAccount, sellThis);
+                                    }
 
-                                    } catch (NumberFormatException e) {
-                                        JOptionPane.showMessageDialog(null, "Error with number values. Please check File");
+
+                                }
+
+                            } else if (button.equals("editButton")) {
+                                System.out.println("edit button");
+                                System.out.println(myProducts);
+                                if (myProducts.isEmpty()) {
+                                    System.out.println("Empty");
+                                    writer.println("Empty");
+                                    writer.println();
+                                    writer.flush();
+                                } else {
+                                    for (int i = 0; i < myProducts.size(); i++) {
+                                        writer.println(myProducts.get(i).statisticsToStringNoSpace());
+                                        System.out.println(myProducts.get(i).statisticsToStringNoSpace());
+                                    }
+                                    writer.println();
+                                    writer.flush();
+
+                                    String closeSelect = reader.readLine();
+                                    if (closeSelect.equals("PanelClosed")) {
+
+                                    } else {
+
+                                        System.out.println(closeSelect);
+                                        int selection = Integer.parseInt(closeSelect);
+                                        System.out.println("selected item #" + selection);
+                                        Product oldSelected = myProducts.get(selection);
+                                        System.out.println("selected " + oldSelected.statisticsToString());
+
+
+                                        String newProductName = reader.readLine();
+
+                                        if (newProductName.equals("PanelClosed")) {
+
+                                        } else {
+                                            String newStoreName = reader.readLine();
+                                            String newDescription = reader.readLine();
+                                            int newQuantity = Integer.parseInt(reader.readLine());
+                                            double newPrice = Double.parseDouble(reader.readLine());
+
+
+                                            boolean existingStoreName = false;
+
+                                            try {
+                                                BufferedReader bfr = new BufferedReader(new FileReader("data.txt"));
+                                                String line = "";
+                                                ArrayList<String> allUserData = new ArrayList<>();
+
+                                                while ((line = bfr.readLine()) != null) {
+                                                    allUserData.add(line);
+                                                }
+
+                                                for (int i = 0; i < allUserData.size(); i++) {
+                                                    // checking to see if they are sellers
+                                                    String[] checkIfSeller = allUserData.get(i).split(",");
+                                                    // seller identified
+                                                    if (checkIfSeller[3].startsWith("true")) {
+                                                        String[] oneUserDataEachProduct = allUserData.get(i).split(";");
+
+                                                        if (oneUserDataEachProduct.length == 1) {
+                                                            //no products so no problem
+                                                        } else {
+                                                            // separating the individual products
+                                                            String[] eachProduct = oneUserDataEachProduct[1].split("@@");
+                                                            for (int k = 0; k < eachProduct.length; k++) {
+                                                                String[] eachFieldForProduct = eachProduct[k].split(",");
+                                                                // checking if store name is the same and email is the same
+                                                                if (eachFieldForProduct[1].equals(newStoreName) &&
+                                                                        !checkIfSeller[1].equals(userAccount.getEmail())) {
+                                                                    existingStoreName = true;
+                                                                    break;
+                                                                }
+                                                            }
+
+                                                        }
+                                                    }
+                                                }
+
+                                                bfr.close();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            if (existingStoreName) {
+                                                writer.write("existingStoreName");
+                                                writer.println();
+                                                writer.flush();
+                                            } else {
+                                                writer.write("noPreviousStoreName");
+                                                writer.println();
+                                                writer.flush();
+
+
+                                                Product newProduct = new Product(newProductName, newStoreName, newDescription, newQuantity, newPrice);
+
+                                                //Products arraylist (all products on market)
+                                                Methods.productsOnMarket = method.makeProductArrayList();
+                                                int indexSelectionMarket = Methods.productsOnMarket.indexOf(oldSelected);
+
+                                                for (Product product : Methods.productsOnMarket) {
+                                                    System.out.println(product.statisticsToStringNoSpace());
+                                                }
+                                                System.out.println();
+                                                System.out.println("Product I want to change in myproducts");
+                                                System.out.println(oldSelected.statisticsToStringNoSpace());
+                                                System.out.println();
+
+
+                                                System.out.println("New Product deets");
+                                                System.out.println(newProduct.statisticsToStringNoSpace());
+                                                System.out.println();
+
+                                                for (Product product : myProducts) {
+                                                    if (product.statisticsToStringNoSpace().equals(oldSelected.statisticsToStringNoSpace())) {
+                                                        System.out.println("I found the product I want to change in my products");
+                                                        System.out.println(product.statisticsToStringNoSpace());
+                                                        System.out.println("Here is where i chage it");
+                                                        myProducts.set(myProducts.indexOf(product), newProduct);
+                                                        System.out.println("Changed!");
+                                                        System.out.println("Changed product in my products:");
+                                                        System.out.println(myProducts.get(myProducts.indexOf(newProduct)).statisticsToStringNoSpace());
+                                                        method.saveDataFileWithNewProductList(userAccount, myProducts);
+                                                        break;
+                                                    }
+                                                }
+
+                                                for (Product product : Methods.productsOnMarket) {
+                                                    if (product.statisticsToStringNoSpace().equals(oldSelected.statisticsToStringNoSpace())) {
+                                                        System.out.println("I found the product I want to change in the marketplace");
+                                                        System.out.println(product.statisticsToStringNoSpace());
+                                                        System.out.println("Here is where i chage it");
+                                                        Methods.productsOnMarket.set(Methods.productsOnMarket.indexOf(product), newProduct);
+                                                        System.out.println("Changed!");
+                                                        System.out.println("Changed product in marketplace:");
+                                                        System.out.println(Methods.productsOnMarket.get(Methods.productsOnMarket.indexOf(newProduct)).statisticsToStringNoSpace());
+                                                        method.saveProductFile(Methods.productsOnMarket);
+                                                        break;
+                                                    }
+                                                }
+
+                                            }
+                                        }
                                     }
                                 }
 
-                                writer.println("Success");
-                                writer.println();
-                                writer.flush();
 
+                            } else if (button.equals("deleteButton")) {
+                                System.out.println("delete button");
+
+                                if (myProducts.isEmpty()) {
+                                    System.out.println("Empty");
+                                    writer.println("Empty");
+                                    writer.println();
+                                    writer.flush();
+                                } else {
+                                    for (Product product : myProducts) {
+                                        writer.println(product.statisticsToStringNoSpace());
+                                    }
+                                    writer.println();
+                                    writer.flush();
+                                }
+
+
+                                String closeSelect = reader.readLine();
+                                if (closeSelect.equals("PanelClosed")) {
+
+                                } else {
+                                    int selection = Integer.parseInt(closeSelect);
+                                    System.out.println("selected item #" + selection);
+                                    Product itemToDelete = myProducts.get(selection);
+                                    System.out.println("selected " + itemToDelete.statisticsToString());
+
+                                    myProducts.remove(itemToDelete);
+                                    method.saveDataFileWithNewProductList(userAccount, myProducts);
+                                    System.out.println("Reached");
+
+
+                                    for (Product p : Methods.productsOnMarket) {
+                                        System.out.println(p.statisticsToStringNoSpace());
+                                        if (p.statisticsToStringNoSpace().equals(itemToDelete.statisticsToStringNoSpace())) {
+                                            System.out.println("I found the product I want to remove in the marketplace");
+                                            System.out.println(p.statisticsToStringNoSpace());
+                                            System.out.println("Here is where i delete it");
+
+                                            //remove from product data file
+
+                                            method.deleteForProductFile(itemToDelete);
+
+
+                                            Methods.productsOnMarket.remove(itemToDelete);
+                                            System.out.println("Deleted!");
+                                            System.out.println("This should be -1:");
+                                            System.out.println(Methods.productsOnMarket.indexOf(itemToDelete));
+                                            break;
+                                        }
+                                    }
+
+
+                                    System.out.println("Reached");
+
+
+                                }
+
+                            } else if (button.equals("importButton")) {
+                                System.out.println("import pressed");
+                                String closeSelect = reader.readLine();
+                                if (closeSelect.equals("PanelClosed")) {
+
+                                } else {
+                                    String everything = closeSelect;
+                                    System.out.println(everything);
+
+                                    String[] products = everything.split("@@");
+
+                                    for (String product : products) {
+                                        String[] parts = product.split(",");
+                                        String productName = parts[0];
+                                        String storeName = parts[1];
+                                        String description = parts[2];
+                                        int quantity = Integer.parseInt(parts[3]);
+                                        double price = Double.parseDouble(parts[4]);
+
+                                        Product importedProduct = new Product(productName, storeName, description, quantity, price);
+
+                                        //myProducts arraylist (in server)
+                                        myProducts.add(importedProduct);
+                                        //Products arraylist (all products on market)
+                                        Methods.productsOnMarket.add(importedProduct);
+                                        method.saveProductFile(Methods.productsOnMarket);
+                                        //Data file (data for each account)
+                                        method.saveDataFileWhenNewProductAddedUserAccount(userAccount, importedProduct);
+
+                                    }
+                                }
                             } else if (button.equals("exportButton")) {
 
                                 if (myProducts.size() == 0) {
@@ -338,9 +516,6 @@ public class MarketPlaceServer {
                                 //Data file (data for each account)
                                 method.removeProductFromDataFile(userAccount, productToRemove);
 
-                                writer.println("Success");
-                                writer.println();
-                                writer.flush();
 
                             } else if (button.equals("salesByStoreButton")) {
                                 //TODO: salesbystore
@@ -378,12 +553,7 @@ public class MarketPlaceServer {
                                 }
 
                             } else if (button.equals("deleteAccount")) {
-
                                 method.removeAccount(userAccount);
-
-                                writer.println("Success");
-                                writer.println();
-                                writer.flush();
 
 
                             } else if (button.equals("viewCustomerCartsButton")) {
@@ -392,7 +562,6 @@ public class MarketPlaceServer {
                             }
 
                         }
-
 
                     } else if (sellerOrBuyer.equals("buyer")) {
                         boolean noExit = false;
