@@ -57,5 +57,7 @@ Product has fields to store information about a product in the marketplace, such
 - listingPagetoString: Formats and returns a string with a representation for a product listing, including the product name, store name, and price.
 - equals: Compares two Product objects to see if they are equal. Two Product objects are considered equal if their name, store name, description, quantity available, and price are all equal.
 
-###
+This class makes comparing different products easier for users. In the marketplace, this class causes products to be listed, sold, and tracked by their statistics.
+
+### ShoppingCartProduct
 
