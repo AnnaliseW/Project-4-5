@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Methods {
@@ -955,6 +956,11 @@ public class Methods {
 
     public void saveDataFileWhenNewProductAddedUserAccount(User userAccount, Product newProduct) {
         File dataFile = new File("data.txt");
+        // format: eraser,purdue,it is a small eraser,5,2.0@@
+
+        String productStatistics = newProduct.getProductName() + "," + newProduct.getStoreName() + "," +
+                newProduct.getDescriptionOfProduct() + "," + newProduct.getQuantityAvailable() + "," + newProduct.getPrice()
+                + "@@";
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(dataFile));
@@ -970,7 +976,7 @@ public class Methods {
                 String userData = allLines.get(i);
                 String[] oneUserData = userData.split(",");
                 if (oneUserData.length > 1 && oneUserData[1].equals(userAccount.getEmail())) {
-                    allLines.set(i, userData + "@" + newProduct.toString());
+                    allLines.set(i, userData + productStatistics);
                     break;
                 }
             }
@@ -1069,6 +1075,86 @@ public class Methods {
             }
             writer.close();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void saveDataFileWithNewProductList(User userAccount, ArrayList<Product> newProductList) {
+        File file = new File("data.txt");
+        StringBuilder fileContent = new StringBuilder();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                String[] userParts = parts[0].split(",");
+
+                if (userParts[1].equals(userAccount.getEmail())) {
+                    line = userParts[0] + "," + userParts[1] + "," + userParts[2] + ","
+                            + userParts[3] + ";";
+
+                    for (Product product : newProductList) {
+                        line += product.getProductName() + ","
+                                + product.getStoreName() + ","
+                                + product.getDescriptionOfProduct() + ","
+                                + product.getQuantityAvailable() + ","
+                                + product.getPrice() + "@@";
+                    }
+                }
+
+                fileContent.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(fileContent.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteForProductFile(Product itemToDelete) {
+        File dataFile = new File("productArrayList.txt");
+        ArrayList<String> allUserData = new ArrayList<>();
+        ArrayList<String> products = new ArrayList<>();
+
+        //eraser,purdue,it is a small eraser,5,2.0@@ format
+
+
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+
+            for (int i = 0; i < allUserData.size(); i++) {
+                String[] eachProduct = allUserData.get(i).split("@@");
+                for (int k = 0; k < eachProduct.length; k++) {
+                    String[] findingItem = eachProduct[k].split(",");
+                    if (findingItem[0].equals(itemToDelete.getProductName()) &&
+                            findingItem[1].equals(itemToDelete.getStoreName())) {
+                    } else {
+                        products.add(eachProduct[k] + "@@");
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
+            for (int i = 0; i < products.size(); i++) {
+                pw.print(products.get(i));
+            }
+            pw.flush();
+            pw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
