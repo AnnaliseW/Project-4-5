@@ -133,13 +133,16 @@ Used to store the user’s data when signing in. When signing in, it will be use
 
 It would be stored using these formats:
 
-Buyer:
+*Buyer:*
+
 Joseph,jhsin1234,1234,false;
 
-Seller with no stores:
+*Seller with no stores:*
+
 Annalise,wang1234,1234,true;
 
-Seller with stores:
+*Seller with stores:*
+
 Aviana,franco28,1234,true;Eraser,Target,It is a small eraser,10,2.00@@Pencils,Walmart,A pack of 10 pencils,20,5.00@@
 
 
