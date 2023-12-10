@@ -1,0 +1,44 @@
+importButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    writer.write("importButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                    String fileName = JOptionPane.showInputDialog(null, "Enter the filename (Products should be seperated by a new line:");
+
+                                    //Example: importThis.txt
+                                    if (fileName != null && !fileName.isEmpty()) {
+
+                                        ArrayList<String> lines = new ArrayList<>();
+
+                                        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+                                            String line;
+                                            while ((line = br.readLine()) != null) {
+                                                lines.add(line);
+                                            }
+                                            String everything = "";
+                                            for (int i = 0; i < lines.size() - 1; i++) {
+                                                everything += lines.get(i);
+                                                everything += "@@";
+                                            }
+                                            everything += lines.get(lines.size()-1);
+
+                                            System.out.println(everything);
+                                            writer.write(everything);
+                                            writer.println();
+                                            writer.flush();
+
+                                            JOptionPane.showMessageDialog(null, "Your products have been imported!", "Successfully imported", JOptionPane.INFORMATION_MESSAGE);
+
+                                        } catch (IOException ioException) {
+                                            JOptionPane.showMessageDialog(null, "Could not find file", "Error", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+
+                                    } else {
+                                        writer.write("PanelClosed");
+                                        writer.println();
+                                        writer.flush();
+                                    }
+
+                                }
+                            });
