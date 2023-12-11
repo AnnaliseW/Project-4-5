@@ -1,6 +1,6 @@
 # CS 180 Project 5 README
 
-## NOTE: THE USER CANNOT INPUT ANY SPECIAL CHARACTERS SUCH AS ",", ";", OR "@@" AT ANY POINT!
+NOTE: THE USER CANNOT INPUT ANY SPECIAL CHARACTERS SUCH AS ",", ";", OR "@@" AT ANY POINT!
 
 ## Compiling
 To see if a class in our project compiles properly, open the terminal on Vocareum. Use the ‘javac’ command followed by the class you want to test. Hit enter, and if there are no errors, the code properly compiles.
