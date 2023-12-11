@@ -1,54 +1,18 @@
+//CLIENT
 salesByStoreButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
-                                    ArrayList<String> customerHistory = new ArrayList<>();
-                                    try{
-                                        String line = "";
-                                        BufferedReader bfr = new BufferedReader(new FileReader("customerHistory.txt"));
-                                        while((line = bfr.readLine()) != null){
-                                            customerHistory.add(line);
-                                        }
-                                    }catch(IOException f){
-                                        f.printStackTrace();
-                                    }
-                                    Methods methods = new Methods();
-                                    ArrayList<String> storeNames = methods.findingStoreNamesForSeller(userAccount);
-                                    ArrayList<String> endResult = new ArrayList<>();
-                                    String complete = "";
-                                    String temp;
-                                    String info;
-                                    String email;
-                                    String[] eachProduct = null;
-                                    String[] eachProductFull = null;
-                                    boolean newResult;
-                                    double revenue;
-                                    for(int i = 0; i < storeNames.size(); i++){
-                                        newResult = true;
-                                        revenue = 0;
-                                        for(int x = 0; x < customerHistory.size(); x++) {
-                                            temp = customerHistory.get(x);
-                                            email = temp.substring(0, temp.indexOf(":"));
-                                            info = temp.substring(temp.indexOf(":") + 1);
-                                            eachProductFull = info.split("-");
-                                            for (int z = 0; z < eachProductFull.length; z++) {
-                                                eachProduct = eachProductFull[z].split(",");
-                                                if (eachProduct[1].equals(storeNames.get(i))) {
-                                                    revenue = Double.parseDouble(eachProduct[4]) * Integer.parseInt(eachProduct[5]);
-                                                    if (newResult) {
-                                                        complete = storeNames.get(i) + ": " + eachProduct[0] + " - " + email + " - " + revenue + ",";
-                                                        newResult = false;
-                                                    }else {
-                                                        complete += eachProduct[0] + " - " + email + " - " + revenue + ",";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        endResult.add(complete);
+                                    writer.write("salesByStoreButton");
+                                    writer.println();
+                                    writer.flush();
+
+                                    String endResult = null;
+                                    try {
+                                        endResult = reader.readLine();
+                                    }catch(IOException x){
+                                        x.printStackTrace();
                                     }
                                     if(endResult != null){
-                                        String[] endResultArray = new String[endResult.size()];
-                                        for(int i = 0; i < endResult.size(); i++){
-                                            endResultArray[i] = endResult.get(i).substring(0, endResult.get(i).length() - 1);
-                                    }
+                                        String[] endResultArray = endResult.split("@");
                                         JOptionPane.showInputDialog(null, "Sales by story", "Seller sales by store",
                                                 JOptionPane.INFORMATION_MESSAGE, null, endResultArray, endResultArray[0]);
                                     }else{
@@ -57,3 +21,62 @@ salesByStoreButton.addActionListener(new ActionListener() {
                                     }
                                 }
                             });
+//____________________________________________________________________________________________________________________________________________________
+
+
+//SERVER
+else if (button.equals("salesByStoreButton")) {
+                                //TODO: salesbystore
+                                ArrayList<String> customerHistory = new ArrayList<>();
+                                try{
+                                    String line = "";
+                                    BufferedReader bfr = new BufferedReader(new FileReader("customerHistory.txt"));
+                                    while((line = bfr.readLine()) != null){
+                                        customerHistory.add(line);
+                                    }
+                                }catch(IOException f){
+                                    f.printStackTrace();
+                                }
+                                Methods methods = new Methods();
+                                ArrayList<String> storeNames = methods.findingStoreNamesForSellerList(userAccount);
+                                ArrayList<String> endResult = new ArrayList<>();
+                                String complete = "";
+                                String temp;
+                                String info2;
+                                String email2;
+                                String[] eachProduct = null;
+                                String[] eachProductFull = null;
+                                boolean newResult;
+                                double revenue;
+                                for(int i = 0; i < storeNames.size(); i++){
+                                    newResult = true;
+                                    revenue = 0;
+                                    for(int x = 0; x < customerHistory.size(); x++) {
+                                        temp = customerHistory.get(x);
+                                        email2 = temp.substring(0, temp.indexOf(":"));
+                                        info2 = temp.substring(temp.indexOf(":") + 1);
+                                        eachProductFull = info2.split("-");
+                                        for (int z = 0; z < eachProductFull.length; z++) {
+                                            eachProduct = eachProductFull[z].split(",");
+                                            if (eachProduct[1].equals(storeNames.get(i))) {
+                                                revenue = Double.parseDouble(eachProduct[4]) * Integer.parseInt(eachProduct[5]);
+                                                if (newResult) {
+                                                    complete = storeNames.get(i) + ": " + eachProduct[0] + " - " + email + " - " + revenue + ",";
+                                                    newResult = false;
+                                                }else {
+                                                    complete += eachProduct[0] + " - " + email2 + " - " + revenue + ",";
+                                                }
+                                            }
+                                        }
+                                    }
+                                    endResult.add(complete);
+                                }
+                                
+                                String sendBack = "";
+                                for(int i = 0; i < endResult.size(); i++){
+                                    sendBack += endResult.get(i) + "@";
+                                }
+                                writer.write(sendBack);
+                                writer.println();
+                                writer.flush();
+                            }
