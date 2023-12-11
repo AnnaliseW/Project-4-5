@@ -40,16 +40,13 @@ else if (button.equals("salesByStoreButton")) {
                                 Methods methods = new Methods();
                                 ArrayList<String> storeNames = methods.findingStoreNamesForSellerList(userAccount);
                                 ArrayList<String> endResult = new ArrayList<>();
-                                String complete = "";
                                 String temp;
                                 String info2;
                                 String email2;
                                 String[] eachProduct = null;
                                 String[] eachProductFull = null;
-                                boolean newResult;
                                 double revenue;
                                 for(int i = 0; i < storeNames.size(); i++){
-                                    newResult = true;
                                     revenue = 0;
                                     for(int x = 0; x < customerHistory.size(); x++) {
                                         temp = customerHistory.get(x);
@@ -60,16 +57,10 @@ else if (button.equals("salesByStoreButton")) {
                                             eachProduct = eachProductFull[z].split(",");
                                             if (eachProduct[1].equals(storeNames.get(i))) {
                                                 revenue = Double.parseDouble(eachProduct[4]) * Integer.parseInt(eachProduct[5]);
-                                                if (newResult) {
-                                                    complete = storeNames.get(i) + ": Product: " + eachProduct[0] + " Buyer: " + email2 + " Revenue: " + revenue + ", ";
-                                                    newResult = false;
-                                                }else {
-                                                    complete += "Product: " + eachProduct[0] + " Buyer: " + email2 + " Revenue: " + revenue + ", ";
-                                                }
+                                                endResult.add(storeNames.get(i) + ": Product: " + eachProduct[0] + " Buyer: " + email2 + " Revenue: " + revenue + ", ");
                                             }
                                         }
                                     }
-                                    endResult.add(complete);
                                 }
 
                                 String sendBack = "";
@@ -80,7 +71,6 @@ else if (button.equals("salesByStoreButton")) {
                                 writer.println();
                                 writer.flush();
                             }
-
 
 
 jorge1234:sweatshirt,purdue,limited purdue sweatshirts,40,60.0,1-eraser,purdue,it is a small eraser,10,2.0,1-pencils,walmart,a pack of 10 pencils,20,5.0,1-pencils,walmart,a pack of 10 pencils,19,5.0,1-
