@@ -11,7 +11,7 @@ To see if a class in our project compiles properly, open the terminal on Vocareu
 Usually on Vocareum, to test if everything runs properly, you would either press the ‘Run’ button or use the ‘java’ command followed by the class you want to run. But, since GUI applications will not run on Vocareum, you must use an IDE to run this project. To run the program successfully on the IDE, you must run MarketPlaceServer.java first then run MarketPlaceClient.java after. This will allow you to properly test the classes.
 
 ## Submissions
-Joseph Hsin - Submitted Vocareum Workspace
+Annalise Wang - Submitted Vocareum Workspace
 
 Aviana Franco - Submitted Report on Brightspace
 
