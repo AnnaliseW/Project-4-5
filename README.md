@@ -15,7 +15,7 @@ Joseph Hsin - Submitted Vocareum Workspace
 
 Aviana Franco - Submitted Report on Brightspace
 
-Aviana Franco - Submitted Presentation on Brightspace
+Annalise Wang - Submitted Presentation on Brightspace
 
 ## Classes
 
