@@ -1,105 +1,28 @@
-// implement buttons here
-                            sellButton.addActionListener(new ActionListener() {
+exportButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
-                                    writer.write("sellButton");
-                                    writer.println();
-                                    writer.flush();
-
-                                    System.out.println("sellButton pressed");
-                                    JPanel panel = new JPanel(new GridLayout(5, 2));
-
-                                    panel.add(new JLabel("Product Name:"));
-                                    JTextField productNameField = new JTextField();
-                                    panel.add(productNameField);
-
-                                    panel.add(new JLabel("Store Name:"));
-                                    JTextField storeNameField = new JTextField();
-                                    panel.add(storeNameField);
-
-                                    panel.add(new JLabel("Description:"));
-                                    JTextField descriptionField = new JTextField();
-                                    panel.add(descriptionField);
-
-                                    panel.add(new JLabel("Quantity Selling:"));
-                                    JTextField quantityField = new JTextField();
-                                    panel.add(quantityField);
-
-                                    panel.add(new JLabel("Price:"));
-                                    JTextField priceField = new JTextField();
-                                    panel.add(priceField);
-
-                                    int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
-                                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-                                    if (result == JOptionPane.OK_OPTION) {
-                                        try {
-                                            String productName = productNameField.getText();
-                                            String storeName = storeNameField.getText();
-                                            String description = descriptionField.getText();
-                                            int quantity = Integer.parseInt(quantityField.getText());
-                                            double price = Double.parseDouble(priceField.getText());
-
-                                            if (quantity <= 0 || price <= 0) {
-                                                JOptionPane.showMessageDialog(null, "Quantity and price must be greater than zero", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                                                writer.write("wrong");
-                                                writer.println();
-                                                writer.flush();
-                                            } else {
-
-                                                String productInfo = productName + "," + storeName + "," + description + "," + quantity + "," + price;
-
-                                                writer.write(productInfo);
-                                                writer.println();
-                                                writer.flush();
-
-                                                System.out.println("Product info " + productInfo);
-
-                                                String storeNameExists = reader.readLine();
-
-                                                if (storeNameExists.equals("existingStoreName")) {
-                                                    JOptionPane.showMessageDialog(null, "Store name already exists! Please enter a different store name", "Not added", JOptionPane.INFORMATION_MESSAGE);
-                                                } else if (storeNameExists.equals("noPreviousStoreName"))
-                                                    JOptionPane.showMessageDialog(null, "Your product has been added to the market!", "Successfully Added", JOptionPane.INFORMATION_MESSAGE);
-                                            }
-                                        } catch (NumberFormatException ex) {
-                                            JOptionPane.showMessageDialog(null, "Please enter valid numeric values for Quantity and Price", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                                            writer.write("wrong");
-                                            writer.println();
-                                            writer.flush();
-                                        } catch (IOException ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    } else {
-                                        writer.write("PanelClosed");
-                                        writer.println();
-                                        writer.flush();
-                                    }
-                                }
-                            });
-
-                            editButton.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    System.out.println("edit button");
+                                    System.out.println("export button");
                                     boolean cont = false;
-                                    writer.write("editButton");
+                                    writer.write("exportButton");
                                     writer.println();
                                     writer.flush();
+
                                     ArrayList<String> lines = new ArrayList<>();
 
+
+                                    ArrayList<Product> productList = new ArrayList<>();
                                     try {
                                         String line;
                                         while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                                            System.out.println("reader line " + line);
                                             lines.add(line);
                                         }
+
                                     } catch (IOException i) {
                                         i.printStackTrace();
                                     }
                                     ArrayList<Product> products = new ArrayList<>();
                                     if (lines.size() == 1 && lines.get(0).equals("Empty")) {
-                                        JOptionPane.showMessageDialog(null, "No products to edit", "Error", JOptionPane.INFORMATION_MESSAGE);
+                                        JOptionPane.showMessageDialog(null, "No products to delete", "Error", JOptionPane.INFORMATION_MESSAGE);
                                     } else {
-                                        System.out.println("lines" + lines);
                                         for (String productString : lines) {
                                             String[] parts = productString.split("Quantity Available: ");
                                             String productInfo = parts[0];
@@ -116,8 +39,6 @@
                                             products.add(new Product(productName, storeName, descriptionOfProduct, quantityAvailable, price));
                                         }
 
-                                        System.out.println(products);
-
                                         String[] productOptions = new String[products.size()];
                                         for (int i = 0; i < products.size(); i++) {
                                             productOptions[i] = products.get(i).statisticsToString();
@@ -133,6 +54,7 @@
                                                 productOptions[0]
                                         );
 
+
                                         int selection = 0;
                                         Product selector = products.get(0);
                                         for (int k = 0; k < products.size(); k++) {
@@ -145,96 +67,22 @@
                                         }
 
                                         if (selectedProduct != null) {
-                                            JOptionPane.showMessageDialog(null, "You selected:\n" + selector.toString());
+                                            JOptionPane.showMessageDialog(null, "You exported:\n" + selector.toString());
 
                                             writer.write(Integer.toString(selection));
                                             writer.println();
                                             writer.flush();
-                                            System.out.println("sent selection");
 
-                                            JPanel panel = new JPanel(new GridLayout(5, 2));
+                                            System.out.println("Reached");
 
-                                            panel.add(new JLabel("New Product Name:"));
-                                            JTextField productNameField = new JTextField();
-                                            panel.add(productNameField);
-
-                                            panel.add(new JLabel("New Store Name:"));
-                                            JTextField storeNameField = new JTextField();
-                                            panel.add(storeNameField);
-
-                                            panel.add(new JLabel("New Description:"));
-                                            JTextField descriptionField = new JTextField();
-                                            panel.add(descriptionField);
-
-                                            panel.add(new JLabel("New Quantity Selling:"));
-                                            JTextField quantityField = new JTextField();
-                                            panel.add(quantityField);
-
-                                            panel.add(new JLabel("New Price:"));
-                                            JTextField priceField = new JTextField();
-                                            panel.add(priceField);
-
-                                            int result = JOptionPane.showConfirmDialog(null, panel, "Enter Product Details",
-                                                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-                                            if (result == JOptionPane.OK_OPTION) {
-                                                try {
-                                                    String newName = productNameField.getText();
-                                                    String newStore = storeNameField.getText();
-                                                    String newDescription = descriptionField.getText();
-                                                    int newQuantity = Integer.parseInt(quantityField.getText());
-                                                    double newPrice = Double.parseDouble(priceField.getText());
-
-                                                    if (newQuantity <= 0 || newPrice <= 0) {
-                                                        JOptionPane.showMessageDialog(null, "New Quantity and Price must be greater than zero", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                                                        writer.write("wrong");
-                                                        writer.println();
-                                                        writer.flush();
-
-
-                                                    } else {
-
-                                                        writer.println(newName);
-                                                        writer.flush();
-                                                        writer.println(newStore);
-                                                        writer.flush();
-                                                        writer.println(newDescription);
-                                                        writer.flush();
-
-
-                                                        writer.println(newQuantity);
-                                                        writer.flush();
-                                                        writer.println(newPrice);
-                                                        writer.flush();
-
-                                                        String storeNameExists = reader.readLine();
-
-                                                        if (storeNameExists.equals("existingStoreName")) {
-                                                            JOptionPane.showMessageDialog(null, "Store name already exists! Please enter a different store name", "Not edited", JOptionPane.INFORMATION_MESSAGE);
-                                                        } else if (storeNameExists.equals("noPreviousStoreName")) {
-                                                            JOptionPane.showMessageDialog(null, "Your product has been edited!", "Successfully Edited", JOptionPane.INFORMATION_MESSAGE);
-                                                        }
-                                                    }
-                                                } catch (NumberFormatException ex) {
-                                                    JOptionPane.showMessageDialog(null, "Please enter valid numeric values for Quantity and Price", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                                                    writer.write("wrong");
-                                                    writer.println();
-                                                    writer.flush();
-                                                } catch (IOException ex) {
-                                                    ex.printStackTrace();
-                                                }
-
-                                            } else if (result == JOptionPane.CLOSED_OPTION || result == JOptionPane.CANCEL_OPTION) {
-                                                writer.write("PanelClosed");
-                                                writer.println();
-                                                writer.flush();
-                                            }
                                         } else {
                                             writer.write("PanelClosed");
                                             writer.println();
                                             writer.flush();
-                                            System.out.println("Closed");
                                         }
+
+
                                     }
+
                                 }
                             });
