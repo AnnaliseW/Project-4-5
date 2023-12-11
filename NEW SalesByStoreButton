@@ -44,11 +44,11 @@ salesByStoreButton.addActionListener(new ActionListener() {
                                         }
                                         endResult.add(complete);
                                     }
-                                    String[] endResultArray = new String[endResult.size()];
-                                    for(int i = 0; i < endResult.size(); i++){
-                                        endResultArray[i] = endResult.get(i).substring(0, endResult.get(i).length() - 1);
+                                    if(endResult != null){
+                                        String[] endResultArray = new String[endResult.size()];
+                                        for(int i = 0; i < endResult.size(); i++){
+                                            endResultArray[i] = endResult.get(i).substring(0, endResult.get(i).length() - 1);
                                     }
-                                    if(endResultArray != null){
                                         JOptionPane.showInputDialog(null, "Sales by story", "Seller sales by store",
                                                 JOptionPane.INFORMATION_MESSAGE, null, endResultArray, endResultArray[0]);
                                     }else{
