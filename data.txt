@@ -1,14 +1,13 @@
-jorge,jorge1234,1234,false;
-wang,wang1234,1234,true;eraser,purdue,it is a small eraser,10,2.00@@pencils,walmart,a pack of 10 pencils,20,5.00@@pens,purdue,customized purdue pens,30,7.00@@sweatshirt,purdue,limited purdue sweatshirts,40,60.00@@
-priyanka,priyanka1234,1234,false;
-taylor,taylor1234,1234,true;
-swamy,swamy1234,1234,true;notebook,local market,college rule notebook,43,10.0@@
-aviana,aviana1234,1234,false;
-ishaan,ishaan1234,1234,true;white out,ishaan storefront,small whiteout,15,3.50@@
-vinay,vinay1234,1234,true;pencil sharpener,vinay store,cool fancy sharpener,10,2.50@@
-joseph,joseph1234,1234,true;
-nihal,nihal1234,1234,false;
-test,test,test,true;
-joie,joie1234,1234,true;
 nina,nina1234,1234,false;
+jorge b,jorge1234,1234,false;
+aviana,aviana1234,1234,false;
+priyanka,priyanka1234,1234,false;
+new name,wang1234,1234,true;pencil,annalise store,number 2 pencils,8,2.0@@white out,purdue,small 4 oz white out,80,5.0@@white out,purdue,small 4 oz white out,80,5.0@@
+taylor,taylor1234,1234,true;colored pencils,crayola,12 different colors,69,4.0@@
+swamy,swamy1234,1234,true;
+vinay,vinay1234,1234,true;pink erasers,vinay store,pack of 10 pink erasers,37,4.0@@notebooks,goodwill,college rule notebook,48,5.0@@
+joseph,joseph1234,1234,true;backpack,northface,northface backpack,60,100.0@@
+nihal,nihal1234,1234,false;
+joie,joie1234,1234,true;
 anu,anu1234,1234,false;
+mike,mike1234,1234,true;
