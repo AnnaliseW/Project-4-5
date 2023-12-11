@@ -1,3 +1,10 @@
+/**
+ * ShoppingCartProduct class that represents a product in shopping cart with statistics used in other classes
+ * Purdue University -- CS18000 -- Fall 2023 -- Project 5 -- ShoppingCartProduct
+ *
+ * @author Annalise Wang, Joseph Hsin, Aviana Franco, Taylor Kamel Purdue CS
+ * @version Dec 11, 2023
+ */
 public class ShoppingCartProduct {
 
     public String productName;
