@@ -1,9 +1,15 @@
-import com.sun.source.tree.IfTree;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Methods class with methods for saving, creating, or processing used in other classes
+ * <p>
+ * Purdue University -- CS18000 -- Fall 2023 -- Project 5 -- Methods
+ *
+ * @author Annalise Wang, Joseph Hsin, Aviana Franco, Taylor Kamel Purdue CS
+ * @version Dec 11, 2023
+ */
 
 public class Methods {
 
@@ -99,82 +105,6 @@ public class Methods {
         return allStoreNames;
 
     }
-    ///must check in market if storenames is empty there not listi
-    // ng any products
-
-    public String viewShoppingCarts(String storeNames) {
-        File dataFile = new File("data.txt");
-        ArrayList<String> allUserData = new ArrayList<>();
-        String totalMessage = "";
-        int customerCount = 0;
-
-        try {
-            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
-            String line;
-            while ((line = bfr.readLine()) != null) {
-                allUserData.add(line);
-            }
-            bfr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (int i = 0; i < allUserData.size(); i++) {
-            //splitting to find which ones are shopping carts
-            String[] customerUsers = allUserData.get(i).split(",");
-            if (customerUsers[3].startsWith("false")) {
-                String[] shoppingCart = allUserData.get(i).split(";");
-                if (shoppingCart.length == 1) {
-                    //no shopping cart for customer
-                } else {
-
-                    //more than one item in shopping cart
-
-                    String[] productsInCart = shoppingCart[1].split("@@");
-                    if (productsInCart.length > 1) {
-                        customerCount++;
-                        for (int k = 0; k < productsInCart.length; k++) {
-                            String[] eachProduct = productsInCart[k].split(",");
-                            if (storeNames.contains(eachProduct[1])) {
-
-                                System.out.printf("\nCustomer " + customerCount + "\nProduct Name: " + eachProduct[0] + "\nStore Name: "
-                                        + eachProduct[1] + "\nDescription: " + eachProduct[2] + "\nQuantity Available: "
-                                        + eachProduct[3] + "\nPrice : $%.2f" + "\nQuantity Buying in Cart: " + eachProduct[5].replace("@@", "")
-                                        + "\n", Double.parseDouble(eachProduct[4]));
-
-
-                            }
-                        }
-
-
-                    } else {
-                        customerCount++;
-                        String[] eachProduct = shoppingCart[1].split(",");
-                        if (storeNames.contains(eachProduct[1])) {
-                            totalMessage += String.format("\nCustomer " + customerCount + "\nProduct Name: " + eachProduct[0] + "\nStore Name: "
-                                    + eachProduct[1] + "\nDescription: " + eachProduct[2] + "\nQuantity Available: "
-                                    + eachProduct[3] + "\nPrice : $%.2f" + "\nQuantity Buying in Cart: " + eachProduct[5].replace("@@", "")
-                                    + "\n", Double.parseDouble(eachProduct[4]));
-
-
-                        }
-
-
-                    }
-
-                }
-
-
-            } else {
-                // not a customer
-            }
-        }
-        if (totalMessage.isEmpty()) {
-            return "No customers have any items in cart!";
-        } else {
-            return totalMessage;
-        }
-
-    }
 
 
     public void purchaseProduct(Product product, int quantityPurchased) {
@@ -182,8 +112,6 @@ public class Methods {
             if (productsOnMarket.get(i).getStoreName().equals(product.getStoreName()) &&
                     productsOnMarket.get(i).getProductName().equals(product.getProductName())) {
                 if (productsOnMarket.get(i).getQuantityAvailable() == 0) {
-                    System.out.println("This item is sold out!\n");
-
                 } else {
                     productsOnMarket.get(i).setQuantityAvailable(productsOnMarket.get(i).getQuantityAvailable()
                             - quantityPurchased);
@@ -439,8 +367,6 @@ public class Methods {
 
 
         try {
-            System.out.println("saveShoppingCartArrayListToFile test");
-            allProducts.forEach(System.out::println);
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
             pw.print(firstPart);
             for (int i = 0; i < allProducts.size(); i++) {
@@ -496,7 +422,6 @@ public class Methods {
                         }
                     }
                     allUserData.set(i, shoppingCarts[0] + ";" + shoppingCarts[1]);
-                    System.out.println("test updated line" + allUserData.get(i));
                 }
 
             }
@@ -504,10 +429,10 @@ public class Methods {
         }
         try {
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
-            System.out.println("testing user data update in data.txt");
+
             for (int i = 0; i < allUserData.size(); i++) {
                 pw.println(allUserData.get(i));
-                System.out.println(allUserData.get(i));
+
             }
 
             pw.flush();
@@ -522,14 +447,12 @@ public class Methods {
 
     public void saveDataFileWhenPurchased(ArrayList<Product> arrayList, Product updatedProduct) {
         File dataFile = new File("data.txt");
-        System.out.println(updatedProduct.getQuantityAvailable());
         // array list to reprint the file
         ArrayList<String> allUserData = new ArrayList<>();
 
         String storeName = updatedProduct.getStoreName();
         String productName = updatedProduct.getProductName();
         String quantity = String.valueOf(updatedProduct.getQuantityAvailable());
-        System.out.println("quantity test" + quantity);
         String price = String.valueOf(updatedProduct.getPrice());
 
         try {
@@ -547,13 +470,9 @@ public class Methods {
                     if (allUserData.get(i).contains("@@")) {
                         String[] separtedByProduct = afterSemiColon[1].split("@@");
                         for (int k = 0; k < separtedByProduct.length; k++) {
-                            System.out.println("testtest");
                             String[] findStoreName = separtedByProduct[k].split(",");
-                            System.out.println("store Name " + storeName + "product name " + productName);
-                            System.out.println("store Name " + findStoreName[1] + "product name" + findStoreName[0]);
                             if (findStoreName[1].equals(storeName) && findStoreName[0].equals(productName)) {
                                 allUserData.set(i, allUserData.get(i).replace(findStoreName[3], quantity));
-                                System.out.println("Updated line: " + allUserData.get(i));
                             }
                         }
                     }
@@ -568,10 +487,9 @@ public class Methods {
 
         try {
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
-            System.out.println("testing user data update in data.txt");
             for (int i = 0; i < allUserData.size(); i++) {
                 pw.println(allUserData.get(i));
-                System.out.println(allUserData.get(i));
+
             }
 
             pw.flush();
@@ -629,8 +547,7 @@ public class Methods {
         // Update the line with new information
 
         try {
-            System.out.println("saveDataFileCart test");
-            allUserData.forEach(System.out::println);
+
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
             for (int i = 0; i < allUserData.size(); i++) {
                 pw.println(allUserData.get(i));
@@ -895,26 +812,22 @@ public class Methods {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int index = -1;
         for (int i = 0; i < historyData.size(); i++) {
             if (user.getEmail().equals(historyData.get(i).substring(0, historyData.get(i).indexOf(':')))) {
-                index = i;
-                if (index != -1) {
-                    historyData.set(index, historyData.get(index).substring(historyData.get(index).indexOf(':') + 1));
+                historyData.set(i, historyData.get(i).substring(historyData.get(i).indexOf(':') + 1));
+                String[] eachProduct = historyData.get(i).split("-");
+                String[] oneProduct;
+
+                for (int k = 0; k < eachProduct.length; k++) {
+                    oneProduct = eachProduct[k].split(",");
+                    customerHistory.add(new SoldProduct(oneProduct[0], oneProduct[1], oneProduct[2], Integer.parseInt(oneProduct[3]),
+                            Double.parseDouble(oneProduct[4]), Integer.parseInt(oneProduct[5])));
                 }
+
+
             }
         }
 
-        if (index != -1) {
-            String[] eachProduct = historyData.get(index).split("-");
-            String[] oneProduct;
-
-            for (int i = 0; i < eachProduct.length - 1; i++) {
-                oneProduct = eachProduct[i].split(",");
-                customerHistory.add(new SoldProduct(oneProduct[0], oneProduct[1], oneProduct[2], Integer.parseInt(oneProduct[3]),
-                        Double.parseDouble(oneProduct[4]), Integer.parseInt(oneProduct[5])));
-            }
-        }
         return customerHistory;
     }
 
