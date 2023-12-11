@@ -151,7 +151,7 @@ User has fields that represent a user in the marketplace system. Each user has p
 - setSeller: Sets the boolean indicating whether the user is a seller or a buyer.
 
 ### customerHistory.txt
-(Enter text here)
+Used to list a user's username and the products they bought.
 
 ### data.txt
 Used to store the user’s data when signing in. When signing in, it will be used to store the user’s name, email, password, and if the user is a seller or a buyer, all followed by a semicolon (;). The line will end there if the user is a buyer or a seller with no stores yet. If the user is a seller with a store, following the semicolon will be the seller’s product name, store name, product description, quantity of the product, and the price of the product, followed by two @ symbols (@@). If the user is a seller with multiple stores, after the two @ symbols, the format described about the seller with a store will be repeated.
