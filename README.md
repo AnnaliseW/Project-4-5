@@ -23,7 +23,7 @@ Aviana Franco - Submitted Presentation on Brightspace
 (Enter text here)
 
 ### ThreadedMarketPlaceServer
-This class represents a threaded server for the application. The server listens for incoming client connections and spawns a new thread to handle each client. The ClientHandler class processes client requests, distinguishing between sellers and buyers. Sellers can add, edit, delete, and export products, while buyers can see, buy, and import products. *ThreadedMarketPlaceServer* utilizes multithreading to handle multiple clients concurrently. 
+ThreadMarketPlaceServer represents a threaded server for the application. The server listens for incoming client connections and spawns a new thread to handle each client. The ClientHandler class processes client requests, distinguishing between sellers and buyers. Sellers can add, edit, delete, and export products, while buyers can see, buy, and import products. *ThreadedMarketPlaceServer* utilizes multithreading to handle multiple clients concurrently. 
 
 When the buyer clicks the "editProfileButton," the server reads the new profile information from the client. When the buyer clicks the “buyProductSearch” button, the server reads the amount of the product to be purchased. It checks if the amount is valid and proceeds with the purchase. When the buyer clicks the "addToCart" button, the server reads the quantity to be added to the cart from the client. It checks if the quantity is valid and proceeds with adding the product to the cart. The server handles the search request from the buyer by reading the searched word from the client. After the buyer selects a product from the search results, the server opens a new panel on the client side to display insights about the product.
 
