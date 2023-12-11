@@ -44,7 +44,59 @@ public class Methods {
         return searchedProducts;
     }
 
+    public ArrayList<String> findingStoreNamesForSellerList(User user) {
 
+        File dataFile = new File("data.txt");
+        ArrayList<String> allUserData = new ArrayList<>();
+        ArrayList<String> allStoreNames = new ArrayList<>();
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+            String sellerEmail = user.getEmail();
+
+            for (int i = 0; i < allUserData.size(); i++) {
+                String[] findUserEmail = allUserData.get(i).split(",");
+                if (findUserEmail[1].equals(sellerEmail)) {
+                    //finding line of user
+                    String[] findProducts = allUserData.get(i).split(";");
+                    if (findProducts.length == 1) {
+                        // no products selling
+                    } else {
+                        String[] eachProduct = findProducts[1].split("@@");
+                        String findingIfStoreNameAlreadyExists = "";
+                        String oneStoreName = null;
+                        for (int k = 0; k < eachProduct.length; k++) {
+                            //iterating through every product
+                            String[] findingStoreName = eachProduct[k].split(",");
+                            oneStoreName = "";
+                            if (!findingIfStoreNameAlreadyExists.contains(findingStoreName[1])) {
+                                oneStoreName = findingStoreName[1];
+                                findingIfStoreNameAlreadyExists += findingStoreName[1];
+                                //not already in list
+                                allStoreNames.add(oneStoreName);
+                            }
+
+                        }
+
+                    }
+
+                } else {
+                    // not the user
+                }
+
+            }
+
+            bfr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return allStoreNames;
+
+    }
+    
     public String findingStoreNamesForSeller(User user) {
 
         File dataFile = new File("data.txt");
