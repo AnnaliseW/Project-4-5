@@ -24,7 +24,7 @@ Aviana Franco - Submitted Presentation on Brightspace
 (Enter text here)
 
 ### Methods
-(Enter text here)
+Methods contains various methods for interacting with different aspects of the project. Methods like *saveArrayListToFile* and *saveShoppingCartArrayListToFile* are responsible for updating information in the data file. Sorting methods like *sortByMinPrice* and *sortByMaxPrice* sort product lists based on different criteria listed. The *makeProductArrayList* method reads product information from a file and creates an ArrayList of ‘Product’ objects. Methods like *createShoppingCartArray* and *savaDataFileCart* are used for creating and updating shopping cart arrays, which can track buyer purchases and items in buyers’ shopping carts. The method *generateMyProducts* creates a list of products sold by a seller. The methods *saveDataFileWhenNewProductAddedUserAccount, replaceProductInDataFile, removeProductFromDataFile,* and *savaDataFileWithNewProductList* are used to add, replace, remove, and save products to the user’s account in the “data.txt” file. Methods like *makeCustomerHistory* and *saveCustomerHistory* are used to create and save customer purchase history to the “customerHistory.txt” file. Finally, the *deleteForProductFile* method is used to delete a product from the “productArrayList.txt” file.
 
 ### Product
 Product has fields to store information about a product in the marketplace, such as its name, the store selling it, a description, the quantity available, the price, and the quantity sold. It also includes methods to access and modify these fields.
