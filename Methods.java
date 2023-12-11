@@ -1,3 +1,5 @@
+import com.sun.source.tree.IfTree;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,59 +46,7 @@ public class Methods {
         return searchedProducts;
     }
 
-    public ArrayList<String> findingStoreNamesForSellerList(User user) {
 
-        File dataFile = new File("data.txt");
-        ArrayList<String> allUserData = new ArrayList<>();
-        ArrayList<String> allStoreNames = new ArrayList<>();
-        try {
-            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
-            String line;
-            while ((line = bfr.readLine()) != null) {
-                allUserData.add(line);
-            }
-            String sellerEmail = user.getEmail();
-
-            for (int i = 0; i < allUserData.size(); i++) {
-                String[] findUserEmail = allUserData.get(i).split(",");
-                if (findUserEmail[1].equals(sellerEmail)) {
-                    //finding line of user
-                    String[] findProducts = allUserData.get(i).split(";");
-                    if (findProducts.length == 1) {
-                        // no products selling
-                    } else {
-                        String[] eachProduct = findProducts[1].split("@@");
-                        String findingIfStoreNameAlreadyExists = "";
-                        String oneStoreName = null;
-                        for (int k = 0; k < eachProduct.length; k++) {
-                            //iterating through every product
-                            String[] findingStoreName = eachProduct[k].split(",");
-                            oneStoreName = "";
-                            if (!findingIfStoreNameAlreadyExists.contains(findingStoreName[1])) {
-                                oneStoreName = findingStoreName[1];
-                                findingIfStoreNameAlreadyExists += findingStoreName[1];
-                                //not already in list
-                                allStoreNames.add(oneStoreName);
-                            }
-
-                        }
-
-                    }
-
-                } else {
-                    // not the user
-                }
-
-            }
-
-            bfr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return allStoreNames;
-
-    }
-    
     public String findingStoreNamesForSeller(User user) {
 
         File dataFile = new File("data.txt");
@@ -246,7 +196,7 @@ public class Methods {
     public void removeAccount(User user) {
         File dataFile = new File("data.txt");
         ArrayList<String> allUserData = new ArrayList<>();
-        String currentEmail = user.getPassword();
+        String currentEmail = user.getEmail();
         try {
             BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
             String line;
@@ -276,6 +226,7 @@ public class Methods {
             e.printStackTrace();
         }
     }
+
 
     public void changePassword(String newPassword, User user) {
         File dataFile = new File("data.txt");
@@ -505,6 +456,67 @@ public class Methods {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateAllShoppingCartsWhenPurchase(Product updatedProduct) {
+        File dataFile = new File("data.txt");
+        ArrayList<String> allUserData = new ArrayList<>();
+
+        String price = String.valueOf(updatedProduct.getQuantityAvailable());
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+            bfr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < allUserData.size(); i++) {
+            String[] checkIfSeller = allUserData.get(i).split(",");
+            if (checkIfSeller[3].startsWith("false")) {
+                // it can have a shopping cart
+                String[] shoppingCarts = allUserData.get(i).split(";");
+                if (shoppingCarts.length != 1) {
+                    // there are shopping carts
+                    String[] eachCart = shoppingCarts[1].split("@@");
+                    for (int k = 0; k < eachCart.length; k++) {
+                        String[] findProduct = eachCart[k].split(",");
+                        // format pencil,wang store,mechanical pencils,5,2.0,1@@
+                        if (findProduct[0].equals(updatedProduct.getProductName()) && findProduct[1].equals(updatedProduct.getStoreName())) {
+                            // shopping cart is associated product
+                            String updatedLine = updatedProduct.getProductName() + "," + updatedProduct.getStoreName() + "," + updatedProduct.getDescriptionOfProduct()
+                                    + "," + updatedProduct.getQuantityAvailable() + "," + updatedProduct.getPrice() + "," + findProduct[5];
+
+                            shoppingCarts[1] = shoppingCarts[1].replace(eachCart[k], updatedLine);
+
+
+                        }
+                    }
+                    allUserData.set(i, shoppingCarts[0] + ";" + shoppingCarts[1]);
+                    System.out.println("test updated line" + allUserData.get(i));
+                }
+
+            }
+
+        }
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, false)));
+            System.out.println("testing user data update in data.txt");
+            for (int i = 0; i < allUserData.size(); i++) {
+                pw.println(allUserData.get(i));
+                System.out.println(allUserData.get(i));
+            }
+
+            pw.flush();
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -943,7 +955,7 @@ public class Methods {
         try {
             pw = new PrintWriter("customerHistory.txt");
             for (int i = 0; i < data.size(); i++) {
-                pw.println(data.get(i) + ";");
+                pw.println(data.get(i));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -1210,6 +1222,182 @@ public class Methods {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteShoppingCartProduct(Product deletedProduct) {
+        File dataFile = new File("data.txt");
+        ArrayList<String> allUserData = new ArrayList<>();
+
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> newShoppingCart = new ArrayList<>();
+
+        for (int i = 0; i < allUserData.size(); i++) {
+            String[] ifCustomer = allUserData.get(i).split(",");
+            if (ifCustomer[3].startsWith("false")) {
+                String[] products = allUserData.get(i).split(";");
+                if (products.length != 1) {
+                    // they have products
+                    String[] shoppingCartProducts = products[1].split("@@");
+                    for (int k = 0; k < shoppingCartProducts.length; k++) {
+                        String[] findNames = shoppingCartProducts[k].split(",");
+                        //format pencils,walmart,a pack of 10 pencils,18,5.0,1@@
+                        if (findNames[0].equals(deletedProduct.getProductName()) &&
+                                findNames[1].equals(deletedProduct.getStoreName())) {
+                            // not added to array list
+                        } else {
+                            newShoppingCart.add(shoppingCartProducts[k]);
+                        }
+                    }
+                    String savedLine = "";
+                    for (int k = 0; k < newShoppingCart.size(); k++) {
+                        savedLine += newShoppingCart.get(k) + "@@";
+                    }
+
+                    allUserData.set(i, products[0] + ";" + savedLine);
+                }
+
+            }
+        }
+
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter("data.txt");
+            for (int i = 0; i < allUserData.size(); i++) {
+                pw.println(allUserData.get(i));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pw.close();
+    }
+
+
+    public void modifyShoppingCartProduct(Product oldEditProduct, Product newProductEdit) {
+        File dataFile = new File("data.txt");
+        ArrayList<String> allUserData = new ArrayList<>();
+
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> newShoppingCart = new ArrayList<>();
+
+
+        for (int i = 0; i < allUserData.size(); i++) {
+            String[] ifCustomer = allUserData.get(i).split(",");
+            if (ifCustomer[3].startsWith("false")) {
+                String[] products = allUserData.get(i).split(";");
+                if (products.length != 1) {
+                    // they have products
+                    String[] shoppingCartProducts = products[1].split("@@");
+                    for (int k = 0; k < shoppingCartProducts.length; k++) {
+                        String[] findNames = shoppingCartProducts[k].split(",");
+                        String newEditedProduct;
+                        //format pencils,walmart,a pack of 10 pencils,18,5.0,1@@
+                        if (findNames[0].equals(oldEditProduct.getProductName()) &&
+                                findNames[1].equals(oldEditProduct.getStoreName())) {
+                            // product that needs to be changed
+                            newEditedProduct = newProductEdit.getProductName() + "," + newProductEdit.getStoreName() + "," +
+                                    newProductEdit.getDescriptionOfProduct() + "," + newProductEdit.getQuantityAvailable() + "," +
+                                    newProductEdit.getPrice() + "," + findNames[5];
+                            newShoppingCart.add(newEditedProduct);
+
+                        } else {
+                            newShoppingCart.add(shoppingCartProducts[k]);
+                        }
+
+                    }
+                    String savedLine = "";
+                    for (int k = 0; k < newShoppingCart.size(); k++) {
+                        savedLine += newShoppingCart.get(k) + "@@";
+                    }
+
+                    allUserData.set(i, products[0] + ";" + savedLine);
+                }
+
+            }
+        }
+
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter("data.txt");
+            for (int i = 0; i < allUserData.size(); i++) {
+                pw.println(allUserData.get(i));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pw.close();
+    }
+
+    public ArrayList<String> findingStoreNamesForSellerList(User user) {
+
+        File dataFile = new File("data.txt");
+        ArrayList<String> allUserData = new ArrayList<>();
+        ArrayList<String> allStoreNames = new ArrayList<>();
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader(dataFile));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                allUserData.add(line);
+            }
+            String sellerEmail = user.getEmail();
+
+            for (int i = 0; i < allUserData.size(); i++) {
+                String[] findUserEmail = allUserData.get(i).split(",");
+                if (findUserEmail[1].equals(sellerEmail)) {
+                    //finding line of user
+                    String[] findProducts = allUserData.get(i).split(";");
+                    if (findProducts.length == 1) {
+                        // no products selling
+                    } else {
+                        String[] eachProduct = findProducts[1].split("@@");
+                        String findingIfStoreNameAlreadyExists = "";
+                        String oneStoreName = null;
+                        for (int k = 0; k < eachProduct.length; k++) {
+                            //iterating through every product
+                            String[] findingStoreName = eachProduct[k].split(",");
+                            oneStoreName = "";
+                            if (!findingIfStoreNameAlreadyExists.contains(findingStoreName[1])) {
+                                oneStoreName = findingStoreName[1];
+                                findingIfStoreNameAlreadyExists += findingStoreName[1];
+                                //not already in list
+                                allStoreNames.add(oneStoreName);
+                            }
+
+                        }
+
+                    }
+
+                } else {
+                    // not the user
+                }
+
+            }
+
+            bfr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return allStoreNames;
+
     }
 
 
