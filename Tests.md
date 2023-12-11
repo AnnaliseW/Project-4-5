@@ -262,3 +262,25 @@ Steps:
 Expected Result: Error message will be displayed, and sell button can be pressed again.
 
 Test Result: Passed.
+
+### Test 19: Viewing seller’s sales grouped by store
+
+Steps:
+
+1. User logs in as seller.
+2. User clicks sales by store.
+
+Expected Result: Shows a dropdown menu, each starts with the names of the stores that are owned by this specific seller, then it lists the product’s name, who purchased it, and how much revenue was earned by this purchase.
+
+Test Result: Passed.
+
+### Test 20: Viewing customer carts on Seller side
+
+Steps:
+
+1. User logs in as seller.
+2. User clicks view customer carts.
+
+Expected Result: Should list a dropdown containing any product which is contained by the shopping cart with the user’s email listed before the product’s information.
+
+Test Result: Passed.
