@@ -1,4 +1,5 @@
-sellButton.addActionListener(new ActionListener() {
+// implement buttons here
+                            sellButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     writer.write("sellButton");
                                     writer.println();
