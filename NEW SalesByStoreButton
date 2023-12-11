@@ -80,3 +80,11 @@ else if (button.equals("salesByStoreButton")) {
                                 writer.println();
                                 writer.flush();
                             }
+
+
+
+jorge1234:sweatshirt,purdue,limited purdue sweatshirts,40,60.0,1-eraser,purdue,it is a small eraser,10,2.0,1-pencils,walmart,a pack of 10 pencils,20,5.0,1-pencils,walmart,a pack of 10 pencils,19,5.0,1-
+priyanka1234:eraser,purdue,it is a small eraser,7,2.0,2-
+nina1234:pencils,walmart,a pack of 10 pencils,18,5.0,1-
+aviana1234:pencils,walmart,a pack of 10 pencils,17,5.0,1-
+
