@@ -1,4 +1,12 @@
-
+/**
+ * User class that represents an instance of a user with their specific parameters
+ * (name, email, password, seller or buyer)
+ * <p>
+ * Purdue University -- CS18000 -- Fall 2023 -- Project 5 -- User
+ *
+ * @author Annalise Wang, Joseph Hsin, Aviana Franco, Taylor Kamel Purdue CS
+ * @version Dec 11, 2023
+ */
 public class User {
     private String name;
     private String email;
