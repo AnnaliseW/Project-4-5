@@ -13,7 +13,7 @@ salesByStoreButton.addActionListener(new ActionListener() {
                                     }
                                     if(endResult != null){
                                         String[] endResultArray = endResult.split("@");
-                                        JOptionPane.showInputDialog(null, "Sales by story", "Seller sales by store",
+                                        JOptionPane.showInputDialog(null, "Sales by store", "Seller sales by store",
                                                 JOptionPane.INFORMATION_MESSAGE, null, endResultArray, endResultArray[0]);
                                     }else{
                                         JOptionPane.showMessageDialog(null, "No sales!", "Seller sales by store",
@@ -61,17 +61,17 @@ else if (button.equals("salesByStoreButton")) {
                                             if (eachProduct[1].equals(storeNames.get(i))) {
                                                 revenue = Double.parseDouble(eachProduct[4]) * Integer.parseInt(eachProduct[5]);
                                                 if (newResult) {
-                                                    complete = storeNames.get(i) + ": " + eachProduct[0] + " - " + email + " - " + revenue + ",";
+                                                    complete = storeNames.get(i) + ": Product: " + eachProduct[0] + " Buyer: " + email2 + " Revenue: " + revenue + ", ";
                                                     newResult = false;
                                                 }else {
-                                                    complete += eachProduct[0] + " - " + email2 + " - " + revenue + ",";
+                                                    complete += "Product: " + eachProduct[0] + " Buyer: " + email2 + " Revenue: " + revenue + ", ";
                                                 }
                                             }
                                         }
                                     }
                                     endResult.add(complete);
                                 }
-                                
+
                                 String sendBack = "";
                                 for(int i = 0; i < endResult.size(); i++){
                                     sendBack += endResult.get(i) + "@";
