@@ -3,12 +3,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-/*
-If IntelliJ or platform says that "cannot run in parallel":
-1. Right click on client
-2. Select (two windows button) Edit "..."
-3. Select "allow Parallel Run"
+/**
+ * ThreadedMarketPlaceServer class that processes the client side of the marketplace
+ * Processing the buttons (seller and customer) along with sign in and create account
+ * If IntelliJ or platform says that "cannot run in parallel":
+ * 1. Right click on client
+ * 2. Select (two windows button) Edit "..."
+ * 3. Select "allow Parallel Run"
+ * <p>
+ * Purdue University -- CS18000 -- Fall 2023 -- Project 5 -- ThreadedMarketPlaceServer
+ *
+ * @author Annalise Wang, Joseph Hsin, Aviana Franco, Taylor Kamel Purdue CS
+ * @version Dec 11, 2023
  */
+
 
 public class ThreadedMarketPlaceServer {
 
@@ -40,7 +48,7 @@ public class ThreadedMarketPlaceServer {
 
                     String createOrSignIn = reader.readLine();
                     if (createOrSignIn.equals("processSignIn")) {
-                        System.out.println("signing in processing ");
+
                         //signing in created in client saved to file
 
 
@@ -160,10 +168,9 @@ public class ThreadedMarketPlaceServer {
 
                         String signInWorks = reader.readLine();
                         if (signInWorks.equals("notSignIn")) {
-                            System.out.println("does not sign in");
 
                         } else if (signInWorks.equals("signIn")) {
-                            System.out.println("sign in works");
+
 
                             //SEND SERVER USER INFO
 
@@ -196,7 +203,7 @@ public class ThreadedMarketPlaceServer {
 
 
                                     if (button.equals("viewCustomerCarts")) {
-                                        System.out.println("customer cart button clicked");
+
                                         String output = "";
 
                                         String allStoreNames = method.findingStoreNamesForSeller(userAccount);
@@ -244,8 +251,10 @@ public class ThreadedMarketPlaceServer {
 
                                                                 //pencils,walmart,a pack of 10 pencils,18,5.0,1@@
 
-                                                                output += "User Email: " + customerUsers[1] + ", Product Name: " + eachProduct[0] + ", Store Name: " + eachProduct[1] + ", Description: "
-                                                                        + eachProduct[2] + ", Quantity Available: " + eachProduct[3] + ", Price: $" + eachProduct[4] + ", Quantity Buying: " + eachProduct[5] + "@@";
+                                                                output += "User Email: " + customerUsers[1] +
+                                                                        ", Product Name: " + eachProduct[0] + ", Store Name: " + eachProduct[1] + ", Description: "
+                                                                        + eachProduct[2] + ", Quantity Available: " + eachProduct[3] + ", Price: $" +
+                                                                        eachProduct[4] + ", Quantity Buying: " + eachProduct[5] + "@@";
 
                                                             }
                                                         }
@@ -262,7 +271,7 @@ public class ThreadedMarketPlaceServer {
                                                 writer.flush();
                                                 // no items in a customers carts from stores/products
                                             } else {
-                                                System.out.println(output);
+
                                                 writer.write(output);
                                                 writer.println();
                                                 writer.flush();
@@ -272,7 +281,6 @@ public class ThreadedMarketPlaceServer {
 
                                     }
                                     if (button.equals("sellButton")) {
-                                        System.out.println("Sell pressed");
                                         String productToSell = reader.readLine();
 
                                         if (productToSell.equals("PanelClosed")) {
@@ -349,12 +357,13 @@ public class ThreadedMarketPlaceServer {
                                                     myProducts.add(sellThis);
                                                     //Products arraylist (all products on market)
                                                     Methods.productsOnMarket.add(sellThis);
-                                                    System.out.println("TEST OF ARRAY" + Methods.productsOnMarket);
+
                                                     try {
                                                         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("productArrayList.txt", true)));
 
-                                                            pw.print(sellThis.getProductName() + "," + sellThis.getStoreName() + "," + sellThis.getDescriptionOfProduct() + ","
-                                                            + sellThis.getQuantityAvailable() + "," + sellThis.getPrice() + "@@");
+                                                        pw.print(sellThis.getProductName() + "," + sellThis.getStoreName() +
+                                                                "," + sellThis.getDescriptionOfProduct() + ","
+                                                                + sellThis.getQuantityAvailable() + "," + sellThis.getPrice() + "@@");
 
                                                         pw.flush();
                                                         pw.close();
@@ -371,17 +380,14 @@ public class ThreadedMarketPlaceServer {
                                             }
                                         }
                                     } else if (button.equals("editButton")) {
-                                        System.out.println("edit button");
-                                        System.out.println(myProducts);
+
                                         if (myProducts.isEmpty()) {
-                                            System.out.println("Empty");
                                             writer.println("Empty");
                                             writer.println();
                                             writer.flush();
                                         } else {
                                             for (int i = 0; i < myProducts.size(); i++) {
                                                 writer.println(myProducts.get(i).statisticsToStringNoSpace());
-                                                System.out.println(myProducts.get(i).statisticsToStringNoSpace());
                                             }
                                             writer.println();
                                             writer.flush();
@@ -389,11 +395,11 @@ public class ThreadedMarketPlaceServer {
                                             String closeSelect = reader.readLine();
                                             if (closeSelect.equals("PanelClosed")) {
                                             } else {
-                                                System.out.println(closeSelect);
+
                                                 int selection = Integer.parseInt(closeSelect);
-                                                System.out.println("selected item #" + selection);
+
                                                 Product oldSelected = myProducts.get(selection);
-                                                System.out.println("selected " + oldSelected.statisticsToString());
+
 
                                                 String newProductName = reader.readLine();
 
@@ -464,27 +470,13 @@ public class ThreadedMarketPlaceServer {
                                                             Methods.productsOnMarket = method.makeProductArrayList();
                                                             int indexSelectionMarket = Methods.productsOnMarket.indexOf(oldSelected);
 
-                                                            for (Product product : Methods.productsOnMarket) {
-                                                                System.out.println(product.statisticsToStringNoSpace());
-                                                            }
-                                                            System.out.println();
-                                                            System.out.println("Product I want to change in myproducts");
-                                                            System.out.println(oldSelected.statisticsToStringNoSpace());
-                                                            System.out.println();
 
-                                                            System.out.println("New Product deets");
-                                                            System.out.println(newProduct.statisticsToStringNoSpace());
-                                                            System.out.println();
+
+
 
                                                             for (Product product : myProducts) {
                                                                 if (product.statisticsToStringNoSpace().equals(oldSelected.statisticsToStringNoSpace())) {
-                                                                    System.out.println("I found the product I want to change in my products");
-                                                                    System.out.println(product.statisticsToStringNoSpace());
-                                                                    System.out.println("Here is where i chage it");
                                                                     myProducts.set(myProducts.indexOf(product), newProduct);
-                                                                    System.out.println("Changed!");
-                                                                    System.out.println("Changed product in my products:");
-                                                                    System.out.println(myProducts.get(myProducts.indexOf(newProduct)).statisticsToStringNoSpace());
                                                                     method.saveDataFileWithNewProductList(userAccount, myProducts);
                                                                     break;
                                                                 }
@@ -492,13 +484,7 @@ public class ThreadedMarketPlaceServer {
 
                                                             for (Product product : Methods.productsOnMarket) {
                                                                 if (product.statisticsToStringNoSpace().equals(oldSelected.statisticsToStringNoSpace())) {
-                                                                    System.out.println("I found the product I want to change in the marketplace");
-                                                                    System.out.println(product.statisticsToStringNoSpace());
-                                                                    System.out.println("Here is where i chage it");
                                                                     Methods.productsOnMarket.set(Methods.productsOnMarket.indexOf(product), newProduct);
-                                                                    System.out.println("Changed!");
-                                                                    System.out.println("Changed product in marketplace:");
-                                                                    System.out.println(Methods.productsOnMarket.get(Methods.productsOnMarket.indexOf(newProduct)).statisticsToStringNoSpace());
                                                                     method.saveProductFile(Methods.productsOnMarket);
                                                                     break;
                                                                 }
@@ -511,10 +497,8 @@ public class ThreadedMarketPlaceServer {
                                             }
                                         }
                                     } else if (button.equals("deleteButton")) {
-                                        System.out.println("delete button");
 
                                         if (myProducts.isEmpty()) {
-                                            System.out.println("Empty");
                                             writer.println("Empty");
                                             writer.println();
                                             writer.flush();
@@ -532,9 +516,7 @@ public class ThreadedMarketPlaceServer {
 
                                         } else {
                                             int selection = Integer.parseInt(closeSelect);
-                                            System.out.println("selected item #" + selection);
                                             Product itemToDelete = myProducts.get(selection);
-                                            System.out.println("selected " + itemToDelete.statisticsToString());
 
 
                                             //method to delete item from shopping carts in data.txt
@@ -543,15 +525,11 @@ public class ThreadedMarketPlaceServer {
 
                                             myProducts.remove(itemToDelete);
                                             method.saveDataFileWithNewProductList(userAccount, myProducts);
-                                            System.out.println("Reached");
+
 
 
                                             for (Product p : Methods.productsOnMarket) {
-                                                System.out.println(p.statisticsToStringNoSpace());
                                                 if (p.statisticsToStringNoSpace().equals(itemToDelete.statisticsToStringNoSpace())) {
-                                                    System.out.println("I found the product I want to remove in the marketplace");
-                                                    System.out.println(p.statisticsToStringNoSpace());
-                                                    System.out.println("Here is where i delete it");
 
                                                     //remove from product data file
 
@@ -559,27 +537,21 @@ public class ThreadedMarketPlaceServer {
 
 
                                                     Methods.productsOnMarket.remove(itemToDelete);
-                                                    System.out.println("Deleted!");
-                                                    System.out.println("This should be -1:");
-                                                    System.out.println(Methods.productsOnMarket.indexOf(itemToDelete));
                                                     break;
                                                 }
                                             }
 
 
-                                            System.out.println("Reached");
 
 
                                         }
 
                                     } else if (button.equals("importButton")) {
-                                        System.out.println("import pressed");
                                         String closeSelect = reader.readLine();
                                         if (closeSelect.equals("PanelClosed")) {
 
                                         } else {
                                             String everything = closeSelect;
-                                            System.out.println(everything);
 
                                             String[] products = everything.split("@@");
 
@@ -604,10 +576,8 @@ public class ThreadedMarketPlaceServer {
                                             }
                                         }
                                     } else if (button.equals("exportButton")) {
-                                        System.out.println("export button");
 
                                         if (myProducts.isEmpty()) {
-                                            System.out.println("Empty");
                                             writer.println("Empty");
                                             writer.println();
                                             writer.flush();
@@ -624,9 +594,7 @@ public class ThreadedMarketPlaceServer {
 
                                         } else {
                                             int selection = Integer.parseInt(closeSelect);
-                                            System.out.println("selected item #" + selection);
                                             Product itemToExport = myProducts.get(selection);
-                                            System.out.println("selected " + itemToExport.statisticsToString());
 
                                             String fileName = userAccount.getEmail() + "Exports.txt";
                                             try (FileWriter writerForFile = new FileWriter(fileName)) {
@@ -637,41 +605,35 @@ public class ThreadedMarketPlaceServer {
 
                                             myProducts.remove(itemToExport);
                                             method.saveDataFileWithNewProductList(userAccount, myProducts);
-                                            System.out.println("Reached");
+
 
                                             for (Product p : Methods.productsOnMarket) {
-                                                System.out.println(p.statisticsToStringNoSpace());
                                                 if (p.statisticsToStringNoSpace().equals(itemToExport.statisticsToStringNoSpace())) {
-                                                    System.out.println("I found the product I want to remove in the marketplace");
-                                                    System.out.println(p.statisticsToStringNoSpace());
-                                                    System.out.println("Here is where i delete it");
+
 
                                                     //remove from product data file
 
                                                     method.deleteForProductFile(itemToExport);
 
                                                     Methods.productsOnMarket.remove(itemToExport);
-                                                    System.out.println("Deleted!");
-                                                    System.out.println("This should be -1:");
-                                                    System.out.println(Methods.productsOnMarket.indexOf(itemToExport));
+
                                                     break;
                                                 }
                                             }
 
-                                            System.out.println("Reached");
 
                                         }
 
                                     } else if (button.equals("salesByStoreButton")) {
                                         //TODO: salesbystore
                                         ArrayList<String> customerHistory = new ArrayList<>();
-                                        try{
+                                        try {
                                             String line = "";
                                             BufferedReader bfr = new BufferedReader(new FileReader("customerHistory.txt"));
-                                            while((line = bfr.readLine()) != null){
+                                            while ((line = bfr.readLine()) != null) {
                                                 customerHistory.add(line);
                                             }
-                                        }catch(IOException f){
+                                        } catch (IOException f) {
                                             f.printStackTrace();
                                         }
                                         Methods methods = new Methods();
@@ -683,9 +645,9 @@ public class ThreadedMarketPlaceServer {
                                         String[] eachProduct = null;
                                         String[] eachProductFull = null;
                                         double revenue;
-                                        for(int i = 0; i < storeNames.size(); i++){
+                                        for (int i = 0; i < storeNames.size(); i++) {
                                             revenue = 0;
-                                            for(int x = 0; x < customerHistory.size(); x++) {
+                                            for (int x = 0; x < customerHistory.size(); x++) {
                                                 temp = customerHistory.get(x);
                                                 email2 = temp.substring(0, temp.indexOf(":"));
                                                 info2 = temp.substring(temp.indexOf(":") + 1);
@@ -694,14 +656,15 @@ public class ThreadedMarketPlaceServer {
                                                     eachProduct = eachProductFull[z].split(",");
                                                     if (eachProduct[1].equals(storeNames.get(i))) {
                                                         revenue = Double.parseDouble(eachProduct[4]) * Integer.parseInt(eachProduct[5]);
-                                                        endResult.add(storeNames.get(i) + ": Product: " + eachProduct[0] + " Buyer: " + email2 + " Revenue: " + revenue + ", ");
+                                                        endResult.add(storeNames.get(i) + ": Product: " + eachProduct[0] +
+                                                                " Buyer: " + email2 + " Revenue: " + revenue + ", ");
                                                     }
                                                 }
                                             }
                                         }
 
                                         String sendBack = "";
-                                        for(int i = 0; i < endResult.size(); i++){
+                                        for (int i = 0; i < endResult.size(); i++) {
                                             sendBack += endResult.get(i) + "@";
                                         }
                                         writer.write(sendBack);
@@ -709,7 +672,6 @@ public class ThreadedMarketPlaceServer {
                                         writer.flush();
                                     }
                                     if (button.equals("editProfileButton")) {
-                                        System.out.println("edit profile enter");
                                         String profileInfo = reader.readLine();
 
                                         if (profileInfo.equals("null")) {
@@ -735,12 +697,10 @@ public class ThreadedMarketPlaceServer {
                                             if (!newPassword.equals(userAccount.getPassword())) {
                                                 userAccount.setPassword(newPassword);
                                             }
-                                            System.out.println("successful edit");
 
                                         }
 
-                                    }
-                                     else if (button.equals("deleteAccount")) {
+                                    } else if (button.equals("deleteAccount")) {
                                         method.removeAccount(userAccount);
                                         for (int i = 0; i < myProducts.size(); i++) {
                                             method.deleteForProductFile(myProducts.get(i));
@@ -777,7 +737,6 @@ public class ThreadedMarketPlaceServer {
                                     }
                                     if (buttonClicked.equals("seeProduct")) {
 
-                                        System.out.println("1: see product button");
 
 
                                         //METHOD AFTER SORTING OR NOT SORTING MARKET WHEN PRODUCT CHOSEN
@@ -788,8 +747,7 @@ public class ThreadedMarketPlaceServer {
 
                                         } else {
                                             Methods.productsOnMarket = method.makeProductArrayList();
-                                            System.out.println(chooseProduct);
-                                            System.out.println("chosen product");
+
 
 
                                             String[] productChangedNames = chooseProduct.split(",");
@@ -816,7 +774,6 @@ public class ThreadedMarketPlaceServer {
 
                                             }
                                             if (buttonChosenStatistics.equals("null")) {
-                                                System.out.println("buttonchosenstatistic null when choosing button");
 
                                             }
 
@@ -824,7 +781,6 @@ public class ThreadedMarketPlaceServer {
 
                                             if (buttonChosenStatistics.equals("buyProduct")) {
                                                 Methods.productsOnMarket = method.makeProductArrayList();
-                                                System.out.println("4: buy product");
 
 
                                                 //able to purchase correct input amount purchasing
@@ -832,14 +788,11 @@ public class ThreadedMarketPlaceServer {
                                                 int amountPurchasing = 0;
 
                                                 amountPurchasingString = reader.readLine();
-                                                System.out.println("amount purchase string " + amountPurchasingString);
 
                                                 if (!amountPurchasingString.equals("null")) {
                                                     amountPurchasing = Integer.parseInt(amountPurchasingString);
-                                                    System.out.println("null");
 
 
-                                                    System.out.println(amountPurchasing);
 
 
                                                     if (productBought.getQuantityAvailable() == 0) {
@@ -890,7 +843,6 @@ public class ThreadedMarketPlaceServer {
                                                         // must implement customer receipts ******
 
                                                     } else {
-                                                        System.out.println("amount purchasing " + amountPurchasing);
                                                         //no quantity limit when purchasing
                                                         int currentQuantityAvailable = productBought.getQuantityAvailable();
                                                         method.purchaseProduct(productBought, amountPurchasing);
@@ -920,10 +872,8 @@ public class ThreadedMarketPlaceServer {
 
 
                                             }
-                                            System.out.println("product quantity test " + productBought.getQuantityAvailable());
                                             if (buttonChosenStatistics.equals("addToCart")) {
                                                 Methods.productsOnMarket = method.makeProductArrayList();
-                                                System.out.println("4: add cart ");
                                                 // add to cart button in client pressed
 
 
@@ -953,14 +903,15 @@ public class ThreadedMarketPlaceServer {
                                                         writer.write("limitedQuantity");
                                                         writer.println();
                                                         writer.flush();
-                                                        ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
+                                                        ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName,
+                                                                storeName, description, quantityAvailable,
                                                                 price, quantityAvailable);
-                                                        System.out.println("new quantity available test " + quantityAvailable);
                                                         shoppingCart.add(addedProductToCart);
                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
 
                                                     } else {
-                                                        ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName, storeName, description, quantityAvailable,
+                                                        ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(productName,
+                                                                storeName, description, quantityAvailable,
                                                                 price, quantityBuying);
                                                         shoppingCart.add(addedProductToCart);
                                                         method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
@@ -984,15 +935,11 @@ public class ThreadedMarketPlaceServer {
 
 
                                         String wordSearch = reader.readLine();
-                                        System.out.println("1 search product button pressed ");
-                                        System.out.println("word searched: " + wordSearch + "end");
                                         if (wordSearch.isEmpty()) {
-                                            System.out.println("null/pressed exit");
 
                                         } else {
                                             ArrayList<Product> searchedProducts = new ArrayList<>();
                                             searchedProducts = method.searchForProduct(wordSearch, Methods.productsOnMarket);
-                                            System.out.println("searched found :" + searchedProducts);
 
                                             if (searchedProducts.isEmpty()) {
                                                 writer.write("noProductsFound");
@@ -1019,7 +966,6 @@ public class ThreadedMarketPlaceServer {
                                                 //reading chosen item from client
                                                 String itemFromSearchChosen = reader.readLine();
                                                 if (itemFromSearchChosen.equals("null")) {
-                                                    System.out.println("exit null press product from search");
                                                 } else {
 
 
@@ -1029,8 +975,6 @@ public class ThreadedMarketPlaceServer {
                                                     String[] productChangedNames = itemFromSearchChosen.split(",");
                                                     String findProductName = productChangedNames[0].substring(productChangedNames[0].indexOf(":") + 2);
                                                     String findStoreName = productChangedNames[1].substring(productChangedNames[1].indexOf(":") + 2);
-                                                    System.out.println("product name " + findProductName);
-                                                    System.out.println("store name: " + findStoreName);
 
 
                                                     Product productBoughtNew = null;
@@ -1044,12 +988,10 @@ public class ThreadedMarketPlaceServer {
                                                             //product insight page
                                                         }
                                                     }
-                                                    System.out.println("product found statstic " + productBoughtNew.statisticsToString());
                                                     if (newPage) {
                                                         //PRODUCT INSIGHTS
 
 
-                                                        System.out.println("entering else ");
 
 
                                                         //reads the chosen product
@@ -1067,14 +1009,12 @@ public class ThreadedMarketPlaceServer {
 
                                                         buttonChosenStatistics = reader.readLine();
                                                         if (buttonChosenStatistics.equals("null")) {
-                                                            System.out.println("null/exit");
 
 
                                                         }
                                                         String amountPurchasingString = null;
                                                         if (buttonChosenStatistics.equals("buyProductSearch")) {
                                                             Methods.productsOnMarket = method.makeProductArrayList();
-                                                            System.out.println("buy product");
 
 
                                                             //able to purchase correct input amount purchasing
@@ -1082,14 +1022,11 @@ public class ThreadedMarketPlaceServer {
 
 
                                                             amountPurchasingString = reader.readLine();
-                                                            System.out.println("amountpurchasing " + amountPurchasingString);
 
 
                                                             if (!amountPurchasingString.equals("null")) {
                                                                 amountPurchasing = Integer.parseInt(amountPurchasingString);
-                                                                System.out.println("invalid input");
 
-                                                                System.out.println("amount buying " + amountPurchasing);
 
 
                                                                 if (productBoughtNew.getQuantityAvailable() == 0) {
@@ -1140,7 +1077,6 @@ public class ThreadedMarketPlaceServer {
                                                                     int currentQuantityAvailable = productBoughtNew.getQuantityAvailable();
                                                                     method.purchaseProduct(productBoughtNew, amountPurchasing);
                                                                     productBoughtNew.setQuantityAvailable(currentQuantityAvailable - amountPurchasing);
-                                                                    System.out.println("product new quantity available after bought: " + productBoughtNew.getQuantityAvailable());
 
 
                                                                     //all saving methods for setting product available to new for data file, product file, shopping cart
@@ -1175,7 +1111,6 @@ public class ThreadedMarketPlaceServer {
                                                         if (buttonChosenStatistics.equals("addToCartSearch")) {
                                                             Methods.productsOnMarket = method.makeProductArrayList();
                                                             // add to cart button in client pressed
-                                                            System.out.println("add to cart button");
 
                                                             String quantityBuyingString = null;
                                                             int quantityBuying = 0;
@@ -1185,12 +1120,10 @@ public class ThreadedMarketPlaceServer {
 
 
                                                             if (quantityBuyingString.equals("null")) {
-                                                                System.out.println("null quantity buying cart exit");
 
 
                                                             } else {
                                                                 quantityBuying = Integer.parseInt(quantityBuyingString);
-                                                                System.out.println("not null");
 
 
                                                                 String description = productBoughtNew.getDescriptionOfProduct();
@@ -1205,13 +1138,15 @@ public class ThreadedMarketPlaceServer {
                                                                     writer.write("limitedQuantity");
                                                                     writer.println();
                                                                     writer.flush();
-                                                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(findProductName, findStoreName, description, quantityAvailable,
+                                                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(findProductName,
+                                                                            findStoreName, description, quantityAvailable,
                                                                             price, quantityAvailable);
                                                                     shoppingCart.add(addedProductToCart);
                                                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
 
                                                                 } else {
-                                                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(findProductName, findStoreName, description, quantityAvailable,
+                                                                    ShoppingCartProduct addedProductToCart = new ShoppingCartProduct(findProductName,
+                                                                            findStoreName, description, quantityAvailable,
                                                                             price, quantityBuying);
                                                                     shoppingCart.add(addedProductToCart);
                                                                     method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
@@ -1231,14 +1166,12 @@ public class ThreadedMarketPlaceServer {
 
                                     }
                                     if (buttonClicked.equals("null")) {
-                                        System.out.println("exit clicked no buy or cart");
 
                                     }
                                     if (buttonClicked.equals("viewShoppingCart")) {
                                         shoppingCart = method.createShoppingCartArray(userAccount);
                                         Methods.productsOnMarket = method.makeProductArrayList();
 
-                                        System.out.println("view shopping cart pressed");
                                         //VIEW SHOPPING CART BUTTON
 
 
@@ -1250,13 +1183,11 @@ public class ThreadedMarketPlaceServer {
 
                                         }
                                         if (cartButtonClicked.equals("emptyCart")) {
-                                            System.out.println("empty cart pressed");
 
                                         }
 
 
                                         if (cartButtonClicked.equals("viewCart")) {
-                                            System.out.println("view cart view pressed");
 
 
                                             //shows cart and which product if want to view statistic
@@ -1268,23 +1199,18 @@ public class ThreadedMarketPlaceServer {
                                         if (cartButtonClicked.equals("removeProduct")) {
                                             shoppingCart = method.createShoppingCartArray(userAccount);
                                             Methods.productsOnMarket = method.makeProductArrayList();
-                                            System.out.println("remove product pressed");
 
                                             String seeProduct = reader.readLine();
                                             if (seeProduct.equals("null")) {
-                                                System.out.println("null remove product ");
 
                                                 // pressed x
                                             } else {
-                                                System.out.println("print" + seeProduct + "end");
                                                 String[] product = seeProduct.split(",");
                                                 String[] findProductName = product[0].split(":");
 
                                                 String productName = findProductName[2].substring(1);
                                                 String storeName = product[1].substring(product[1].indexOf(":") + 2);
                                                 int quantityBuying = Integer.parseInt(product[5].substring(product[5].indexOf(":") + 2));
-                                                System.out.println("productname " + productName);
-                                                System.out.println("storename " + storeName);
 
 
                                                 ShoppingCartProduct productChosen = null;
@@ -1313,7 +1239,6 @@ public class ThreadedMarketPlaceServer {
                                         if (cartButtonClicked.equals("purchaseCart")) {
                                             shoppingCart = method.createShoppingCartArray(userAccount);
                                             Methods.productsOnMarket = method.makeProductArrayList();
-                                            System.out.println("purchase cart pressed");
 
                                             StringBuilder purchasedCorrectly = new StringBuilder(" ");
                                             StringBuilder soldOut = new StringBuilder(" ");
@@ -1323,12 +1248,11 @@ public class ThreadedMarketPlaceServer {
 
                                                 if (shoppingCart.get(i).getQuantityAvailable() == 0) {
                                                     soldOut.append(shoppingCart.get(i).getProductName()).append(" sold out!, ");
-                                                    System.out.println("sold out message " + soldOut);
 
                                                 } else if (shoppingCart.get(i).getQuantityBuying() > shoppingCart.get(i).getQuantityAvailable()) {
 
-                                                    limitedQuantity.append(shoppingCart.get(i).getProductName()).append(" ").append(shoppingCart.get(i).getQuantityAvailable()).append(" quantity available to purchase!, ");
-                                                    System.out.println("limited quantity message " + limitedQuantity);
+                                                    limitedQuantity.append(shoppingCart.get(i).getProductName()).append(" ").
+                                                            append(shoppingCart.get(i).getQuantityAvailable()).append(" quantity available to purchase!, ");
 
 
                                                     //finding shopping cart in products on market
@@ -1358,7 +1282,6 @@ public class ThreadedMarketPlaceServer {
                                                 } else {
                                                     //INSERT CUSTOMER RECEIPTS SOMEWHERE HERE
                                                     purchasedCorrectly.append(shoppingCart.get(i).getProductName()).append(" purchased!, ");
-                                                    System.out.println("purchased correctly message " + purchasedCorrectly);
 
                                                     Product purchaseInCart = null;
                                                     for (int k = 0; k < Methods.productsOnMarket.size(); k++) {
@@ -1375,7 +1298,6 @@ public class ThreadedMarketPlaceServer {
                                                     shoppingCart.get(i).setQuantityAvailable(purchaseInCart.getQuantityAvailable());
 
 
-                                                    System.out.println("product quantity after purchase " + purchaseInCart.getQuantityAvailable());
 
 
                                                     method.saveDataFileWhenPurchased(Methods.productsOnMarket, purchaseInCart);
@@ -1388,7 +1310,6 @@ public class ThreadedMarketPlaceServer {
 
 
                                             }
-                                            System.out.println("ser reach2");
                                             shoppingCart.clear();
 
                                             method.saveShoppingCartArrayListToFile(shoppingCart, userAccount);
@@ -1404,7 +1325,6 @@ public class ThreadedMarketPlaceServer {
 
                                     }
                                     if (buttonClicked.equals("editProfileButton")) {
-                                        System.out.println("edit profile enter");
                                         String profileInfo = reader.readLine();
 
                                         if (profileInfo.equals("null")) {
@@ -1430,7 +1350,6 @@ public class ThreadedMarketPlaceServer {
                                             if (!newPassword.equals(userAccount.getPassword())) {
                                                 userAccount.setPassword(newPassword);
                                             }
-                                            System.out.println("successful edit");
 
                                         }
 
@@ -1447,7 +1366,6 @@ public class ThreadedMarketPlaceServer {
                             }
                         }
                     } else {
-                        System.out.println("creating account");
                     }
 
 
