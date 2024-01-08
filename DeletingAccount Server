@@ -1,4 +1,0 @@
-} else if (button.equals("deleteAccount")) {
-      method.removeAccount(userAccount);
-      //works for Data.txt
-}
